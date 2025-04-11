@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block title %}Login | User Dashboard{% endblock %}
+
+{% block content %}
+<div class="mdl-card mdl-shadow--2dp login-card">
+    <div class="mdl-card__title">
+        <h2 class="mdl-card__title-text">Login</h2>
+    </div>
+    <div class="mdl-card__supporting-text">
+        <form action="{{ url_for('login') }}" method="post">
+            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                <input class="mdl-textfield__input" type="text" id="username" name="username" required>
+                <label class="mdl-textfield__label" for="username">Username</label>
+            </div>
+            
+            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                <input class="mdl-textfield__input" type="password" id="password" name="password" required>
+                <label class="mdl-textfield__label" for="password">Password</label>
+            </div>
+            
+            <div class="mdl-card__actions">
+                <button type="submit" class="mdl-button mdl-button--raised mdl-button--colored mdl-js-button mdl-js-ripple-effect">
+                    Login
+                </button>
+            </div>
+        </form>
+    </div>
+    <div class="mdl-card__actions mdl-card--border">
+        <span>Don't have an account?</span>
+        <a href="{{ url_for('register') }}" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">
+            Register
+        </a>
+    </div>
+</div>
+{% endblock %}
