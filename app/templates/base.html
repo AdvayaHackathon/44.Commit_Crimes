@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Educational Content Analysis System{% endblock %}</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Chart.js for visualizations -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/static/css/main.css">
+    <style>
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+
+    {% block head %}{% endblock %}
+</head>
+<body class="bg-gray-100 min-h-screen">
+    <!-- Navigation -->
+    <nav class="bg-indigo-600 text-white shadow-lg">
+        <div class="container mx-auto px-4 py-3">
+            <div class="flex justify-between items-center">
+                <div class="flex items-center space-x-4">
+                    <a href="/" class="text-xl font-bold">Educational Content Analysis</a>
+                    <div class="hidden md:flex space-x-4">
+                        <a href="/" class="hover:text-indigo-200">Dashboard</a>
+                        <a href="/test-viewer" class="hover:text-indigo-200">Test Viewer</a>
+                        <a href="/planner" class="hover:text-indigo-200">Planner</a>
+                        <a href="/daily-report" class="hover:text-indigo-200">Daily Report</a>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <div class="relative">
+                        <select id="language-selector" class="bg-indigo-700 text-white rounded px-2 py-1">
+                            <option value="en">English</option>
+                            <option value="hi">हिंदी</option>
+                            <option value="te">తెలుగు</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Mobile Navigation -->
+    <div class="md:hidden bg-indigo-500 text-white">
+        <div class="container mx-auto px-4 py-2">
+            <div class="flex justify-between space-x-2 overflow-x-auto">
+                <a href="/" class="text-center flex-1 py-2 hover:bg-indigo-600 rounded whitespace-nowrap">Dashboard</a>
+                <a href="/test-viewer" class="text-center flex-1 py-2 hover:bg-indigo-600 rounded whitespace-nowrap">Test Viewer</a>
+                <a href="/planner" class="text-center flex-1 py-2 hover:bg-indigo-600 rounded whitespace-nowrap">Planner</a>
+                <a href="/daily-report" class="text-center flex-1 py-2 hover:bg-indigo-600 rounded whitespace-nowrap">Report</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 py-6">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-6">
+        <div class="container mx-auto px-4">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div class="mb-4 md:mb-0">
+                    <p>&copy; 2023 Educational Content Analysis System</p>
+                </div>
+                <div class="flex space-x-4">
+                    <a href="#" class="hover:text-indigo-300">About</a>
+                    <a href="#" class="hover:text-indigo-300">Help</a>
+                    <a href="#" class="hover:text-indigo-300">Privacy</a>
+                    <a href="#" class="hover:text-indigo-300">Terms</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Common JavaScript -->
+    <script>
+        // Language selector functionality
+        document.getElementById('language-selector').addEventListener('change', function() {
+            const language = this.value;
+            // Store language preference
+            localStorage.setItem('preferred_language', language);
+            // Reload page to apply language
+            window.location.reload();
+        });
+
+        // Load saved language preference
+        document.addEventListener('DOMContentLoaded', function() {
+            const savedLanguage = localStorage.getItem('preferred_language');
+            if (savedLanguage) {
+                document.getElementById('language-selector').value = savedLanguage;
+            }
+        });
+
+        // Common utility functions
+        function showLoading(elementId) {
+            const element = document.getElementById(elementId);
+            if (element) {
+                element.innerHTML = '<div class="loading"></div> Processing...';
+            }
+        }
+
+        function hideLoading(elementId, text) {
+            const element = document.getElementById(elementId);
+            if (element) {
+                element.innerHTML = text || '';
+            }
+        }
+    </script>
+
+    {% block scripts %}{% endblock %}
+</body>
+</html>

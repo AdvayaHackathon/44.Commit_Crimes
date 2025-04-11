@@ -1,0 +1,358 @@
+{% extends "base.html" %}
+
+{% block title %}Test Viewer - Educational Content Analysis System{% endblock %}
+
+{% block content %}
+<div class="bg-white rounded-lg shadow-md p-6">
+    <h2 class="text-2xl font-bold mb-4">Test Viewer</h2>
+    
+    <div class="mb-6">
+        <div class="flex flex-col md:flex-row md:items-center md:space-x-4">
+            <div class="mb-4 md:mb-0 flex-grow">
+                <label class="block text-gray-700 mb-2">Select Processed File</label>
+                <select id="file-selector" class="w-full p-2 border border-gray-300 rounded">
+                    <option value="">-- Select a file --</option>
+                    <!-- Files will be populated dynamically -->
+                </select>
+            </div>
+            <div class="mb-4 md:mb-0">
+                <label class="block text-gray-700 mb-2">Language</label>
+                <select id="language-filter" class="w-full p-2 border border-gray-300 rounded">
+                    <option value="all">All Languages</option>
+                    <option value="en">English</option>
+                    <option value="hi">Hindi</option>
+                    <option value="te">Telugu</option>
+                </select>
+            </div>
+            <div>
+                <label class="block text-gray-700 mb-2">Question Type</label>
+                <select id="question-type-filter" class="w-full p-2 border border-gray-300 rounded">
+                    <option value="all">All Types</option>
+                    <option value="objective">Objective</option>
+                    <option value="subjective">Subjective</option>
+                    <option value="practical">Practical</option>
+                </select>
+            </div>
+        </div>
+    </div>
+    
+    <div id="test-content" class="hidden">
+        <div class="mb-6">
+            <h3 class="text-xl font-bold mb-2">Test Overview</h3>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="bg-blue-50 p-4 rounded-lg">
+                    <div class="text-sm text-blue-700">Total Questions</div>
+                    <div class="text-2xl font-bold text-blue-700" id="total-questions">0</div>
+                </div>
+                <div class="bg-green-50 p-4 rounded-lg">
+                    <div class="text-sm text-green-700">Total Marks</div>
+                    <div class="text-2xl font-bold text-green-700" id="total-marks">0</div>
+                </div>
+                <div class="bg-purple-50 p-4 rounded-lg">
+                    <div class="text-sm text-purple-700">Topics Covered</div>
+                    <div class="text-2xl font-bold text-purple-700" id="topics-count">0</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="mb-6">
+            <h3 class="text-xl font-bold mb-2">Question Distribution</h3>
+            <div class="h-64">
+                <canvas id="question-distribution-chart"></canvas>
+            </div>
+        </div>
+        
+        <div>
+            <h3 class="text-xl font-bold mb-2">Questions</h3>
+            <div id="questions-container" class="space-y-4">
+                <!-- Questions will be populated dynamically -->
+                <div class="text-gray-500">No questions to display</div>
+            </div>
+        </div>
+    </div>
+    
+    <div id="no-file-selected" class="text-center py-12">
+        <div class="text-gray-400 text-6xl mb-4">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-24 w-24 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            </svg>
+        </div>
+        <h3 class="text-xl font-semibold text-gray-500">No File Selected</h3>
+        <p class="text-gray-400 mt-2">Please select a processed file to view its content</p>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // Initialize chart
+    let questionDistributionChart;
+    
+    // Mock data for development
+    const mockFiles = [
+        { id: 'file1', name: 'Mathematics_Test.pdf', language: 'en' },
+        { id: 'file2', name: 'Science_Quiz.jpg', language: 'en' },
+        { id: 'file3', name: 'History_Exam.pdf', language: 'hi' }
+    ];
+    
+    const mockAnalysisResults = {
+        'file1': {
+            questions: [
+                { number: '1', text: 'Solve the equation: 2x + 5 = 15', marks: 2, type: 'objective' },
+                { number: '2', text: 'Find the derivative of f(x) = x^3 + 2x^2 - 4x + 7', marks: 3, type: 'objective' },
+                { number: '3', text: 'Calculate the area of a circle with radius 5 cm.', marks: 2, type: 'objective' },
+                { number: '4', text: 'Prove that the sum of the angles in a triangle is 180 degrees.', marks: 5, type: 'subjective' },
+                { number: '5', text: 'Solve the system of equations: 3x + 2y = 12, x - y = 1. Show all your work.', marks: 5, type: 'subjective' },
+                { number: '6', text: 'A rectangular garden has a length that is twice its width. If the perimeter of the garden is 60 meters, find its dimensions and area.', marks: 8, type: 'practical' }
+            ],
+            topics: ['Math: Algebra', 'Math: Geometry', 'Math: Calculus'],
+            distribution: {
+                objective: { marks: 7, percentage: 28 },
+                subjective: { marks: 10, percentage: 40 },
+                practical: { marks: 8, percentage: 32 }
+            },
+            total_marks: 25
+        },
+        'file2': {
+            questions: [
+                { number: '1', text: 'What is the chemical symbol for water?', marks: 1, type: 'objective' },
+                { number: '2', text: 'Name the process by which plants make their own food.', marks: 1, type: 'objective' },
+                { number: '3', text: 'What is Newton\'s First Law of Motion?', marks: 2, type: 'objective' },
+                { number: '4', text: 'Explain the difference between mitosis and meiosis.', marks: 3, type: 'subjective' },
+                { number: '5', text: 'Describe the structure of an atom.', marks: 3, type: 'subjective' },
+                { number: '6', text: 'Design an experiment to test the effect of light on plant growth. Include your hypothesis, variables, and procedure.', marks: 5, type: 'practical' }
+            ],
+            topics: ['Science: Chemistry', 'Science: Biology', 'Science: Physics'],
+            distribution: {
+                objective: { marks: 4, percentage: 26.7 },
+                subjective: { marks: 6, percentage: 40 },
+                practical: { marks: 5, percentage: 33.3 }
+            },
+            total_marks: 15
+        },
+        'file3': {
+            questions: [
+                { number: '1', text: 'When did World War II end?', marks: 1, type: 'objective' },
+                { number: '2', text: 'Name the first Prime Minister of India.', marks: 1, type: 'objective' },
+                { number: '3', text: 'List three major causes of the French Revolution.', marks: 3, type: 'objective' },
+                { number: '4', text: 'Explain the significance of the Industrial Revolution on modern society.', marks: 5, type: 'subjective' },
+                { number: '5', text: 'Compare and contrast the American and French Revolutions.', marks: 5, type: 'subjective' },
+                { number: '6', text: 'Analyze primary source documents from the Civil Rights Movement and discuss their historical context.', marks: 10, type: 'practical' }
+            ],
+            topics: ['History: World War', 'History: Revolution', 'History: Modern'],
+            distribution: {
+                objective: { marks: 5, percentage: 20 },
+                subjective: { marks: 10, percentage: 40 },
+                practical: { marks: 10, percentage: 40 }
+            },
+            total_marks: 25
+        }
+    };
+    
+    // Populate file selector
+    function populateFileSelector() {
+        const fileSelector = document.getElementById('file-selector');
+        const languageFilter = document.getElementById('language-filter').value;
+        
+        // Clear existing options except the first one
+        while (fileSelector.options.length > 1) {
+            fileSelector.remove(1);
+        }
+        
+        // Filter files by language if needed
+        const filteredFiles = languageFilter === 'all' 
+            ? mockFiles 
+            : mockFiles.filter(file => file.language === languageFilter);
+        
+        // Add file options
+        filteredFiles.forEach(file => {
+            const option = document.createElement('option');
+            option.value = file.id;
+            option.textContent = file.name;
+            fileSelector.appendChild(option);
+        });
+    }
+    
+    // Display test content
+    function displayTestContent(fileId) {
+        const testContent = document.getElementById('test-content');
+        const noFileSelected = document.getElementById('no-file-selected');
+        const questionsContainer = document.getElementById('questions-container');
+        
+        if (!fileId) {
+            testContent.classList.add('hidden');
+            noFileSelected.classList.remove('hidden');
+            return;
+        }
+        
+        const analysisResult = mockAnalysisResults[fileId];
+        
+        if (!analysisResult) {
+            testContent.classList.add('hidden');
+            noFileSelected.classList.remove('hidden');
+            return;
+        }
+        
+        // Show test content
+        testContent.classList.remove('hidden');
+        noFileSelected.classList.add('hidden');
+        
+        // Update overview
+        document.getElementById('total-questions').textContent = analysisResult.questions.length;
+        document.getElementById('total-marks').textContent = analysisResult.total_marks;
+        document.getElementById('topics-count').textContent = analysisResult.topics.length;
+        
+        // Update chart
+        updateDistributionChart(analysisResult.distribution);
+        
+        // Filter questions if needed
+        const questionTypeFilter = document.getElementById('question-type-filter').value;
+        let filteredQuestions = analysisResult.questions;
+        
+        if (questionTypeFilter !== 'all') {
+            filteredQuestions = analysisResult.questions.filter(q => q.type === questionTypeFilter);
+        }
+        
+        // Display questions
+        if (filteredQuestions.length === 0) {
+            questionsContainer.innerHTML = '<div class="text-gray-500">No questions to display</div>';
+            return;
+        }
+        
+        let html = '';
+        
+        filteredQuestions.forEach(question => {
+            let typeClass = '';
+            let typeLabel = '';
+            
+            switch (question.type) {
+                case 'objective':
+                    typeClass = 'bg-blue-100 text-blue-800';
+                    typeLabel = 'Objective';
+                    break;
+                case 'subjective':
+                    typeClass = 'bg-pink-100 text-pink-800';
+                    typeLabel = 'Subjective';
+                    break;
+                case 'practical':
+                    typeClass = 'bg-teal-100 text-teal-800';
+                    typeLabel = 'Practical';
+                    break;
+            }
+            
+            html += `
+                <div class="border border-gray-200 rounded-lg p-4">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <span class="font-semibold">Q${question.number}.</span>
+                            <span>${question.text}</span>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <span class="${typeClass} text-xs px-2 py-1 rounded">${typeLabel}</span>
+                            <span class="bg-gray-100 text-gray-800 text-xs px-2 py-1 rounded">${question.marks} mark${question.marks > 1 ? 's' : ''}</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+        });
+        
+        questionsContainer.innerHTML = html;
+    }
+    
+    // Update distribution chart
+    function updateDistributionChart(distribution) {
+        const ctx = document.getElementById('question-distribution-chart').getContext('2d');
+        
+        // Destroy existing chart if it exists
+        if (questionDistributionChart) {
+            questionDistributionChart.destroy();
+        }
+        
+        // Create new chart
+        questionDistributionChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ['Objective', 'Subjective', 'Practical'],
+                datasets: [{
+                    label: 'Marks',
+                    data: [
+                        distribution.objective.marks,
+                        distribution.subjective.marks,
+                        distribution.practical.marks
+                    ],
+                    backgroundColor: [
+                        'rgba(54, 162, 235, 0.6)',
+                        'rgba(255, 99, 132, 0.6)',
+                        'rgba(75, 192, 192, 0.6)'
+                    ],
+                    borderColor: [
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(255, 99, 132, 1)',
+                        'rgba(75, 192, 192, 1)'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Marks'
+                        }
+                    },
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Question Type'
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                const label = context.dataset.label || '';
+                                const value = context.parsed.y;
+                                const percentage = distribution[context.label.toLowerCase()].percentage;
+                                return `${label}: ${value} (${percentage}%)`;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    }
+    
+    // Event listeners
+    document.addEventListener('DOMContentLoaded', function() {
+        // Populate file selector
+        populateFileSelector();
+        
+        // File selector change event
+        document.getElementById('file-selector').addEventListener('change', function() {
+            displayTestContent(this.value);
+        });
+        
+        // Language filter change event
+        document.getElementById('language-filter').addEventListener('change', function() {
+            populateFileSelector();
+            document.getElementById('file-selector').value = '';
+            displayTestContent('');
+        });
+        
+        // Question type filter change event
+        document.getElementById('question-type-filter').addEventListener('change', function() {
+            const fileId = document.getElementById('file-selector').value;
+            if (fileId) {
+                displayTestContent(fileId);
+            }
+        });
+    });
+</script>
+{% endblock %}

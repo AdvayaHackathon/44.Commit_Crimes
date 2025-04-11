@@ -1,0 +1,536 @@
+{% extends "base.html" %}
+
+{% block title %}Test Planner - Educational Content Analysis System{% endblock %}
+
+{% block content %}
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+    <!-- Test Plan Calendar -->
+    <div class="md:col-span-2 bg-white rounded-lg shadow-md p-6">
+        <h2 class="text-2xl font-bold mb-4">Test Plan Calendar</h2>
+
+        <div class="mb-6">
+            <div class="flex justify-between items-center mb-4">
+                <button id="prev-month" class="text-indigo-600 hover:text-indigo-800">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                    </svg>
+                </button>
+                <h3 id="current-month" class="text-xl font-semibold">November 2023</h3>
+                <button id="next-month" class="text-indigo-600 hover:text-indigo-800">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                    </svg>
+                </button>
+            </div>
+
+            <div class="grid grid-cols-7 gap-1 text-center font-semibold text-gray-600 mb-2">
+                <div>Sun</div>
+                <div>Mon</div>
+                <div>Tue</div>
+                <div>Wed</div>
+                <div>Thu</div>
+                <div>Fri</div>
+                <div>Sat</div>
+            </div>
+
+            <div id="calendar-grid" class="grid grid-cols-7 gap-1">
+                <!-- Calendar days will be populated dynamically -->
+            </div>
+        </div>
+
+        <div id="day-details" class="hidden">
+            <h3 class="text-xl font-bold mb-2">Test Plans for <span id="selected-date">November 15, 2023</span></h3>
+            <div id="day-plans-container" class="space-y-3">
+                <!-- Test plans for the selected day will be populated dynamically -->
+            </div>
+        </div>
+
+        <!-- Test Plan Form -->
+        <div class="mt-6 border-t pt-6">
+            <h3 class="text-xl font-bold mb-4">Add New Test Plan</h3>
+
+            <form id="planner-form" class="mb-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                    <div>
+                        <label class="block text-gray-700 mb-2">Test Title</label>
+                        <input type="text" id="test-title" placeholder="Enter test title" class="w-full p-2 border border-gray-300 rounded">
+                    </div>
+                    <div>
+                        <label class="block text-gray-700 mb-2">Test Date</label>
+                        <input type="date" id="test-date" class="w-full p-2 border border-gray-300 rounded">
+                    </div>
+                    <div>
+                        <label class="block text-gray-700 mb-2">Test Type</label>
+                        <select id="test-type" class="w-full p-2 border border-gray-300 rounded">
+                            <option value="mixed">Mixed</option>
+                            <option value="objective">Objective</option>
+                            <option value="subjective">Subjective</option>
+                            <option value="practical">Practical</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-gray-700 mb-2">Duration (minutes)</label>
+                        <input type="number" id="duration" value="60" min="15" max="180" class="w-full p-2 border border-gray-300 rounded">
+                    </div>
+                    <div>
+                        <label class="block text-gray-700 mb-2">Total Marks</label>
+                        <input type="number" id="total-marks" value="100" min="10" max="200" class="w-full p-2 border border-gray-300 rounded">
+                    </div>
+                    <div>
+                        <label class="block text-gray-700 mb-2">Description</label>
+                        <textarea id="test-description" rows="2" placeholder="Brief description of the test" class="w-full p-2 border border-gray-300 rounded"></textarea>
+                    </div>
+                </div>
+
+                <div class="flex justify-between items-center">
+                    <button type="submit" id="save-plan-button" class="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700">
+                        Save Test Plan
+                    </button>
+                    <div id="save-status" class="text-gray-600"></div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Imported Test Plans -->
+    <div class="bg-white rounded-lg shadow-md p-6">
+        <h2 class="text-2xl font-bold mb-4">Imported Test Plans</h2>
+
+        <div id="imported-plans-container" class="space-y-4 mb-6">
+            <!-- Imported plans will be populated dynamically -->
+            <div class="text-gray-500">No imported plans yet</div>
+        </div>
+
+        <div class="border-t pt-4">
+            <h3 class="text-lg font-semibold mb-3">Import from Dashboard</h3>
+            <p class="text-gray-600 mb-3">Test plans generated on the dashboard will appear here for you to add to your calendar.</p>
+            <button id="refresh-imports-button" class="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700 w-full">
+                Refresh Imports
+            </button>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // Initialize chart
+    let distributionChart;
+
+    // Mock data for development
+    const mockFiles = [
+        { id: 'file1', name: 'Mathematics_Test.pdf' },
+        { id: 'file2', name: 'Science_Quiz.jpg' },
+        { id: 'file3', name: 'History_Exam.pdf' }
+    ];
+
+    const mockAnalysisResults = {
+        'file1': {
+            questions: [
+                { number: '1', text: 'Solve the equation: 2x + 5 = 15', marks: 2, type: 'objective' },
+                { number: '2', text: 'Find the derivative of f(x) = x^3 + 2x^2 - 4x + 7', marks: 3, type: 'objective' },
+                { number: '3', text: 'Calculate the area of a circle with radius 5 cm.', marks: 2, type: 'objective' },
+                { number: '4', text: 'Prove that the sum of the angles in a triangle is 180 degrees.', marks: 5, type: 'subjective' },
+                { number: '5', text: 'Solve the system of equations: 3x + 2y = 12, x - y = 1. Show all your work.', marks: 5, type: 'subjective' },
+                { number: '6', text: 'A rectangular garden has a length that is twice its width. If the perimeter of the garden is 60 meters, find its dimensions and area.', marks: 8, type: 'practical' }
+            ],
+            topics: ['Math: Algebra', 'Math: Geometry', 'Math: Calculus']
+        },
+        'file2': {
+            questions: [
+                { number: '1', text: 'What is the chemical symbol for water?', marks: 1, type: 'objective' },
+                { number: '2', text: 'Name the process by which plants make their own food.', marks: 1, type: 'objective' },
+                { number: '3', text: 'What is Newton\'s First Law of Motion?', marks: 2, type: 'objective' },
+                { number: '4', text: 'Explain the difference between mitosis and meiosis.', marks: 3, type: 'subjective' },
+                { number: '5', text: 'Describe the structure of an atom.', marks: 3, type: 'subjective' },
+                { number: '6', text: 'Design an experiment to test the effect of light on plant growth. Include your hypothesis, variables, and procedure.', marks: 5, type: 'practical' }
+            ],
+            topics: ['Science: Chemistry', 'Science: Biology', 'Science: Physics']
+        },
+        'file3': {
+            questions: [
+                { number: '1', text: 'When did World War II end?', marks: 1, type: 'objective' },
+                { number: '2', text: 'Name the first Prime Minister of India.', marks: 1, type: 'objective' },
+                { number: '3', text: 'List three major causes of the French Revolution.', marks: 3, type: 'objective' },
+                { number: '4', text: 'Explain the significance of the Industrial Revolution on modern society.', marks: 5, type: 'subjective' },
+                { number: '5', text: 'Compare and contrast the American and French Revolutions.', marks: 5, type: 'subjective' },
+                { number: '6', text: 'Analyze primary source documents from the Civil Rights Movement and discuss their historical context.', marks: 10, type: 'practical' }
+            ],
+            topics: ['History: World War', 'History: Revolution', 'History: Modern']
+        }
+    };
+
+    const mockSavedPlans = [
+        {
+            id: 'plan1',
+            name: 'Math Midterm',
+            date: '2023-10-15',
+            test_type: 'mixed',
+            duration: 60,
+            total_marks: 50,
+            question_count: 15
+        },
+        {
+            id: 'plan2',
+            name: 'Science Quiz',
+            date: '2023-10-20',
+            test_type: 'objective',
+            duration: 30,
+            total_marks: 20,
+            question_count: 20
+        }
+    ];
+
+    // Populate file selector
+    function populateFileSelector() {
+        const fileSelector = document.getElementById('file-selector');
+
+        // Clear existing options
+        fileSelector.innerHTML = '';
+
+        // Add file options
+        mockFiles.forEach(file => {
+            const option = document.createElement('option');
+            option.value = file.id;
+            option.textContent = file.name;
+            fileSelector.appendChild(option);
+        });
+    }
+
+    // Populate saved plans
+    function populateSavedPlans() {
+        const savedPlansContainer = document.getElementById('saved-plans-container');
+
+        if (mockSavedPlans.length === 0) {
+            savedPlansContainer.innerHTML = '<div class="text-gray-500">No saved plans yet</div>';
+            return;
+        }
+
+        let html = '';
+
+        mockSavedPlans.forEach(plan => {
+            let typeClass = '';
+
+            switch (plan.test_type) {
+                case 'objective':
+                    typeClass = 'bg-blue-100 text-blue-800';
+                    break;
+                case 'subjective':
+                    typeClass = 'bg-pink-100 text-pink-800';
+                    break;
+                case 'practical':
+                    typeClass = 'bg-teal-100 text-teal-800';
+                    break;
+                default:
+                    typeClass = 'bg-purple-100 text-purple-800';
+            }
+
+            html += `
+                <div class="border border-gray-200 rounded-lg p-4 hover:bg-gray-50 cursor-pointer" data-plan-id="${plan.id}">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <h4 class="font-semibold">${plan.name}</h4>
+                            <div class="text-sm text-gray-500">${plan.date}</div>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <span class="${typeClass} text-xs px-2 py-1 rounded">${plan.test_type}</span>
+                        </div>
+                    </div>
+                    <div class="mt-2 grid grid-cols-3 gap-2 text-sm">
+                        <div>
+                            <span class="text-gray-500">Duration:</span>
+                            <span>${plan.duration} min</span>
+                        </div>
+                        <div>
+                            <span class="text-gray-500">Marks:</span>
+                            <span>${plan.total_marks}</span>
+                        </div>
+                        <div>
+                            <span class="text-gray-500">Questions:</span>
+                            <span>${plan.question_count}</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+        });
+
+        savedPlansContainer.innerHTML = html;
+
+        // Add click event to saved plans
+        document.querySelectorAll('[data-plan-id]').forEach(element => {
+            element.addEventListener('click', function() {
+                const planId = this.getAttribute('data-plan-id');
+                // In a real app, this would load the plan
+                alert(`Loading plan ${planId}`);
+            });
+        });
+    }
+
+    // Generate test plan
+    function generateTestPlan() {
+        const testType = document.getElementById('test-type').value;
+        const duration = parseInt(document.getElementById('duration').value);
+        const totalMarks = parseInt(document.getElementById('total-marks').value);
+        const fileSelector = document.getElementById('file-selector');
+
+        // Get selected files
+        const selectedFiles = Array.from(fileSelector.selectedOptions).map(option => option.value);
+
+        if (selectedFiles.length === 0) {
+            alert('Please select at least one file.');
+            return;
+        }
+
+        // Show loading state
+        const generateButton = document.getElementById('generate-button');
+        const generateStatus = document.getElementById('generate-status');
+
+        generateButton.disabled = true;
+        generateButton.innerHTML = '<div class="loading"></div> Generating...';
+        generateStatus.textContent = 'Generating test plan...';
+
+        // Simulate API call delay
+        setTimeout(() => {
+            // In a real app, this would be an API call
+            const mockPlan = createMockTestPlan(selectedFiles, testType, duration, totalMarks);
+
+            // Display the plan
+            displayTestPlan(mockPlan);
+
+            // Reset form state
+            generateButton.disabled = false;
+            generateButton.textContent = 'Generate Test Plan';
+            generateStatus.textContent = 'Test plan generated successfully';
+        }, 1500);
+    }
+
+    // Create mock test plan
+    function createMockTestPlan(fileIds, testType, duration, totalMarks) {
+        // Collect all questions from selected files
+        let allQuestions = [];
+        let allTopics = new Set();
+
+        fileIds.forEach(fileId => {
+            const analysisResult = mockAnalysisResults[fileId];
+
+            if (analysisResult) {
+                // Filter questions by test type if needed
+                let questions = analysisResult.questions;
+
+                if (testType !== 'mixed') {
+                    questions = questions.filter(q => q.type === testType);
+                }
+
+                allQuestions = allQuestions.concat(questions);
+
+                // Add topics
+                analysisResult.topics.forEach(topic => allTopics.add(topic));
+            }
+        });
+
+        // Sort questions by marks (ascending)
+        allQuestions.sort((a, b) => a.marks - b.marks);
+
+        // Select questions to meet total marks
+        const selectedQuestions = [];
+        let currentMarks = 0;
+
+        for (const question of allQuestions) {
+            if (currentMarks + question.marks <= totalMarks) {
+                selectedQuestions.push(question);
+                currentMarks += question.marks;
+            }
+
+            if (currentMarks >= totalMarks) {
+                break;
+            }
+        }
+
+        // Calculate distribution
+        const distribution = {
+            objective: { marks: 0, percentage: 0 },
+            subjective: { marks: 0, percentage: 0 },
+            practical: { marks: 0, percentage: 0 }
+        };
+
+        selectedQuestions.forEach(question => {
+            distribution[question.type].marks += question.marks;
+        });
+
+        // Calculate percentages
+        for (const type in distribution) {
+            distribution[type].percentage = Math.round((distribution[type].marks / currentMarks) * 100);
+        }
+
+        // Create test plan
+        return {
+            test_type: testType,
+            duration: duration,
+            total_marks: currentMarks,
+            question_count: selectedQuestions.length,
+            questions: selectedQuestions,
+            distribution: distribution,
+            topics: Array.from(allTopics)
+        };
+    }
+
+    // Display test plan
+    function displayTestPlan(plan) {
+        const planContainer = document.getElementById('plan-container');
+
+        // Show plan container
+        planContainer.classList.remove('hidden');
+
+        // Update plan details
+        document.getElementById('plan-test-type').textContent = plan.test_type.charAt(0).toUpperCase() + plan.test_type.slice(1);
+        document.getElementById('plan-duration').textContent = `${plan.duration} min`;
+        document.getElementById('plan-total-marks').textContent = plan.total_marks;
+        document.getElementById('plan-question-count').textContent = plan.question_count;
+
+        // Update distribution chart
+        updateDistributionChart(plan.distribution);
+
+        // Update topics
+        const topicsContainer = document.getElementById('topics-container');
+
+        if (plan.topics.length === 0) {
+            topicsContainer.innerHTML = '<div class="text-gray-500">No topics identified</div>';
+        } else {
+            let topicsHtml = '';
+
+            plan.topics.forEach(topic => {
+                topicsHtml += `<span class="bg-gray-100 text-gray-800 px-2 py-1 rounded text-sm">${topic}</span>`;
+            });
+
+            topicsContainer.innerHTML = topicsHtml;
+        }
+
+        // Update questions
+        const questionsContainer = document.getElementById('questions-container');
+
+        if (plan.questions.length === 0) {
+            questionsContainer.innerHTML = '<div class="text-gray-500">No questions selected</div>';
+        } else {
+            let questionsHtml = '';
+
+            plan.questions.forEach((question, index) => {
+                let typeClass = '';
+                let typeLabel = '';
+
+                switch (question.type) {
+                    case 'objective':
+                        typeClass = 'bg-blue-100 text-blue-800';
+                        typeLabel = 'Objective';
+                        break;
+                    case 'subjective':
+                        typeClass = 'bg-pink-100 text-pink-800';
+                        typeLabel = 'Subjective';
+                        break;
+                    case 'practical':
+                        typeClass = 'bg-teal-100 text-teal-800';
+                        typeLabel = 'Practical';
+                        break;
+                }
+
+                questionsHtml += `
+                    <div class="border border-gray-200 rounded-lg p-3">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <span class="font-semibold">Q${index + 1}.</span>
+                                <span>${question.text}</span>
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <span class="${typeClass} text-xs px-2 py-1 rounded">${typeLabel}</span>
+                                <span class="bg-gray-100 text-gray-800 text-xs px-2 py-1 rounded">${question.marks} mark${question.marks > 1 ? 's' : ''}</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            questionsContainer.innerHTML = questionsHtml;
+        }
+
+        // Scroll to plan container
+        planContainer.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    // Update distribution chart
+    function updateDistributionChart(distribution) {
+        const ctx = document.getElementById('distribution-chart').getContext('2d');
+
+        // Destroy existing chart if it exists
+        if (distributionChart) {
+            distributionChart.destroy();
+        }
+
+        // Create new chart
+        distributionChart = new Chart(ctx, {
+            type: 'pie',
+            data: {
+                labels: ['Objective', 'Subjective', 'Practical'],
+                datasets: [{
+                    data: [
+                        distribution.objective.marks,
+                        distribution.subjective.marks,
+                        distribution.practical.marks
+                    ],
+                    backgroundColor: [
+                        'rgba(54, 162, 235, 0.6)',
+                        'rgba(255, 99, 132, 0.6)',
+                        'rgba(75, 192, 192, 0.6)'
+                    ],
+                    borderColor: [
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(255, 99, 132, 1)',
+                        'rgba(75, 192, 192, 1)'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                const label = context.label || '';
+                                const value = context.raw;
+                                const percentage = distribution[label.toLowerCase()].percentage;
+                                return `${label}: ${value} marks (${percentage}%)`;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    // Event listeners
+    document.addEventListener('DOMContentLoaded', function() {
+        // Populate file selector
+        populateFileSelector();
+
+        // Populate saved plans
+        populateSavedPlans();
+
+        // Form submit event
+        document.getElementById('planner-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            generateTestPlan();
+        });
+
+        // Export buttons
+        document.getElementById('export-pdf-button').addEventListener('click', function() {
+            alert('Exporting as PDF... (This would generate a PDF in a real app)');
+        });
+
+        document.getElementById('export-json-button').addEventListener('click', function() {
+            alert('Exporting as JSON... (This would download a JSON file in a real app)');
+        });
+    });
+</script>
+{% endblock %}

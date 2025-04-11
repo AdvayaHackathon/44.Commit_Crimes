@@ -1,0 +1,20 @@
+version: '3'
+
+services:
+  app:
+    build: .
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./data:/app/data
+      - ./app:/app/app
+    environment:
+      - DEBUG=True
+      - SECRET_KEY=your_secret_key_here
+      - INPUT_FOLDER=data/input
+      - PROCESSED_FOLDER=data/processed
+      - OUTPUT_FOLDER=data/output
+      - DATABASE_URL=sqlite:///./data/app.db
+      - HOST=0.0.0.0
+      - PORT=8000
+    restart: unless-stopped
