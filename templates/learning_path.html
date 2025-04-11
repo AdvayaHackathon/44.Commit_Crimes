@@ -1,0 +1,543 @@
+{% extends "base.html" %}
+
+{% block title %}Learning Path | Learning Platform{% endblock %}
+
+{% block content %}
+<div class="mdl-grid learning-path-container">
+    <!-- Learning Path Header -->
+    <div class="mdl-cell mdl-cell--12-col">
+        <div class="mdl-card mdl-shadow--2dp header-card">
+            <div class="mdl-card__title" style="background-color: #3f51b5; color: white;">
+                <h2 class="mdl-card__title-text">Your Personalized Learning Path</h2>
+            </div>
+            <div class="mdl-card__supporting-text">
+                <p>Upload your learning materials and get personalized assistance in multiple languages (English, ಕನ್ನಡ, हिंदी).</p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Document Upload Section -->
+    <div class="mdl-cell mdl-cell--4-col">
+        <div class="mdl-card mdl-shadow--2dp upload-card">
+            <div class="mdl-card__title" style="background-color: #4CAF50; color: white;">
+                <h2 class="mdl-card__title-text">Upload Learning Materials</h2>
+            </div>
+            <div class="mdl-card__supporting-text">
+                <form id="uploadForm" enctype="multipart/form-data">
+                    <div class="file-upload-container">
+                        <label for="fileInput" class="file-upload-label">
+                            <i class="material-icons">cloud_upload</i>
+                            <span>Choose PDF Files</span>
+                        </label>
+                        <input type="file" id="fileInput" name="file" multiple accept=".pdf" style="display: none;">
+                        <div id="fileList" class="file-list"></div>
+                    </div>
+                    <button type="submit" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored upload-button">
+                        <i class="material-icons">file_upload</i> Upload Documents
+                    </button>
+                </form>
+                
+                <!-- Enhanced Upload Status Display -->
+                <div id="uploadStatus" class="upload-status"></div>
+                <div id="uploadDetails" class="upload-details" style="display: none;">
+                    <div class="upload-summary">
+                        <h5>Upload Summary</h5>
+                        <div id="uploadProgress"></div>
+                    </div>
+                    <div class="upload-statistics">
+                        <div class="stat-item">
+                            <i class="material-icons">check_circle</i>
+                            <span>Processed: <span id="processedCount">0</span></span>
+                        </div>
+                        <div class="stat-item">
+                            <i class="material-icons">warning</i>
+                            <span>Skipped: <span id="skippedCount">0</span></span>
+                        </div>
+                        <div class="stat-item">
+                            <i class="material-icons">error</i>
+                            <span>Failed: <span id="failedCount">0</span></span>
+                        </div>
+                        <div class="stat-item total">
+                            <i class="material-icons">folder</i>
+                            <span>Total Documents Available: <span id="totalDocuments">0</span></span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Processed Files List -->
+                <div class="processed-files">
+                    <h4><i class="material-icons">folder</i> Processed Files</h4>
+                    <ul id="processedFilesList" class="mdl-list">
+                    {% for file in processed_files %}
+                    <li class="mdl-list__item">
+                        <span class="mdl-list__item-primary-content">
+                            <i class="material-icons mdl-list__item-icon">description</i>
+                            {{ file }}
+                        </span>
+                    </li>
+                    {% endfor %}
+                </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Chat Interface -->
+    <div class="mdl-cell mdl-cell--8-col">
+        <div class="mdl-card mdl-shadow--2dp chat-card">
+            <div class="mdl-card__title" style="background-color: #3f51b5; color: white;">
+                <h2 class="mdl-card__title-text"><i class="material-icons">chat</i> Learning Assistant</h2>
+            </div>
+            <div class="mdl-card__supporting-text">
+                <div id="chatMessages" class="chat-messages">
+                    <!-- Welcome message -->
+                    <div class="message assistant-message">
+                        <div class="message-content">
+                            <div class="message-header">
+                                <i class="material-icons">smart_toy</i> Assistant
+                            </div>
+                            Hello! I'm your multilingual learning assistant. Please upload your PDF documents, and I'll help you learn from them. You can ask questions in English, ಕನ್ನಡ (Kannada), or हिंदी (Hindi).
+                        </div>
+                    </div>
+                </div>
+                <form id="chatForm" class="chat-form">
+                    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label" style="width: 100%;">
+                        <input class="mdl-textfield__input" type="text" id="userMessage">
+                        <label class="mdl-textfield__label" for="userMessage">Type your question in any language...</label>
+                    </div>
+                    <button type="submit" class="mdl-button mdl-js-button mdl-button--fab mdl-button--colored">
+                        <i class="material-icons">send</i>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.learning-path-container {
+    padding: 20px;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.header-card {
+    margin-bottom: 20px;
+}
+
+.upload-card, .chat-card {
+    min-height: 600px;
+    height: calc(100vh - 200px);
+    display: flex;
+    flex-direction: column;
+}
+
+.file-upload-container {
+    margin-bottom: 20px;
+}
+
+.file-upload-label {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    border: 2px dashed #3f51b5;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.file-upload-label:hover {
+    background-color: #f5f5f5;
+}
+
+.file-upload-label i {
+    margin-right: 10px;
+    color: #3f51b5;
+}
+
+.file-list {
+    margin-top: 10px;
+    max-height: 100px;
+    overflow-y: auto;
+}
+
+.file-list-item {
+    display: flex;
+    align-items: center;
+    padding: 5px;
+    background-color: #f5f5f5;
+    margin: 5px 0;
+    border-radius: 4px;
+}
+
+.file-list-item i {
+    margin-right: 5px;
+    color: #3f51b5;
+}
+
+.upload-button {
+    width: 100%;
+    margin-top: 10px;
+}
+
+.upload-status {
+    margin-top: 10px;
+    padding: 10px;
+    border-radius: 4px;
+}
+
+.processed-files {
+    margin-top: 20px;
+    padding: 10px;
+    background-color: #f5f5f5;
+    border-radius: 4px;
+    flex-grow: 1;
+    overflow-y: auto;
+}
+
+.processed-files h4 {
+    margin: 0 0 10px 0;
+    color: #333;
+    display: flex;
+    align-items: center;
+}
+
+.processed-files h4 i {
+    margin-right: 5px;
+}
+
+.chat-messages {
+    height: calc(100% - 80px);
+    overflow-y: auto;
+    padding: 10px;
+    background-color: #f5f5f5;
+    border-radius: 4px;
+    margin-bottom: 10px;
+}
+
+.message {
+    margin: 10px 0;
+    max-width: 80%;
+}
+
+.user-message {
+    margin-left: auto;
+}
+
+.assistant-message {
+    margin-right: auto;
+}
+
+.message-content {
+    padding: 10px 15px;
+    border-radius: 15px;
+    position: relative;
+}
+
+.user-message .message-content {
+    background-color: #3f51b5;
+    color: white;
+}
+
+.assistant-message .message-content {
+    background-color: white;
+    border: 1px solid #e0e0e0;
+}
+
+.message-header {
+    font-size: 0.8em;
+    margin-bottom: 5px;
+    opacity: 0.8;
+    display: flex;
+    align-items: center;
+}
+
+.message-header i {
+    font-size: 16px;
+    margin-right: 5px;
+}
+
+.chat-form {
+    display: flex;
+    gap: 10px;
+    align-items: flex-end;
+    padding: 10px;
+    background-color: white;
+    border-radius: 4px;
+}
+
+.mdl-textfield {
+    flex-grow: 1;
+    margin: 0;
+}
+
+.mdl-button--fab {
+    background-color: #4CAF50 !important;
+}
+
+.mdl-button--fab:hover {
+    background-color: #45a049 !important;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
+.upload-details {
+    margin-top: 20px;
+    padding: 15px;
+    background-color: #f5f5f5;
+    border-radius: 4px;
+}
+
+.upload-summary {
+    margin-bottom: 15px;
+}
+
+.upload-summary h5 {
+    margin: 0 0 10px 0;
+    color: #333;
+}
+
+.upload-statistics {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+}
+
+.stat-item {
+    display: flex;
+    align-items: center;
+    padding: 8px;
+    background: white;
+    border-radius: 4px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.stat-item i {
+    margin-right: 8px;
+}
+
+.stat-item.total {
+    grid-column: 1 / -1;
+    background-color: #e3f2fd;
+}
+
+.stat-item i.material-icons {
+    font-size: 20px;
+}
+
+.stat-item:nth-child(1) i { color: #4CAF50; }
+.stat-item:nth-child(2) i { color: #FF9800; }
+.stat-item:nth-child(3) i { color: #f44336; }
+.stat-item.total i { color: #2196F3; }
+
+#uploadProgress {
+    margin-top: 10px;
+    padding: 10px;
+    background: white;
+    border-radius: 4px;
+    border-left: 4px solid #2196F3;
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const uploadForm = document.getElementById('uploadForm');
+    const chatForm = document.getElementById('chatForm');
+    const fileInput = document.getElementById('fileInput');
+    const fileList = document.getElementById('fileList');
+    const uploadStatus = document.getElementById('uploadStatus');
+    const chatMessages = document.getElementById('chatMessages');
+    const userMessage = document.getElementById('userMessage');
+    const processedFilesList = document.getElementById('processedFilesList');
+
+    // Handle file input change
+    fileInput.addEventListener('change', function() {
+        fileList.innerHTML = '';
+        Array.from(this.files).forEach(file => {
+            const fileItem = document.createElement('div');
+            fileItem.className = 'file-list-item';
+            fileItem.innerHTML = `
+                <i class="material-icons">description</i>
+                <span>${file.name}</span>
+            `;
+            fileList.appendChild(fileItem);
+        });
+    });
+
+    // Handle document upload
+    uploadForm.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        const formData = new FormData();
+        const files = fileInput.files;
+
+        if (files.length === 0) {
+            showUploadStatus('error', 'Please select at least one PDF file');
+            return;
+        }
+
+        for (let i = 0; i < files.length; i++) {
+            formData.append('file', files[i]);
+        }
+
+        try {
+            showUploadStatus('progress', `Uploading ${files.length} files...`);
+            
+            const response = await fetch('/learning_path/upload', {
+                method: 'POST',
+                body: formData
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                // Update upload status
+                showUploadStatus('success', data.message);
+                
+                // Show upload details
+                document.getElementById('uploadDetails').style.display = 'block';
+                document.getElementById('uploadProgress').textContent = data.message;
+                document.getElementById('processedCount').textContent = data.processed.count;
+                document.getElementById('skippedCount').textContent = data.skipped.count;
+                document.getElementById('failedCount').textContent = data.failed.count;
+                document.getElementById('totalDocuments').textContent = data.total_documents_available;
+
+                // Clear form
+                fileInput.value = '';
+                fileList.innerHTML = '';
+                
+                // Update processed files list
+                updateProcessedFilesList(data.processed.files);
+
+                // Show details for skipped/failed files if any
+                if (data.skipped.count > 0 || data.failed.count > 0) {
+                    let details = [];
+                    if (data.skipped.count > 0) {
+                        details.push(`Skipped files:\n${data.skipped.files.map(f => `${f.name} - ${f.reason}`).join('\n')}`);
+                    }
+                    if (data.failed.count > 0) {
+                        details.push(`Failed files:\n${data.failed.files.map(f => `${f.name} - ${f.error}`).join('\n')}`);
+                    }
+                    console.log(details.join('\n\n'));
+                }
+            } else {
+                showUploadStatus('error', data.error || 'Upload failed');
+                if (data.details) {
+                    console.error('Upload details:', data.details);
+                }
+            }
+        } catch (error) {
+            showUploadStatus('error', 'Error uploading files');
+            console.error('Upload error:', error);
+        }
+    });
+
+    // Handle chat messages
+    chatForm.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        const message = userMessage.value.trim();
+        if (!message) return;
+        
+        // Add user message to chat
+        addMessage('user', message);
+        userMessage.value = '';
+
+        try {
+            const response = await fetch('/learning_path/chat', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ message: message })
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                addMessage('assistant', data.response);
+            } else {
+                addMessage('assistant', data.error || 'Error getting response');
+            }
+        } catch (error) {
+            addMessage('assistant', 'Error connecting to server');
+            console.error('Chat error:', error);
+        }
+    });
+
+    function addMessage(role, content) {
+        const messageDiv = document.createElement('div');
+        messageDiv.className = `message ${role}-message`;
+        
+        const timestamp = new Date().toLocaleTimeString();
+        const icon = role === 'user' ? 'person' : 'smart_toy';
+        const name = role === 'user' ? 'You' : 'Assistant';
+        
+        messageDiv.innerHTML = `
+            <div class="message-content">
+                <div class="message-header">
+                    <i class="material-icons">${icon}</i>
+                    ${name} • ${timestamp}
+                </div>
+                ${content}
+            </div>
+        `;
+        
+        chatMessages.appendChild(messageDiv);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+
+    function showUploadStatus(type, message) {
+        const uploadStatus = document.getElementById('uploadStatus');
+        const icons = {
+            'success': 'check_circle',
+            'error': 'error',
+            'progress': 'cloud_upload'
+        };
+        const colors = {
+            'success': '#4CAF50',
+            'error': '#f44336',
+            'progress': '#2196F3'
+        };
+        
+        uploadStatus.innerHTML = `
+            <div style="color: ${colors[type]}; display: flex; align-items: center;">
+                <i class="material-icons" style="margin-right: 5px;">${icons[type]}</i>
+                ${message}
+            </div>
+        `;
+    }
+
+    function updateProcessedFilesList(files) {
+        const processedFilesList = document.getElementById('processedFilesList');
+        files.forEach(file => {
+            const li = document.createElement('li');
+            li.className = 'mdl-list__item';
+            li.innerHTML = `
+                <span class="mdl-list__item-primary-content">
+                    <i class="material-icons mdl-list__item-icon">description</i>
+                    ${file}
+                </span>
+            `;
+            processedFilesList.appendChild(li);
+        });
+    }
+});
+</script>
+{% endblock %}

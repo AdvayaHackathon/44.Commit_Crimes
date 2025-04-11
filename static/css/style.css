@@ -1,11 +1,106 @@
 /* General Styles */
-body {
+html, body {
+    height: 100%;
+    margin: 0;
     background-color: #f5f5f5;
     font-family: 'Roboto', 'Helvetica', 'Arial', sans-serif;
 }
 
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.mdl-layout {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.mdl-layout__content {
+    flex: 1 0 auto;
+}
+
 .page-content {
     padding: 24px;
+}
+
+/* Footer Styles */
+.site-footer {
+    flex-shrink: 0;
+    background-color: #333;
+    color: #fff;
+    padding: 30px 0 0 0;
+    margin-top: 30px;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.footer-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.footer-section {
+    flex: 1;
+    min-width: 200px;
+    margin: 0 15px 20px;
+    max-width: 25%;
+}
+
+.footer-section h3 {
+    color: #fff;
+    border-bottom: 2px solid #4285f4;
+    padding-bottom: 8px;
+    margin-bottom: 10px;
+    font-size: 16px;
+}
+
+.footer-section p {
+    margin-bottom: 8px;
+    line-height: 1.4;
+    color: #ccc;
+    font-size: 13px;
+}
+
+.map-container {
+    margin-top: 15px;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.newsletter-form {
+    display: flex;
+    flex-direction: column;
+}
+
+.newsletter-form input {
+    padding: 10px;
+    margin-bottom: 10px;
+    border: none;
+    border-radius: 4px;
+}
+
+.newsletter-form button {
+    align-self: flex-start;
+}
+
+.footer-bottom {
+    background-color: #222;
+    text-align: center;
+    padding: 10px 0;
+    margin-top: 15px;
+}
+
+.footer-bottom p {
+    margin: 0;
+    font-size: 14px;
 }
 
 /* Card Styles */
@@ -14,7 +109,11 @@ body {
 .register-card,
 .profile-card,
 .activity-card,
-.recent-activity-card {
+.recent-activity-card,
+.learning-plan-card,
+.notifications-card,
+.progress-card,
+.quick-access-card {
     width: 100%;
     min-height: 200px;
     margin-bottom: 24px;
@@ -109,4 +208,166 @@ body {
     font-size: 14px;
     color: #666;
     text-transform: uppercase;
+}
+
+/* Learning Platform Specific Styles */
+.motivation-quote {
+    padding: 16px;
+    margin-bottom: 16px;
+    background-color: #f9f9f9;
+    border-left: 4px solid #3f51b5;
+}
+
+.motivation-quote blockquote {
+    margin: 0;
+    font-style: italic;
+    color: #555;
+}
+
+.motivation-quote footer {
+    margin-top: 8px;
+    text-align: right;
+    color: #777;
+}
+
+.quick-access-item {
+    text-align: center;
+    margin-bottom: 16px;
+}
+
+.quick-access-item a {
+    width: 100%;
+    height: 100px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.quick-access-item a i {
+    font-size: 32px;
+    margin-bottom: 8px;
+}
+
+.mdl-progress {
+    margin-top: 8px;
+}
+
+/* Learning Content Styles */
+.content-card,
+.coach-card,
+.planner-card,
+.test-card,
+.feedback-card,
+.settings-card {
+    width: 100%;
+    min-height: 200px;
+    margin-bottom: 24px;
+}
+
+.content-navigation {
+    border-right: 1px solid #e0e0e0;
+    padding-right: 16px;
+}
+
+.content-navigation .mdl-list__item {
+    cursor: pointer;
+}
+
+.content-navigation .mdl-list__item:hover {
+    background-color: #f5f5f5;
+}
+
+.content-navigation .mdl-list__item--active {
+    background-color: #e8eaf6;
+    color: #3f51b5;
+}
+
+.content-main {
+    padding-left: 16px;
+}
+
+.content-image {
+    max-width: 100%;
+    height: auto;
+    margin-bottom: 16px;
+}
+
+.language-selector {
+    margin-bottom: 24px;
+}
+
+.settings-section {
+    margin-bottom: 32px;
+}
+
+.settings-section h4 {
+    margin-top: 0;
+    border-bottom: 1px solid #e0e0e0;
+    padding-bottom: 8px;
+}
+
+.test-question {
+    margin-bottom: 24px;
+    padding: 16px;
+    background-color: #f9f9f9;
+    border-radius: 4px;
+}
+
+.test-options {
+    margin-left: 16px;
+}
+
+.test-result {
+    margin-top: 16px;
+    padding: 16px;
+    background-color: #e8f5e9;
+    border-radius: 4px;
+}
+
+.feedback-form .mdl-textfield {
+    width: 100%;
+}
+
+.coach-message {
+    margin-bottom: 16px;
+    padding: 12px 16px;
+    border-radius: 4px;
+}
+
+.coach-message.user {
+    background-color: #e8eaf6;
+    margin-left: 32px;
+}
+
+.coach-message.ai {
+    background-color: #f5f5f5;
+    margin-right: 32px;
+}
+
+.coach-input {
+    display: flex;
+    margin-top: 16px;
+}
+
+.coach-input .mdl-textfield {
+    flex-grow: 1;
+    margin-right: 16px;
+}
+
+.planner-day {
+    margin-bottom: 24px;
+}
+
+.planner-day-header {
+    background-color: #3f51b5;
+    color: white;
+    padding: 8px 16px;
+    border-radius: 4px 4px 0 0;
+}
+
+.planner-day-content {
+    padding: 16px;
+    background-color: #f9f9f9;
+    border-radius: 0 0 4px 4px;
 }

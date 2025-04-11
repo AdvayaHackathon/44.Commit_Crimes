@@ -1,14 +1,26 @@
 {% extends "base.html" %}
 
-{% block title %}Dashboard | User Dashboard{% endblock %}
+{% block title %}Dashboard | Learning Platform{% endblock %}
 
 {% block content %}
 <div class="mdl-grid dashboard-container">
+    <!-- Welcome Card -->
+    <div class="mdl-cell mdl-cell--12-col">
+        <div class="mdl-card mdl-shadow--2dp welcome-card">
+            <div class="mdl-card__title">
+                <h2 class="mdl-card__title-text">Welcome, {{ current_user.username }}!</h2>
+            </div>
+            <div class="mdl-card__supporting-text">
+                <p>Welcome to your personalized learning dashboard. Here you can track your progress, view your daily learning plan, and access all learning resources.</p>
+            </div>
+        </div>
+    </div>
+
     <!-- User Profile Card -->
     <div class="mdl-cell mdl-cell--4-col">
         <div class="mdl-card mdl-shadow--2dp profile-card">
             <div class="mdl-card__title">
-                <h2 class="mdl-card__title-text">Profile</h2>
+                <h2 class="mdl-card__title-text">My Profile</h2>
             </div>
             <div class="mdl-card__supporting-text">
                 <div class="profile-avatar">
@@ -17,69 +29,200 @@
                 <div class="profile-info">
                     <h4>{{ current_user.username }}</h4>
                     <p>{{ current_user.email }}</p>
+                    <p>Learning Level: Beginner</p>
                 </div>
             </div>
             <div class="mdl-card__actions mdl-card--border">
-                <a class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">
-                    Edit Profile
+                <a href="{{ url_for('settings') }}" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">
+                    <i class="material-icons">edit</i> Edit Profile
                 </a>
             </div>
         </div>
     </div>
-    
-    <!-- Activity Summary Card -->
+
+    <!-- Today's Learning Plan -->
     <div class="mdl-cell mdl-cell--8-col">
-        <div class="mdl-card mdl-shadow--2dp activity-card">
+        <div class="mdl-card mdl-shadow--2dp learning-plan-card">
             <div class="mdl-card__title">
-                <h2 class="mdl-card__title-text">Activity Summary</h2>
-            </div>
-            <div class="mdl-card__supporting-text">
-                <div class="mdl-grid">
-                    <div class="mdl-cell mdl-cell--4-col stat-box">
-                        <div class="stat-value">0</div>
-                        <div class="stat-label">Projects</div>
-                    </div>
-                    <div class="mdl-cell mdl-cell--4-col stat-box">
-                        <div class="stat-value">0</div>
-                        <div class="stat-label">Tasks</div>
-                    </div>
-                    <div class="mdl-cell mdl-cell--4-col stat-box">
-                        <div class="stat-value">0</div>
-                        <div class="stat-label">Messages</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    
-    <!-- Recent Activity Card -->
-    <div class="mdl-cell mdl-cell--12-col">
-        <div class="mdl-card mdl-shadow--2dp recent-activity-card">
-            <div class="mdl-card__title">
-                <h2 class="mdl-card__title-text">Recent Activity</h2>
+                <h2 class="mdl-card__title-text">Today's Learning Plan</h2>
             </div>
             <div class="mdl-card__supporting-text">
                 <ul class="mdl-list">
                     <li class="mdl-list__item mdl-list__item--two-line">
                         <span class="mdl-list__item-primary-content">
-                            <i class="material-icons mdl-list__item-avatar">person</i>
-                            <span>Welcome to your dashboard</span>
-                            <span class="mdl-list__item-sub-title">Just now</span>
+                            <i class="material-icons mdl-list__item-avatar">school</i>
+                            <span>Mathematics: Algebra Basics</span>
+                            <span class="mdl-list__item-sub-title">9:00 AM - 10:30 AM</span>
+                        </span>
+                        <span class="mdl-list__item-secondary-content">
+                            <a class="mdl-list__item-secondary-action" href="{{ url_for('content') }}"><i class="material-icons">play_circle_outline</i></a>
                         </span>
                     </li>
                     <li class="mdl-list__item mdl-list__item--two-line">
                         <span class="mdl-list__item-primary-content">
-                            <i class="material-icons mdl-list__item-avatar">account_circle</i>
-                            <span>Account created</span>
-                            <span class="mdl-list__item-sub-title">Today</span>
+                            <i class="material-icons mdl-list__item-avatar">language</i>
+                            <span>English: Grammar Essentials</span>
+                            <span class="mdl-list__item-sub-title">11:00 AM - 12:30 PM</span>
+                        </span>
+                        <span class="mdl-list__item-secondary-content">
+                            <a class="mdl-list__item-secondary-action" href="{{ url_for('content') }}"><i class="material-icons">play_circle_outline</i></a>
+                        </span>
+                    </li>
+                    <li class="mdl-list__item mdl-list__item--two-line">
+                        <span class="mdl-list__item-primary-content">
+                            <i class="material-icons mdl-list__item-avatar">science</i>
+                            <span>Science: Introduction to Physics</span>
+                            <span class="mdl-list__item-sub-title">2:00 PM - 3:30 PM</span>
+                        </span>
+                        <span class="mdl-list__item-secondary-content">
+                            <a class="mdl-list__item-secondary-action" href="{{ url_for('content') }}"><i class="material-icons">play_circle_outline</i></a>
                         </span>
                     </li>
                 </ul>
             </div>
             <div class="mdl-card__actions mdl-card--border">
-                <a class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">
-                    View All Activity
+                <a href="{{ url_for('planner') }}" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">
+                    <i class="material-icons">event_note</i> View Full Schedule
                 </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Daily Notifications & Motivation -->
+    <div class="mdl-cell mdl-cell--6-col">
+        <div class="mdl-card mdl-shadow--2dp notifications-card">
+            <div class="mdl-card__title">
+                <h2 class="mdl-card__title-text">Daily Notifications & Motivation</h2>
+            </div>
+            <div class="mdl-card__supporting-text">
+                <div class="motivation-quote">
+                    <blockquote>
+                        "The beautiful thing about learning is that no one can take it away from you."
+                        <footer>— B.B. King</footer>
+                    </blockquote>
+                </div>
+                <ul class="mdl-list">
+                    <li class="mdl-list__item mdl-list__item--two-line">
+                        <span class="mdl-list__item-primary-content">
+                            <i class="material-icons mdl-list__item-avatar">notifications</i>
+                            <span>Weekly test scheduled for Friday</span>
+                            <span class="mdl-list__item-sub-title">2 days remaining</span>
+                        </span>
+                    </li>
+                    <li class="mdl-list__item mdl-list__item--two-line">
+                        <span class="mdl-list__item-primary-content">
+                            <i class="material-icons mdl-list__item-avatar">emoji_events</i>
+                            <span>You've completed 3 days streak!</span>
+                            <span class="mdl-list__item-sub-title">Keep going!</span>
+                        </span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Progress Tracking -->
+    <div class="mdl-cell mdl-cell--6-col">
+        <div class="mdl-card mdl-shadow--2dp progress-card">
+            <div class="mdl-card__title">
+                <h2 class="mdl-card__title-text">Progress Tracking</h2>
+            </div>
+            <div class="mdl-card__supporting-text">
+                <div class="mdl-grid">
+                    <div class="mdl-cell mdl-cell--6-col stat-box">
+                        <div class="stat-value">75%</div>
+                        <div class="stat-label">Mathematics</div>
+                        <div class="mdl-progress mdl-js-progress" style="width: 100%;"></div>
+                        <script>
+                            document.querySelector('.mdl-progress').addEventListener('mdl-componentupgraded', function() {
+                                this.MaterialProgress.setProgress(75);
+                            });
+                        </script>
+                    </div>
+                    <div class="mdl-cell mdl-cell--6-col stat-box">
+                        <div class="stat-value">60%</div>
+                        <div class="stat-label">English</div>
+                        <div class="mdl-progress mdl-js-progress" style="width: 100%;"></div>
+                        <script>
+                            document.querySelectorAll('.mdl-progress')[1].addEventListener('mdl-componentupgraded', function() {
+                                this.MaterialProgress.setProgress(60);
+                            });
+                        </script>
+                    </div>
+                    <div class="mdl-cell mdl-cell--6-col stat-box">
+                        <div class="stat-value">40%</div>
+                        <div class="stat-label">Science</div>
+                        <div class="mdl-progress mdl-js-progress" style="width: 100%;"></div>
+                        <script>
+                            document.querySelectorAll('.mdl-progress')[2].addEventListener('mdl-componentupgraded', function() {
+                                this.MaterialProgress.setProgress(40);
+                            });
+                        </script>
+                    </div>
+                    <div class="mdl-cell mdl-cell--6-col stat-box">
+                        <div class="stat-value">85%</div>
+                        <div class="stat-label">History</div>
+                        <div class="mdl-progress mdl-js-progress" style="width: 100%;"></div>
+                        <script>
+                            document.querySelectorAll('.mdl-progress')[3].addEventListener('mdl-componentupgraded', function() {
+                                this.MaterialProgress.setProgress(85);
+                            });
+                        </script>
+                    </div>
+                </div>
+            </div>
+            <div class="mdl-card__actions mdl-card--border">
+                <a href="{{ url_for('test') }}" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">
+                    <i class="material-icons">assessment</i> View Detailed Analytics
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Access Links -->
+    <div class="mdl-cell mdl-cell--12-col">
+        <div class="mdl-card mdl-shadow--2dp quick-access-card">
+            <div class="mdl-card__title">
+                <h2 class="mdl-card__title-text">Quick Access</h2>
+            </div>
+            <div class="mdl-card__supporting-text">
+                <div class="mdl-grid">
+                    <div class="mdl-cell mdl-cell--3-col quick-access-item">
+                        <a href="{{ url_for('learning_path') }}" class="mdl-button mdl-js-button mdl-button--raised mdl-button--accent">
+                            <i class="material-icons">school</i>Learning Path
+                        </a>
+                    </div>
+                    <div class="mdl-cell mdl-cell--3-col quick-access-item">
+                        <a href="{{ url_for('coach') }}" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored">
+                            <i class="material-icons">person</i>Personal Coach
+                        </a>
+                    </div>
+                    <div class="mdl-cell mdl-cell--3-col quick-access-item">
+                        <a href="{{ url_for('content') }}" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored">
+                            <i class="material-icons">book</i>Daily Content
+                        </a>
+                    </div>
+                    <div class="mdl-cell mdl-cell--3-col quick-access-item">
+                        <a href="{{ url_for('test') }}" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored">
+                            <i class="material-icons">assignment</i>Test & Analysis
+                        </a>
+                    </div>
+                    <div class="mdl-cell mdl-cell--3-col quick-access-item">
+                        <a href="{{ url_for('planner') }}" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored">
+                            <i class="material-icons">event_note</i>Planner
+                        </a>
+                    </div>
+                    <div class="mdl-cell mdl-cell--3-col quick-access-item">
+                        <a href="{{ url_for('feedback') }}" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored">
+                            <i class="material-icons">feedback</i>Feedback
+                        </a>
+                    </div>
+                    <div class="mdl-cell mdl-cell--3-col quick-access-item">
+                        <a href="{{ url_for('settings') }}" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored">
+                            <i class="material-icons">settings</i>Settings
+                        </a>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

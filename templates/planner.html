@@ -1,0 +1,227 @@
+{% extends "base.html" %}
+
+{% block title %}Learning Planner | Learning Platform{% endblock %}
+
+{% block content %}
+<div class="mdl-grid dashboard-container">
+    <!-- Planner Header Card -->
+    <div class="mdl-cell mdl-cell--12-col">
+        <div class="mdl-card mdl-shadow--2dp planner-card">
+            <div class="mdl-card__title">
+                <h2 class="mdl-card__title-text">Your Learning Planner</h2>
+            </div>
+            <div class="mdl-card__supporting-text">
+                <p>Welcome to your personalized learning planner. Here you can view, edit, and manage your study schedule to optimize your learning journey.</p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Planner Controls Card -->
+    <div class="mdl-cell mdl-cell--12-col">
+        <div class="mdl-card mdl-shadow--2dp planner-card">
+            <div class="mdl-card__title">
+                <h2 class="mdl-card__title-text">Planner Controls</h2>
+            </div>
+            <div class="mdl-card__supporting-text">
+                <div class="mdl-grid">
+                    <div class="mdl-cell mdl-cell--4-col">
+                        <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored">
+                            <i class="material-icons">add</i> Add New Task
+                        </button>
+                    </div>
+                    <div class="mdl-cell mdl-cell--4-col">
+                        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect">
+                            <i class="material-icons">autorenew</i> Generate Optimal Schedule
+                        </button>
+                    </div>
+                    <div class="mdl-cell mdl-cell--4-col">
+                        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                            <input class="mdl-textfield__input" type="text" id="week-selector">
+                            <label class="mdl-textfield__label" for="week-selector">Week of May 15, 2023</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Weekly Planner Card -->
+    <div class="mdl-cell mdl-cell--12-col">
+        <div class="mdl-card mdl-shadow--2dp planner-card">
+            <div class="mdl-card__title">
+                <h2 class="mdl-card__title-text">Weekly Schedule</h2>
+            </div>
+            <div class="mdl-card__supporting-text">
+                <!-- Monday -->
+                <div class="planner-day">
+                    <div class="planner-day-header">
+                        <h4>Monday</h4>
+                    </div>
+                    <div class="planner-day-content">
+                        <ul class="mdl-list">
+                            <li class="mdl-list__item mdl-list__item--two-line">
+                                <span class="mdl-list__item-primary-content">
+                                    <i class="material-icons mdl-list__item-avatar">functions</i>
+                                    <span>Mathematics: Algebra Basics</span>
+                                    <span class="mdl-list__item-sub-title">9:00 AM - 10:30 AM</span>
+                                </span>
+                                <span class="mdl-list__item-secondary-content">
+                                    <a class="mdl-list__item-secondary-action" href="#"><i class="material-icons">edit</i></a>
+                                </span>
+                            </li>
+                            <li class="mdl-list__item mdl-list__item--two-line">
+                                <span class="mdl-list__item-primary-content">
+                                    <i class="material-icons mdl-list__item-avatar">science</i>
+                                    <span>Science: Physics Fundamentals</span>
+                                    <span class="mdl-list__item-sub-title">11:00 AM - 12:30 PM</span>
+                                </span>
+                                <span class="mdl-list__item-secondary-content">
+                                    <a class="mdl-list__item-secondary-action" href="#"><i class="material-icons">edit</i></a>
+                                </span>
+                            </li>
+                            <li class="mdl-list__item mdl-list__item--two-line">
+                                <span class="mdl-list__item-primary-content">
+                                    <i class="material-icons mdl-list__item-avatar">history</i>
+                                    <span>History: Ancient Civilizations</span>
+                                    <span class="mdl-list__item-sub-title">2:00 PM - 3:30 PM</span>
+                                </span>
+                                <span class="mdl-list__item-secondary-content">
+                                    <a class="mdl-list__item-secondary-action" href="#"><i class="material-icons">edit</i></a>
+                                </span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <!-- Tuesday -->
+                <div class="planner-day">
+                    <div class="planner-day-header">
+                        <h4>Tuesday</h4>
+                    </div>
+                    <div class="planner-day-content">
+                        <ul class="mdl-list">
+                            <li class="mdl-list__item mdl-list__item--two-line">
+                                <span class="mdl-list__item-primary-content">
+                                    <i class="material-icons mdl-list__item-avatar">language</i>
+                                    <span>English: Grammar Essentials</span>
+                                    <span class="mdl-list__item-sub-title">9:00 AM - 10:30 AM</span>
+                                </span>
+                                <span class="mdl-list__item-secondary-content">
+                                    <a class="mdl-list__item-secondary-action" href="#"><i class="material-icons">edit</i></a>
+                                </span>
+                            </li>
+                            <li class="mdl-list__item mdl-list__item--two-line">
+                                <span class="mdl-list__item-primary-content">
+                                    <i class="material-icons mdl-list__item-avatar">public</i>
+                                    <span>Geography: World Continents</span>
+                                    <span class="mdl-list__item-sub-title">11:00 AM - 12:30 PM</span>
+                                </span>
+                                <span class="mdl-list__item-secondary-content">
+                                    <a class="mdl-list__item-secondary-action" href="#"><i class="material-icons">edit</i></a>
+                                </span>
+                            </li>
+                            <li class="mdl-list__item mdl-list__item--two-line">
+                                <span class="mdl-list__item-primary-content">
+                                    <i class="material-icons mdl-list__item-avatar">functions</i>
+                                    <span>Mathematics: Practice Problems</span>
+                                    <span class="mdl-list__item-sub-title">2:00 PM - 3:30 PM</span>
+                                </span>
+                                <span class="mdl-list__item-secondary-content">
+                                    <a class="mdl-list__item-secondary-action" href="#"><i class="material-icons">edit</i></a>
+                                </span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <!-- Wednesday -->
+                <div class="planner-day">
+                    <div class="planner-day-header">
+                        <h4>Wednesday</h4>
+                    </div>
+                    <div class="planner-day-content">
+                        <ul class="mdl-list">
+                            <li class="mdl-list__item mdl-list__item--two-line">
+                                <span class="mdl-list__item-primary-content">
+                                    <i class="material-icons mdl-list__item-avatar">science</i>
+                                    <span>Science: Chemistry Basics</span>
+                                    <span class="mdl-list__item-sub-title">9:00 AM - 10:30 AM</span>
+                                </span>
+                                <span class="mdl-list__item-secondary-content">
+                                    <a class="mdl-list__item-secondary-action" href="#"><i class="material-icons">edit</i></a>
+                                </span>
+                            </li>
+                            <li class="mdl-list__item mdl-list__item--two-line">
+                                <span class="mdl-list__item-primary-content">
+                                    <i class="material-icons mdl-list__item-avatar">history</i>
+                                    <span>History: Medieval Period</span>
+                                    <span class="mdl-list__item-sub-title">11:00 AM - 12:30 PM</span>
+                                </span>
+                                <span class="mdl-list__item-secondary-content">
+                                    <a class="mdl-list__item-secondary-action" href="#"><i class="material-icons">edit</i></a>
+                                </span>
+                            </li>
+                            <li class="mdl-list__item mdl-list__item--two-line">
+                                <span class="mdl-list__item-primary-content">
+                                    <i class="material-icons mdl-list__item-avatar">language</i>
+                                    <span>English: Essay Writing</span>
+                                    <span class="mdl-list__item-sub-title">2:00 PM - 3:30 PM</span>
+                                </span>
+                                <span class="mdl-list__item-secondary-content">
+                                    <a class="mdl-list__item-secondary-action" href="#"><i class="material-icons">edit</i></a>
+                                </span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="mdl-card__actions mdl-card--border">
+                <a href="{{ url_for('dashboard') }}" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">
+                    <i class="material-icons">dashboard</i> Back to Dashboard
+                </a>
+                <div class="mdl-layout-spacer"></div>
+                <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored">
+                    <i class="material-icons">save</i> Save Changes
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Study Tips Card -->
+    <div class="mdl-cell mdl-cell--12-col">
+        <div class="mdl-card mdl-shadow--2dp planner-card">
+            <div class="mdl-card__title">
+                <h2 class="mdl-card__title-text">Study Tips</h2>
+            </div>
+            <div class="mdl-card__supporting-text">
+                <div class="mdl-grid">
+                    <div class="mdl-cell mdl-cell--4-col">
+                        <h4><i class="material-icons">schedule</i> Time Management</h4>
+                        <ul>
+                            <li>Study in 25-minute focused sessions (Pomodoro Technique)</li>
+                            <li>Take short 5-minute breaks between sessions</li>
+                            <li>After 4 sessions, take a longer 15-30 minute break</li>
+                        </ul>
+                    </div>
+                    <div class="mdl-cell mdl-cell--4-col">
+                        <h4><i class="material-icons">psychology</i> Effective Learning</h4>
+                        <ul>
+                            <li>Review material within 24 hours of learning it</li>
+                            <li>Teach concepts to someone else to reinforce understanding</li>
+                            <li>Connect new information to things you already know</li>
+                        </ul>
+                    </div>
+                    <div class="mdl-cell mdl-cell--4-col">
+                        <h4><i class="material-icons">self_improvement</i> Wellness</h4>
+                        <ul>
+                            <li>Get 7-9 hours of sleep each night</li>
+                            <li>Stay hydrated throughout your study sessions</li>
+                            <li>Take regular physical activity breaks</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

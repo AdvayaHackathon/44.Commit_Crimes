@@ -3,23 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}User Dashboard{% endblock %}</title>
-    
+    <title>{% block title %}Learning Platform{% endblock %}</title>
+
     <!-- Google Material Design Lite -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-pink.min.css">
     <script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
-    
+
+    <!-- Font Awesome for social icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
     <!-- Custom CSS -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-    
+
     {% block head %}{% endblock %}
 </head>
 <body>
     <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
         <header class="mdl-layout__header">
             <div class="mdl-layout__header-row">
-                <span class="mdl-layout-title">User Dashboard</span>
+                <span class="mdl-layout-title">Learning Platform</span>
                 <div class="mdl-layout-spacer"></div>
                 <nav class="mdl-navigation mdl-layout--large-screen-only">
                     <a class="mdl-navigation__link" href="{{ url_for('index') }}">Home</a>
@@ -34,11 +37,18 @@
             </div>
         </header>
         <div class="mdl-layout__drawer">
-            <span class="mdl-layout-title">User Dashboard</span>
+            <span class="mdl-layout-title">Learning Platform</span>
             <nav class="mdl-navigation">
                 <a class="mdl-navigation__link" href="{{ url_for('index') }}">Home</a>
                 {% if current_user.is_authenticated %}
                     <a class="mdl-navigation__link" href="{{ url_for('dashboard') }}">Dashboard</a>
+                    <a class="mdl-navigation__link" href="{{ url_for('learning_path') }}"><i class="material-icons">school</i> Learning Path</a>
+                    <a class="mdl-navigation__link" href="{{ url_for('coach') }}"><i class="material-icons">person</i> Personal Coach</a>
+                    <a class="mdl-navigation__link" href="{{ url_for('content') }}"><i class="material-icons">book</i> Daily Content</a>
+                    <a class="mdl-navigation__link" href="{{ url_for('planner') }}"><i class="material-icons">event_note</i> Planner</a>
+                    <a class="mdl-navigation__link" href="{{ url_for('test') }}"><i class="material-icons">assignment</i> Test & Analysis</a>
+                    <a class="mdl-navigation__link" href="{{ url_for('feedback') }}"><i class="material-icons">feedback</i> Feedback</a>
+                    <a class="mdl-navigation__link" href="{{ url_for('settings') }}"><i class="material-icons">settings</i> Settings</a>
                     <a class="mdl-navigation__link" href="{{ url_for('logout') }}">Logout</a>
                 {% else %}
                     <a class="mdl-navigation__link" href="{{ url_for('login') }}">Login</a>
@@ -59,23 +69,51 @@
                                 {% endfor %}
                             {% endif %}
                         {% endwith %}
-                        
+
                         {% block content %}{% endblock %}
                     </div>
                 </div>
             </div>
         </main>
-        <footer class="mdl-mini-footer">
-            <div class="mdl-mini-footer__left-section">
-                <div class="mdl-logo">User Dashboard</div>
-                <ul class="mdl-mini-footer__link-list">
-                    <li><a href="#">Help</a></li>
-                    <li><a href="#">Privacy & Terms</a></li>
-                </ul>
+        <footer class="site-footer">
+            <div class="footer-container">
+                <div class="footer-section">
+                    <h3>About Us</h3>
+                    <p>We are a leading company in our industry, committed to providing top-notch services and products to our clients worldwide.</p>
+                </div>
+
+                <div class="footer-section">
+                    <h3>Contact Us</h3>
+                    <p>Email: info@yourcompany.com</p>
+                    <p>Phone: +1 (555) 123-4567</p>
+                </div>
+
+                <div class="footer-section">
+                    <h3>Visit Us</h3>
+                    <div class="map-container">
+                        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d62121.548457951256!2d75.7312487752723!3d13.313109880678933!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bbad762c8a889dd%3A0xb3cf49155294be16!2sChikkamagaluru%2C%20Karnataka!5e0!3m2!1sen!2sin!4v1744374892930!5m2!1sen!2sin" width="100%" height="120" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                    </div>
+                </div>
+
+                <div class="footer-section">
+                    <h3>Newsletter</h3>
+                    <p>Subscribe to our newsletter to stay updated on our latest news and offers.</p>
+                    <div class="newsletter-form">
+                        <input type="email" placeholder="Enter your email">
+                        <button type="submit" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored">Subscribe</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <p>&copy; Commit Crimes. All rights reserved.</p>
+                <script>
+                    document.getElementById('year').innerHTML = new Date().getFullYear();
+                </script>
             </div>
         </footer>
     </div>
-    
+
     {% block scripts %}{% endblock %}
 </body>
 </html>

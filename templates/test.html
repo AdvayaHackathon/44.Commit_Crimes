@@ -1,0 +1,314 @@
+{% extends "base.html" %}
+
+{% block title %}Test & Analysis | Learning Platform{% endblock %}
+
+{% block content %}
+<div class="mdl-grid dashboard-container">
+    <!-- Test Header Card -->
+    <div class="mdl-cell mdl-cell--12-col">
+        <div class="mdl-card mdl-shadow--2dp test-card">
+            <div class="mdl-card__title">
+                <h2 class="mdl-card__title-text">Test & Analysis</h2>
+            </div>
+            <div class="mdl-card__supporting-text">
+                <p>Welcome to the testing center. Here you can take practice tests, quizzes, and assessments to evaluate your understanding and track your progress.</p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Available Tests Card -->
+    <div class="mdl-cell mdl-cell--6-col">
+        <div class="mdl-card mdl-shadow--2dp test-card">
+            <div class="mdl-card__title">
+                <h2 class="mdl-card__title-text">Available Tests</h2>
+            </div>
+            <div class="mdl-card__supporting-text">
+                <ul class="mdl-list">
+                    <li class="mdl-list__item mdl-list__item--two-line">
+                        <span class="mdl-list__item-primary-content">
+                            <i class="material-icons mdl-list__item-avatar">functions</i>
+                            <span>Mathematics: Algebra Quiz</span>
+                            <span class="mdl-list__item-sub-title">10 questions • 15 minutes</span>
+                        </span>
+                        <span class="mdl-list__item-secondary-content">
+                            <a class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">
+                                Start
+                            </a>
+                        </span>
+                    </li>
+                    <li class="mdl-list__item mdl-list__item--two-line">
+                        <span class="mdl-list__item-primary-content">
+                            <i class="material-icons mdl-list__item-avatar">language</i>
+                            <span>English: Grammar Assessment</span>
+                            <span class="mdl-list__item-sub-title">20 questions • 25 minutes</span>
+                        </span>
+                        <span class="mdl-list__item-secondary-content">
+                            <a class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">
+                                Start
+                            </a>
+                        </span>
+                    </li>
+                    <li class="mdl-list__item mdl-list__item--two-line">
+                        <span class="mdl-list__item-primary-content">
+                            <i class="material-icons mdl-list__item-avatar">science</i>
+                            <span>Science: Physics Fundamentals</span>
+                            <span class="mdl-list__item-sub-title">15 questions • 20 minutes</span>
+                        </span>
+                        <span class="mdl-list__item-secondary-content">
+                            <a class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">
+                                Start
+                            </a>
+                        </span>
+                    </li>
+                    <li class="mdl-list__item mdl-list__item--two-line">
+                        <span class="mdl-list__item-primary-content">
+                            <i class="material-icons mdl-list__item-avatar">public</i>
+                            <span>History: Ancient Civilizations</span>
+                            <span class="mdl-list__item-sub-title">25 questions • 30 minutes</span>
+                        </span>
+                        <span class="mdl-list__item-secondary-content">
+                            <a class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">
+                                Start
+                            </a>
+                        </span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Recent Results Card -->
+    <div class="mdl-cell mdl-cell--6-col">
+        <div class="mdl-card mdl-shadow--2dp test-card">
+            <div class="mdl-card__title">
+                <h2 class="mdl-card__title-text">Recent Results</h2>
+            </div>
+            <div class="mdl-card__supporting-text">
+                <ul class="mdl-list">
+                    <li class="mdl-list__item mdl-list__item--two-line">
+                        <span class="mdl-list__item-primary-content">
+                            <i class="material-icons mdl-list__item-avatar">functions</i>
+                            <span>Mathematics: Pre-Algebra</span>
+                            <span class="mdl-list__item-sub-title">Score: 85% • Completed: May 10, 2023</span>
+                        </span>
+                        <span class="mdl-list__item-secondary-content">
+                            <a class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">
+                                Review
+                            </a>
+                        </span>
+                    </li>
+                    <li class="mdl-list__item mdl-list__item--two-line">
+                        <span class="mdl-list__item-primary-content">
+                            <i class="material-icons mdl-list__item-avatar">language</i>
+                            <span>English: Vocabulary</span>
+                            <span class="mdl-list__item-sub-title">Score: 92% • Completed: May 8, 2023</span>
+                        </span>
+                        <span class="mdl-list__item-secondary-content">
+                            <a class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">
+                                Review
+                            </a>
+                        </span>
+                    </li>
+                    <li class="mdl-list__item mdl-list__item--two-line">
+                        <span class="mdl-list__item-primary-content">
+                            <i class="material-icons mdl-list__item-avatar">science</i>
+                            <span>Science: Biology Basics</span>
+                            <span class="mdl-list__item-sub-title">Score: 78% • Completed: May 5, 2023</span>
+                        </span>
+                        <span class="mdl-list__item-secondary-content">
+                            <a class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">
+                                Review
+                            </a>
+                        </span>
+                    </li>
+                    <li class="mdl-list__item mdl-list__item--two-line">
+                        <span class="mdl-list__item-primary-content">
+                            <i class="material-icons mdl-list__item-avatar">public</i>
+                            <span>Geography: World Capitals</span>
+                            <span class="mdl-list__item-sub-title">Score: 88% • Completed: May 3, 2023</span>
+                        </span>
+                        <span class="mdl-list__item-secondary-content">
+                            <a class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">
+                                Review
+                            </a>
+                        </span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Sample Test Card -->
+    <div class="mdl-cell mdl-cell--12-col">
+        <div class="mdl-card mdl-shadow--2dp test-card">
+            <div class="mdl-card__title">
+                <h2 class="mdl-card__title-text">Sample Test: Algebra Basics</h2>
+            </div>
+            <div class="mdl-card__supporting-text">
+                <div class="test-question">
+                    <h4>Question 1 of 10</h4>
+                    <p>Simplify the expression: 3x + 2y - 5x + 4y</p>
+                    <div class="test-options">
+                        <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="option-1">
+                            <input type="radio" id="option-1" class="mdl-radio__button" name="options" value="1">
+                            <span class="mdl-radio__label">-2x + 6y</span>
+                        </label><br>
+                        <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="option-2">
+                            <input type="radio" id="option-2" class="mdl-radio__button" name="options" value="2">
+                            <span class="mdl-radio__label">-2x + 2y</span>
+                        </label><br>
+                        <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="option-3">
+                            <input type="radio" id="option-3" class="mdl-radio__button" name="options" value="3">
+                            <span class="mdl-radio__label">8x + 6y</span>
+                        </label><br>
+                        <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="option-4">
+                            <input type="radio" id="option-4" class="mdl-radio__button" name="options" value="4" checked>
+                            <span class="mdl-radio__label">-2x + 6y</span>
+                        </label>
+                    </div>
+                    <div class="test-result">
+                        <p><strong>Correct!</strong> 3x + 2y - 5x + 4y = (3x - 5x) + (2y + 4y) = -2x + 6y</p>
+                    </div>
+                </div>
+                
+                <div class="test-question">
+                    <h4>Question 2 of 10</h4>
+                    <p>Solve for x: 2x + 5 = 15</p>
+                    <div class="test-options">
+                        <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="option2-1">
+                            <input type="radio" id="option2-1" class="mdl-radio__button" name="options2" value="1">
+                            <span class="mdl-radio__label">x = 5</span>
+                        </label><br>
+                        <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="option2-2">
+                            <input type="radio" id="option2-2" class="mdl-radio__button" name="options2" value="2">
+                            <span class="mdl-radio__label">x = 10</span>
+                        </label><br>
+                        <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="option2-3">
+                            <input type="radio" id="option2-3" class="mdl-radio__button" name="options2" value="3">
+                            <span class="mdl-radio__label">x = 7.5</span>
+                        </label><br>
+                        <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="option2-4">
+                            <input type="radio" id="option2-4" class="mdl-radio__button" name="options2" value="4">
+                            <span class="mdl-radio__label">x = 5.5</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="mdl-card__actions mdl-card--border">
+                <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect">
+                    <i class="material-icons">arrow_back</i> Previous
+                </button>
+                <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored mdl-js-ripple-effect">
+                    <i class="material-icons">arrow_forward</i> Next
+                </button>
+                <div class="mdl-layout-spacer"></div>
+                <a href="{{ url_for('dashboard') }}" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">
+                    <i class="material-icons">dashboard</i> Back to Dashboard
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Performance Analytics Card -->
+    <div class="mdl-cell mdl-cell--12-col">
+        <div class="mdl-card mdl-shadow--2dp test-card">
+            <div class="mdl-card__title">
+                <h2 class="mdl-card__title-text">Performance Analytics</h2>
+            </div>
+            <div class="mdl-card__supporting-text">
+                <div class="mdl-grid">
+                    <div class="mdl-cell mdl-cell--6-col">
+                        <h4>Subject Performance</h4>
+                        <div class="mdl-grid">
+                            <div class="mdl-cell mdl-cell--6-col stat-box">
+                                <div class="stat-value">85%</div>
+                                <div class="stat-label">Mathematics</div>
+                                <div class="mdl-progress mdl-js-progress" style="width: 100%;"></div>
+                                <script>
+                                    document.querySelector('.mdl-progress').addEventListener('mdl-componentupgraded', function() {
+                                        this.MaterialProgress.setProgress(85);
+                                    });
+                                </script>
+                            </div>
+                            <div class="mdl-cell mdl-cell--6-col stat-box">
+                                <div class="stat-value">92%</div>
+                                <div class="stat-label">English</div>
+                                <div class="mdl-progress mdl-js-progress" style="width: 100%;"></div>
+                                <script>
+                                    document.querySelectorAll('.mdl-progress')[1].addEventListener('mdl-componentupgraded', function() {
+                                        this.MaterialProgress.setProgress(92);
+                                    });
+                                </script>
+                            </div>
+                            <div class="mdl-cell mdl-cell--6-col stat-box">
+                                <div class="stat-value">78%</div>
+                                <div class="stat-label">Science</div>
+                                <div class="mdl-progress mdl-js-progress" style="width: 100%;"></div>
+                                <script>
+                                    document.querySelectorAll('.mdl-progress')[2].addEventListener('mdl-componentupgraded', function() {
+                                        this.MaterialProgress.setProgress(78);
+                                    });
+                                </script>
+                            </div>
+                            <div class="mdl-cell mdl-cell--6-col stat-box">
+                                <div class="stat-value">88%</div>
+                                <div class="stat-label">History</div>
+                                <div class="mdl-progress mdl-js-progress" style="width: 100%;"></div>
+                                <script>
+                                    document.querySelectorAll('.mdl-progress')[3].addEventListener('mdl-componentupgraded', function() {
+                                        this.MaterialProgress.setProgress(88);
+                                    });
+                                </script>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mdl-cell mdl-cell--6-col">
+                        <h4>Improvement Areas</h4>
+                        <ul class="mdl-list">
+                            <li class="mdl-list__item">
+                                <span class="mdl-list__item-primary-content">
+                                    <i class="material-icons mdl-list__item-icon">priority_high</i>
+                                    Science: Chemical Equations
+                                </span>
+                            </li>
+                            <li class="mdl-list__item">
+                                <span class="mdl-list__item-primary-content">
+                                    <i class="material-icons mdl-list__item-icon">priority_high</i>
+                                    Mathematics: Quadratic Equations
+                                </span>
+                            </li>
+                            <li class="mdl-list__item">
+                                <span class="mdl-list__item-primary-content">
+                                    <i class="material-icons mdl-list__item-icon">priority_high</i>
+                                    English: Complex Sentence Structures
+                                </span>
+                            </li>
+                        </ul>
+                        <h4>Strengths</h4>
+                        <ul class="mdl-list">
+                            <li class="mdl-list__item">
+                                <span class="mdl-list__item-primary-content">
+                                    <i class="material-icons mdl-list__item-icon">star</i>
+                                    English: Vocabulary
+                                </span>
+                            </li>
+                            <li class="mdl-list__item">
+                                <span class="mdl-list__item-primary-content">
+                                    <i class="material-icons mdl-list__item-icon">star</i>
+                                    Mathematics: Basic Algebra
+                                </span>
+                            </li>
+                            <li class="mdl-list__item">
+                                <span class="mdl-list__item-primary-content">
+                                    <i class="material-icons mdl-list__item-icon">star</i>
+                                    History: Ancient Civilizations
+                                </span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
