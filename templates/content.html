@@ -1,0 +1,193 @@
+{% extends "base.html" %}
+
+{% block title %}Daily Content | Learning Platform{% endblock %}
+
+{% block content %}
+<div class="mdl-grid dashboard-container">
+    <!-- Content Header Card -->
+    <div class="mdl-cell mdl-cell--12-col">
+        <div class="mdl-card mdl-shadow--2dp content-card">
+            <div class="mdl-card__title">
+                <h2 class="mdl-card__title-text">Daily Learning Content</h2>
+            </div>
+            <div class="mdl-card__supporting-text">
+                <p>Welcome to your personalized daily content. Here you'll find lessons, exercises, and resources tailored to your learning plan.</p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Content Navigation and Main Content -->
+    <div class="mdl-cell mdl-cell--3-col">
+        <div class="mdl-card mdl-shadow--2dp content-card">
+            <div class="mdl-card__title">
+                <h2 class="mdl-card__title-text">Subjects</h2>
+            </div>
+            <div class="mdl-card__supporting-text content-navigation">
+                <ul class="mdl-list">
+                    <li class="mdl-list__item mdl-list__item--active">
+                        <span class="mdl-list__item-primary-content">
+                            <i class="material-icons mdl-list__item-icon">functions</i>
+                            Mathematics
+                        </span>
+                    </li>
+                    <li class="mdl-list__item">
+                        <span class="mdl-list__item-primary-content">
+                            <i class="material-icons mdl-list__item-icon">language</i>
+                            English
+                        </span>
+                    </li>
+                    <li class="mdl-list__item">
+                        <span class="mdl-list__item-primary-content">
+                            <i class="material-icons mdl-list__item-icon">science</i>
+                            Science
+                        </span>
+                    </li>
+                    <li class="mdl-list__item">
+                        <span class="mdl-list__item-primary-content">
+                            <i class="material-icons mdl-list__item-icon">public</i>
+                            History
+                        </span>
+                    </li>
+                    <li class="mdl-list__item">
+                        <span class="mdl-list__item-primary-content">
+                            <i class="material-icons mdl-list__item-icon">palette</i>
+                            Arts
+                        </span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    
+    <div class="mdl-cell mdl-cell--9-col">
+        <div class="mdl-card mdl-shadow--2dp content-card">
+            <div class="mdl-card__title">
+                <h2 class="mdl-card__title-text">Mathematics: Algebra Basics</h2>
+            </div>
+            <div class="mdl-card__supporting-text content-main">
+                <h3>Introduction to Algebraic Expressions</h3>
+                
+                <p>Algebra is a branch of mathematics that uses symbols to represent quantities and express relationships. These symbols, often letters like x, y, and z, are called variables because their values can vary.</p>
+                
+                <div class="content-image">
+                    <img src="https://source.unsplash.com/random/800x400/?mathematics" alt="Mathematics illustration" style="width: 100%;">
+                </div>
+                
+                <h4>Key Concepts:</h4>
+                <ul>
+                    <li><strong>Variables:</strong> Symbols that represent unknown values</li>
+                    <li><strong>Constants:</strong> Fixed values that don't change</li>
+                    <li><strong>Expressions:</strong> Combinations of variables, constants, and operations</li>
+                    <li><strong>Equations:</strong> Statements that two expressions are equal</li>
+                </ul>
+                
+                <h4>Example:</h4>
+                <p>Consider the expression: 3x + 5</p>
+                <ul>
+                    <li>3 is a coefficient</li>
+                    <li>x is a variable</li>
+                    <li>5 is a constant</li>
+                    <li>The whole thing (3x + 5) is an expression</li>
+                </ul>
+                
+                <h4>Practice Problems:</h4>
+                <ol>
+                    <li>Identify the variables, coefficients, and constants in: 2y - 7</li>
+                    <li>Simplify the expression: 4x + 3x - 2</li>
+                    <li>If x = 3, what is the value of: 2x² + 4x - 1?</li>
+                </ol>
+            </div>
+            <div class="mdl-card__actions mdl-card--border">
+                <a href="#" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">
+                    <i class="material-icons">arrow_back</i> Previous Lesson
+                </a>
+                <a href="#" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">
+                    <i class="material-icons">arrow_forward</i> Next Lesson
+                </a>
+                <div class="mdl-layout-spacer"></div>
+                <a href="{{ url_for('test') }}" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">
+                    <i class="material-icons">assignment</i> Take Quiz
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Related Resources Card -->
+    <div class="mdl-cell mdl-cell--12-col">
+        <div class="mdl-card mdl-shadow--2dp content-card">
+            <div class="mdl-card__title">
+                <h2 class="mdl-card__title-text">Related Resources</h2>
+            </div>
+            <div class="mdl-card__supporting-text">
+                <div class="mdl-grid">
+                    <div class="mdl-cell mdl-cell--4-col">
+                        <h4><i class="material-icons">video_library</i> Video Tutorials</h4>
+                        <ul class="mdl-list">
+                            <li class="mdl-list__item">
+                                <span class="mdl-list__item-primary-content">
+                                    Introduction to Algebra
+                                </span>
+                            </li>
+                            <li class="mdl-list__item">
+                                <span class="mdl-list__item-primary-content">
+                                    Working with Variables
+                                </span>
+                            </li>
+                            <li class="mdl-list__item">
+                                <span class="mdl-list__item-primary-content">
+                                    Solving Simple Equations
+                                </span>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="mdl-cell mdl-cell--4-col">
+                        <h4><i class="material-icons">book</i> Reading Materials</h4>
+                        <ul class="mdl-list">
+                            <li class="mdl-list__item">
+                                <span class="mdl-list__item-primary-content">
+                                    Algebra Fundamentals
+                                </span>
+                            </li>
+                            <li class="mdl-list__item">
+                                <span class="mdl-list__item-primary-content">
+                                    History of Algebraic Notation
+                                </span>
+                            </li>
+                            <li class="mdl-list__item">
+                                <span class="mdl-list__item-primary-content">
+                                    Real-world Applications
+                                </span>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="mdl-cell mdl-cell--4-col">
+                        <h4><i class="material-icons">extension</i> Interactive Exercises</h4>
+                        <ul class="mdl-list">
+                            <li class="mdl-list__item">
+                                <span class="mdl-list__item-primary-content">
+                                    Expression Builder
+                                </span>
+                            </li>
+                            <li class="mdl-list__item">
+                                <span class="mdl-list__item-primary-content">
+                                    Equation Solver
+                                </span>
+                            </li>
+                            <li class="mdl-list__item">
+                                <span class="mdl-list__item-primary-content">
+                                    Algebra Games
+                                </span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="mdl-card__actions mdl-card--border">
+                <a href="{{ url_for('dashboard') }}" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">
+                    <i class="material-icons">dashboard</i> Back to Dashboard
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

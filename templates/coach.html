@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+
+{% block title %}Personal Coach | Learning Platform{% endblock %}
+
+{% block content %}
+<div class="mdl-grid dashboard-container">
+    <!-- Coach Header Card -->
+    <div class="mdl-cell mdl-cell--12-col">
+        <div class="mdl-card mdl-shadow--2dp coach-card">
+            <div class="mdl-card__title">
+                <h2 class="mdl-card__title-text">Your Personal AI Coach</h2>
+            </div>
+            <div class="mdl-card__supporting-text">
+                <p>Welcome to your personal AI coach! I'm here to help you with your learning journey. Ask me any questions about your studies, and I'll provide personalized guidance and support.</p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Coach Chat Card -->
+    <div class="mdl-cell mdl-cell--12-col">
+        <div class="mdl-card mdl-shadow--2dp coach-card">
+            <div class="mdl-card__title">
+                <h2 class="mdl-card__title-text">Coach Conversation</h2>
+            </div>
+            <div class="mdl-card__supporting-text">
+                <div class="coach-conversation">
+                    <div class="coach-message ai">
+                        <p><strong>AI Coach:</strong> Hello {{ current_user.username }}! How can I help you with your learning today?</p>
+                    </div>
+                    
+                    <div class="coach-message user">
+                        <p><strong>You:</strong> I'm having trouble understanding algebra concepts.</p>
+                    </div>
+                    
+                    <div class="coach-message ai">
+                        <p><strong>AI Coach:</strong> I understand that algebra can be challenging. Let's break it down into smaller parts. What specific concept are you struggling with? Is it solving equations, understanding variables, or something else?</p>
+                    </div>
+                    
+                    <div class="coach-input">
+                        <div class="mdl-textfield mdl-js-textfield">
+                            <input class="mdl-textfield__input" type="text" id="coach-message">
+                            <label class="mdl-textfield__label" for="coach-message">Type your message...</label>
+                        </div>
+                        <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored">
+                            <i class="material-icons">send</i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Coach Features Card -->
+    <div class="mdl-cell mdl-cell--12-col">
+        <div class="mdl-card mdl-shadow--2dp coach-card">
+            <div class="mdl-card__title">
+                <h2 class="mdl-card__title-text">Coach Features</h2>
+            </div>
+            <div class="mdl-card__supporting-text">
+                <div class="mdl-grid">
+                    <div class="mdl-cell mdl-cell--4-col">
+                        <h4><i class="material-icons">school</i> Learning Guidance</h4>
+                        <p>Get personalized help with any subject or topic you're studying.</p>
+                    </div>
+                    <div class="mdl-cell mdl-cell--4-col">
+                        <h4><i class="material-icons">schedule</i> Study Planning</h4>
+                        <p>Receive recommendations for optimizing your study schedule.</p>
+                    </div>
+                    <div class="mdl-cell mdl-cell--4-col">
+                        <h4><i class="material-icons">psychology</i> Learning Strategies</h4>
+                        <p>Learn effective techniques to improve your understanding and retention.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="mdl-card__actions mdl-card--border">
+                <a href="{{ url_for('dashboard') }}" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">
+                    <i class="material-icons">dashboard</i> Back to Dashboard
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
