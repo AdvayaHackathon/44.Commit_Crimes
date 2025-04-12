@@ -2,14 +2,18 @@ from fastapi import APIRouter, HTTPException, Request, Body
 from typing import List, Dict, Any
 from app.core.planner.test_planner import generate_test_plan
 from app.models.planner import PlannerRequest, PlannerResponse
+import os
+import json
+import glob
+from datetime import datetime
 
 router = APIRouter(
-    prefix="/api/planner",
+    prefix="/api",
     tags=["planner"],
     responses={404: {"description": "Not found"}},
 )
 
-@router.post("/", response_model=PlannerResponse)
+@router.post("/planner", response_model=PlannerResponse)
 async def create_test_plan(
     request: Request,
     planner_request: PlannerRequest = Body(...),
@@ -65,5 +69,41 @@ async def generate_daily_report(
             "message": "Daily report generated successfully",
             "report": report
         }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@router.get("/daily-content")
+async def get_daily_content():
+    try:
+        # Get the absolute path to the data/output directory
+        base_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+        output_dir = os.path.join(base_dir, 'data', 'output')
+        
+        # Get all daily content files
+        pattern = os.path.join(output_dir, 'daily_content_*.json')
+        matching_files = glob.glob(pattern)
+        
+        if not matching_files:
+            raise HTTPException(status_code=404, detail="No content found")
+        
+        # Get the most recent file
+        latest_file = max(matching_files, key=os.path.getctime)
+        
+        # Read the JSON content
+        with open(latest_file, 'r', encoding='utf-8') as f:
+            content = json.load(f)
+            
+            # Add metadata about the file
+            content['source_file'] = os.path.basename(latest_file)
+            return {
+                'status': 'success',
+                'data': content,
+                'file_info': {
+                    'name': os.path.basename(latest_file),
+                    'created': datetime.fromtimestamp(os.path.getctime(latest_file)).isoformat(),
+                    'path': latest_file
+                }
+            }
+                
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))

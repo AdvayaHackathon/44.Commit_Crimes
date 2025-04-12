@@ -1,30 +1,156 @@
 {% extends "base.html" %}
 
-{% block title %}Daily Content - Educational Content Analysis System{% endblock %}
+{% block title %}Daily Content - e-Gurukool{% endblock %}
+
+{% block head %}
+<style>
+    .planner-card {
+        background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+        border: 1px solid rgba(99, 102, 241, 0.1);
+        transition: all 0.3s ease;
+    }
+
+    .planner-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    .calendar-card {
+        background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+        border: 1px solid rgba(99, 102, 241, 0.1);
+        transition: all 0.3s ease;
+    }
+
+    .calendar-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    .day-card {
+        transition: all 0.3s ease;
+        border: 1px solid rgba(99, 102, 241, 0.1);
+    }
+
+    .day-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+    }
+
+    .nav-button {
+        transition: all 0.3s ease;
+        color: #6366f1;
+    }
+
+    .nav-button:hover {
+        color: #4f46e5;
+        transform: scale(1.1);
+    }
+
+    .calendar-day {
+        transition: all 0.3s ease;
+    }
+
+    .calendar-day:hover {
+        background-color: rgba(99, 102, 241, 0.1);
+    }
+
+    .calendar-day.has-content {
+        background-color: rgba(99, 102, 241, 0.05);
+    }
+
+    .calendar-day.has-content:hover {
+        background-color: rgba(99, 102, 241, 0.15);
+    }
+
+    .topic-tag {
+        background: rgba(99, 102, 241, 0.1);
+        color: #6366f1;
+        transition: all 0.3s ease;
+    }
+
+    .topic-tag:hover {
+        background: rgba(99, 102, 241, 0.2);
+    }
+
+    .time-allocation-item {
+        transition: all 0.3s ease;
+    }
+
+    .time-allocation-item:hover {
+        transform: translateX(5px);
+    }
+
+    .dark .planner-card {
+        background: linear-gradient(135deg, #1f2937 0%, #111827 100%);
+        border-color: rgba(99, 102, 241, 0.2);
+    }
+
+    .dark .calendar-card {
+        background: linear-gradient(135deg, #1f2937 0%, #111827 100%);
+        border-color: rgba(99, 102, 241, 0.2);
+    }
+
+    .dark .day-card {
+        background: #1f2937;
+        border-color: rgba(99, 102, 241, 0.2);
+    }
+
+    .dark .calendar-day.has-content {
+        background-color: rgba(99, 102, 241, 0.1);
+    }
+
+    .dark .calendar-day.has-content:hover {
+        background-color: rgba(99, 102, 241, 0.2);
+    }
+
+    .dark .topic-tag {
+        background: rgba(99, 102, 241, 0.2);
+        color: #a5b4fc;
+    }
+
+    .dark .topic-tag:hover {
+        background: rgba(99, 102, 241, 0.3);
+    }
+
+    .loading-spinner {
+        border: 3px solid #f3f4f6;
+        border-top: 3px solid #6366f1;
+        border-radius: 50%;
+        width: 20px;
+        height: 20px;
+        animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+</style>
+{% endblock %}
 
 {% block content %}
 <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
     <!-- Daily Content Calendar -->
-    <div class="md:col-span-2 bg-white rounded-lg shadow-md p-6">
-        <h2 class="text-2xl font-bold mb-4">Daily Content Calendar</h2>
-        <div id="content-info" class="mb-4 text-sm text-gray-600"></div>
-
-        <div class="mb-6">
-            <div class="flex justify-between items-center mb-4">
-                <button id="prev-month" class="text-indigo-600 hover:text-indigo-800">
+    <div class="md:col-span-2 planner-card rounded-xl shadow-lg p-6">
+        <div class="flex justify-between items-center mb-6">
+            <h2 class="text-2xl font-bold text-gray-800 dark:text-white">Daily Content Calendar</h2>
+            <div class="flex items-center space-x-2">
+                <button id="prev-month" class="nav-button">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
                     </svg>
                 </button>
-                <h3 id="current-month" class="text-xl font-semibold">Loading...</h3>
-                <button id="next-month" class="text-indigo-600 hover:text-indigo-800">
+                <h3 id="current-month" class="text-xl font-semibold text-gray-700 dark:text-gray-300">Loading...</h3>
+                <button id="next-month" class="nav-button">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
                     </svg>
                 </button>
             </div>
+        </div>
 
-            <div class="grid grid-cols-7 gap-1 text-center font-semibold text-gray-600 mb-2">
+        <div class="mb-6">
+            <div class="grid grid-cols-7 gap-1 text-center font-semibold text-gray-600 dark:text-gray-400 mb-2">
                 <div class="p-2">Sun</div>
                 <div class="p-2">Mon</div>
                 <div class="p-2">Tue</div>
@@ -34,24 +160,26 @@
                 <div class="p-2">Sat</div>
             </div>
 
-            <table class="w-full border-collapse">
-                <tbody id="calendar-body">
-                    <!-- Calendar will be populated here -->
-                </tbody>
-            </table>
+            <div class="calendar-card rounded-lg overflow-hidden">
+                <table class="w-full border-collapse">
+                    <tbody id="calendar-body" class="divide-y divide-gray-200 dark:divide-gray-700">
+                        <!-- Calendar will be populated here -->
+                    </tbody>
+                </table>
+            </div>
         </div>
 
-        <div id="day-details" class="mt-6 p-4 bg-gray-50 rounded-lg">
-            <h3 class="text-xl font-bold mb-2">Content for <span id="selected-date">Loading...</span></h3>
-            <div id="day-content-container" class="space-y-3">
+        <div id="day-details" class="day-card rounded-lg p-6 bg-white dark:bg-gray-800">
+            <h3 class="text-xl font-bold mb-4 text-gray-800 dark:text-white">Content for <span id="selected-date" class="text-indigo-600 dark:text-indigo-400">Loading...</span></h3>
+            <div id="day-content-container" class="space-y-4">
                 <!-- Content will be populated when a date is selected -->
             </div>
         </div>
     </div>
 
     <!-- Latest Content Summary -->
-    <div class="bg-white rounded-lg shadow-md p-6">
-        <h2 class="text-2xl font-bold mb-4">Latest Content</h2>
+    <div class="planner-card rounded-xl shadow-lg p-6">
+        <h2 class="text-2xl font-bold mb-6 text-gray-800 dark:text-white">Latest Content</h2>
         <div id="latest-content-container" class="space-y-4">
             <!-- Latest content will be populated here -->
         </div>
@@ -89,12 +217,12 @@
         
         const container = document.getElementById('day-content-container');
         let contentHtml = `
-            <div class="bg-white p-4 rounded-lg shadow mb-4">
-                <h3 class="text-lg font-semibold mb-2">Exam Information</h3>
-                <div class="grid grid-cols-2 gap-2">
-                    <div><span class="font-medium">Exam Type:</span> ${dailyContent.exam_type}</div>
-                    <div><span class="font-medium">Exam Date:</span> ${dailyContent.exam_date}</div>
-                    <div><span class="font-medium">Days Until Exam:</span> ${dailyContent.days_until_exam}</div>
+            <div class="bg-indigo-50 dark:bg-indigo-900/20 p-4 rounded-lg mb-4">
+                <h3 class="text-lg font-semibold mb-2 text-indigo-800 dark:text-indigo-300">Exam Information</h3>
+                <div class="grid grid-cols-2 gap-2 text-sm">
+                    <div class="text-indigo-700 dark:text-indigo-400"><span class="font-medium">Exam Type:</span> ${dailyContent.exam_type}</div>
+                    <div class="text-indigo-700 dark:text-indigo-400"><span class="font-medium">Exam Date:</span> ${dailyContent.exam_date}</div>
+                    <div class="text-indigo-700 dark:text-indigo-400"><span class="font-medium">Days Until Exam:</span> ${dailyContent.days_until_exam}</div>
                 </div>
             </div>
         `;
@@ -109,38 +237,38 @@
                 
                 Object.entries(planContent).forEach(([planDay, dayData]) => {
                     contentHtml += `
-                        <div class="bg-white p-4 rounded-lg shadow">
-                            <h4 class="font-semibold text-lg mb-3">${planDay}</h4>
+                        <div class="bg-white dark:bg-gray-800 p-4 rounded-lg shadow">
+                            <h4 class="font-semibold text-lg mb-3 text-gray-800 dark:text-white">${planDay}</h4>
                             
                             <div class="mb-4">
-                                <div class="font-medium text-sm text-gray-700 mb-2">Topics:</div>
+                                <div class="font-medium text-sm text-gray-700 dark:text-gray-300 mb-2">Topics:</div>
                                 <div class="flex flex-wrap gap-2">
                                     ${dayData.topics.map(topic => 
-                                        `<span class="bg-indigo-100 text-indigo-800 text-xs px-2 py-1 rounded-full">${topic}</span>`
+                                        `<span class="topic-tag text-xs px-2 py-1 rounded-full">${topic}</span>`
                                     ).join('')}
                                 </div>
-                        </div>
+                            </div>
 
                             <div class="mb-4">
-                                <div class="font-medium text-sm text-gray-700 mb-2">Time Allocation:</div>
+                                <div class="font-medium text-sm text-gray-700 dark:text-gray-300 mb-2">Time Allocation:</div>
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
                                     ${Object.entries(dayData.time_allocation).map(([topic, hours]) => 
-                                        `<div class="flex items-center">
+                                        `<div class="time-allocation-item flex items-center text-sm text-gray-600 dark:text-gray-400">
                                             <div class="w-2 h-2 bg-indigo-400 rounded-full mr-2"></div>
-                                            <span class="text-sm">${topic}: ${hours} hours</span>
+                                            <span>${topic}: ${hours} hours</span>
                                         </div>`
                                     ).join('')}
-                        </div>
-                    </div>
+                                </div>
+                            </div>
 
-                        <div>
-                                <div class="font-medium text-sm text-gray-700 mb-2">Key Concepts:</div>
-                                <ul class="list-disc list-inside text-sm text-gray-600 space-y-1">
+                            <div>
+                                <div class="font-medium text-sm text-gray-700 dark:text-gray-300 mb-2">Key Concepts:</div>
+                                <ul class="list-disc list-inside text-sm text-gray-600 dark:text-gray-400 space-y-1">
                                     ${dayData.key_concepts.map(concept => 
                                         `<li>${concept}</li>`
                                     ).join('')}
                                 </ul>
-                        </div>
+                            </div>
                         </div>
                     `;
                 });
@@ -148,10 +276,10 @@
             } catch (e) {
                 console.error('Error parsing plan content:', e);
                 contentHtml += `
-                    <div class="bg-red-50 border border-red-200 text-red-700 p-4 rounded">
+                    <div class="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-400 p-4 rounded">
                         Error parsing content for ${day}
-                </div>
-            `;
+                    </div>
+                `;
             }
         }
 
@@ -190,7 +318,7 @@
             }
 
             const cell = document.createElement('td');
-            cell.className = 'border p-2 text-center align-top relative';
+            cell.className = 'calendar-day border p-2 text-center align-top relative';
             
             const date = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), day);
             const dateString = date.toISOString().split('T')[0];
@@ -201,16 +329,16 @@
                              Object.values(dailyContent.daily_plans).some(plan => plan.date === dateString);
 
             if (hasContent) {
-                cell.classList.add('bg-indigo-50', 'hover:bg-indigo-100', 'cursor-pointer');
+                cell.classList.add('has-content', 'cursor-pointer');
                 cell.innerHTML = `
                     <div class="flex flex-col h-full">
-                        <div class="text-lg font-medium">${day}</div>
-                        <div class="text-xs text-indigo-600 mt-1">Daily Content</div>
+                        <div class="text-lg font-medium text-gray-800 dark:text-white">${day}</div>
+                        <div class="text-xs text-indigo-600 dark:text-indigo-400 mt-1">Daily Content</div>
                     </div>
                 `;
                 cell.onclick = () => showDayContent(date);
             } else {
-                cell.innerHTML = `<div class="text-lg">${day}</div>`;
+                cell.innerHTML = `<div class="text-lg text-gray-800 dark:text-white">${day}</div>`;
             }
 
             currentRow.appendChild(cell);
@@ -237,7 +365,7 @@
         
         if (!plan) {
             document.getElementById('day-content-container').innerHTML = 
-                '<div class="text-gray-500">No content available for this date</div>';
+                '<div class="text-gray-500 dark:text-gray-400">No content available for this date</div>';
             return;
         }
 
@@ -246,12 +374,12 @@
             const planContent = JSON.parse(jsonStr);
             
             let contentHtml = `
-                <div class="bg-white p-4 rounded-lg shadow mb-4">
-                    <h3 class="text-lg font-semibold mb-2">Exam Information</h3>
-                    <div class="grid grid-cols-2 gap-2">
-                        <div><span class="font-medium">Exam Type:</span> ${dailyContent.exam_type}</div>
-                        <div><span class="font-medium">Exam Date:</span> ${dailyContent.exam_date}</div>
-                        <div><span class="font-medium">Days Until Exam:</span> ${dailyContent.days_until_exam}</div>
+                <div class="bg-indigo-50 dark:bg-indigo-900/20 p-4 rounded-lg mb-4">
+                    <h3 class="text-lg font-semibold mb-2 text-indigo-800 dark:text-indigo-300">Exam Information</h3>
+                    <div class="grid grid-cols-2 gap-2 text-sm">
+                        <div class="text-indigo-700 dark:text-indigo-400"><span class="font-medium">Exam Type:</span> ${dailyContent.exam_type}</div>
+                        <div class="text-indigo-700 dark:text-indigo-400"><span class="font-medium">Exam Date:</span> ${dailyContent.exam_date}</div>
+                        <div class="text-indigo-700 dark:text-indigo-400"><span class="font-medium">Days Until Exam:</span> ${dailyContent.days_until_exam}</div>
                     </div>
                 </div>
                 <div class="space-y-4">
@@ -259,33 +387,33 @@
             
             Object.entries(planContent).forEach(([day, dayData]) => {
                 contentHtml += `
-                    <div class="bg-white p-4 rounded-lg shadow">
-                        <h4 class="font-semibold text-lg mb-3">${day}</h4>
+                    <div class="bg-white dark:bg-gray-800 p-4 rounded-lg shadow">
+                        <h4 class="font-semibold text-lg mb-3 text-gray-800 dark:text-white">${day}</h4>
                         
                         <div class="mb-4">
-                            <div class="font-medium text-sm text-gray-700 mb-2">Topics:</div>
+                            <div class="font-medium text-sm text-gray-700 dark:text-gray-300 mb-2">Topics:</div>
                             <div class="flex flex-wrap gap-2">
                                 ${dayData.topics.map(topic => 
-                                    `<span class="bg-indigo-100 text-indigo-800 text-xs px-2 py-1 rounded-full">${topic}</span>`
+                                    `<span class="topic-tag text-xs px-2 py-1 rounded-full">${topic}</span>`
                                 ).join('')}
                             </div>
                         </div>
 
                         <div class="mb-4">
-                            <div class="font-medium text-sm text-gray-700 mb-2">Time Allocation:</div>
+                            <div class="font-medium text-sm text-gray-700 dark:text-gray-300 mb-2">Time Allocation:</div>
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
                                 ${Object.entries(dayData.time_allocation).map(([topic, hours]) => 
-                                    `<div class="flex items-center">
+                                    `<div class="time-allocation-item flex items-center text-sm text-gray-600 dark:text-gray-400">
                                         <div class="w-2 h-2 bg-indigo-400 rounded-full mr-2"></div>
-                                        <span class="text-sm">${topic}: ${hours} hours</span>
+                                        <span>${topic}: ${hours} hours</span>
                                     </div>`
                                 ).join('')}
                             </div>
                         </div>
 
                         <div>
-                            <div class="font-medium text-sm text-gray-700 mb-2">Key Concepts:</div>
-                            <ul class="list-disc list-inside text-sm text-gray-600 space-y-1">
+                            <div class="font-medium text-sm text-gray-700 dark:text-gray-300 mb-2">Key Concepts:</div>
+                            <ul class="list-disc list-inside text-sm text-gray-600 dark:text-gray-400 space-y-1">
                                 ${dayData.key_concepts.map(concept => 
                                     `<li>${concept}</li>`
                                 ).join('')}
@@ -308,7 +436,7 @@
         } catch (e) {
             console.error('Error parsing plan content:', e);
             document.getElementById('day-content-container').innerHTML = `
-                <div class="bg-red-50 border border-red-200 text-red-700 p-4 rounded">
+                <div class="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-400 p-4 rounded">
                     Error parsing content for this date
                 </div>
             `;

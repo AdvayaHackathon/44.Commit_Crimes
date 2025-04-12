@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,6 +7,30 @@
 
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    animation: {
+                        'gradient': 'gradient 8s linear infinite',
+                    },
+                    keyframes: {
+                        gradient: {
+                            '0%, 100%': {
+                                'background-size': '200% 200%',
+                                'background-position': 'left center'
+                            },
+                            '50%': {
+                                'background-size': '200% 200%',
+                                'background-position': 'right center'
+                            },
+                        },
+                    },
+                },
+            },
+        }
+    </script>
 
     <!-- Chart.js for visualizations -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -27,27 +51,68 @@
         @keyframes spin {
             to { transform: rotate(360deg); }
         }
+
+        .gradient-bg {
+            background: linear-gradient(-45deg, #4f46e5, #7c3aed, #2563eb, #1d4ed8);
+            background-size: 400% 400%;
+            animation: gradient 15s ease infinite;
+        }
+
+        .nav-link {
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background-color: #fff;
+            transition: width 0.3s ease;
+        }
+
+        .nav-link:hover::after {
+            width: 100%;
+        }
+
+        .dark .gradient-bg {
+            background: linear-gradient(-45deg, #1e1b4b, #312e81, #1e40af, #1e3a8a);
+        }
     </style>
 
     {% block head %}{% endblock %}
 </head>
-<body class="bg-gray-100 min-h-screen">
+<body class="bg-gray-50 dark:bg-gray-900 min-h-screen transition-colors duration-300">
     <!-- Navigation -->
-    <nav class="bg-indigo-600 text-white shadow-lg">
+    <nav class="gradient-bg text-white shadow-lg sticky top-0 z-50">
         <div class="container mx-auto px-4 py-3">
             <div class="flex justify-between items-center">
                 <div class="flex items-center space-x-4">
-                    <a href="/" class="text-xl font-bold">Educational Content Analysis</a>
-                    <div class="hidden md:flex space-x-4">
-                        <a href="/" class="hover:text-indigo-200">Dashboard</a>
-                        <a href="/test-viewer" class="hover:text-indigo-200">Test Viewer</a>
-                        <a href="/planner" class="hover:text-indigo-200">Planner</a>
-                        <a href="/daily-report" class="hover:text-indigo-200">Daily Report</a>
+                    <a href="/" class="text-xl font-bold hover:scale-105 transition-transform duration-300">
+                        <span class="text-indigo-200">e-</span>Gurukool
+                    </a>
+                    <div class="hidden md:flex space-x-6">
+                        <a href="/" class="nav-link">Dashboard</a>
+                        <a href="/test-viewer" class="nav-link">Test Viewer</a>
+                        <a href="/planner" class="nav-link">Planner</a>
+                        <a href="/daily-report" class="nav-link">Daily Report</a>
+                        <a href="/mock-test" class="nav-link">Mock Test</a>
                     </div>
                 </div>
                 <div class="flex items-center space-x-4">
+                    <button id="dark-mode-toggle" class="p-2 rounded-full hover:bg-indigo-700 transition-colors">
+                        <svg class="w-5 h-5 hidden dark:block" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/>
+                        </svg>
+                        <svg class="w-5 h-5 block dark:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/>
+                        </svg>
+                    </button>
                     <div class="relative">
-                        <select id="language-selector" class="bg-indigo-700 text-white rounded px-2 py-1">
+                        <select id="language-selector" class="bg-indigo-700/50 text-white rounded-lg px-3 py-1.5 border border-indigo-400/30 focus:outline-none focus:ring-2 focus:ring-indigo-400 transition-all">
                             <option value="en">English</option>
                             <option value="hi">हिंदी</option>
                             <option value="te">తెలుగు</option>
@@ -59,74 +124,86 @@
     </nav>
 
     <!-- Mobile Navigation -->
-    <div class="md:hidden bg-indigo-500 text-white">
+    <div class="md:hidden bg-indigo-500/90 backdrop-blur-sm text-white sticky top-0 z-40">
         <div class="container mx-auto px-4 py-2">
             <div class="flex justify-between space-x-2 overflow-x-auto">
-                <a href="/" class="text-center flex-1 py-2 hover:bg-indigo-600 rounded whitespace-nowrap">Dashboard</a>
-                <a href="/test-viewer" class="text-center flex-1 py-2 hover:bg-indigo-600 rounded whitespace-nowrap">Test Viewer</a>
-                <a href="/planner" class="text-center flex-1 py-2 hover:bg-indigo-600 rounded whitespace-nowrap">Planner</a>
-                <a href="/daily-report" class="text-center flex-1 py-2 hover:bg-indigo-600 rounded whitespace-nowrap">Report</a>
+                <a href="/" class="text-center flex-1 py-2 hover:bg-indigo-600/50 rounded-lg transition-colors whitespace-nowrap">Dashboard</a>
+                <a href="/test-viewer" class="text-center flex-1 py-2 hover:bg-indigo-600/50 rounded-lg transition-colors whitespace-nowrap">Test Viewer</a>
+                <a href="/planner" class="text-center flex-1 py-2 hover:bg-indigo-600/50 rounded-lg transition-colors whitespace-nowrap">Planner</a>
+                <a href="/daily-report" class="text-center flex-1 py-2 hover:bg-indigo-600/50 rounded-lg transition-colors whitespace-nowrap">Report</a>
+                <a href="/mock-test" class="text-center flex-1 py-2 hover:bg-indigo-600/50 rounded-lg transition-colors whitespace-nowrap">Mock Test</a>
             </div>
         </div>
     </div>
 
     <!-- Main Content -->
-    <main class="container mx-auto px-4 py-6">
+    <main class="container mx-auto px-4 py-8">
         {% block content %}{% endblock %}
     </main>
 
     <!-- Footer -->
-    <footer class="bg-gray-800 text-white py-6">
+    <footer class="bg-gray-800 text-white py-8 mt-8">
         <div class="container mx-auto px-4">
-            <div class="flex flex-col md:flex-row justify-between items-center">
-                <div class="mb-4 md:mb-0">
-                    <p>&copy; 2023 Educational Content Analysis System</p>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div>
+                    <h3 class="text-xl font-bold mb-4">e-Gurukool</h3>
+                    <p class="text-gray-400">Empowering education through AI-driven content analysis and planning.</p>
                 </div>
-                <div class="flex space-x-4">
-                    <a href="#" class="hover:text-indigo-300">About</a>
-                    <a href="#" class="hover:text-indigo-300">Help</a>
-                    <a href="#" class="hover:text-indigo-300">Privacy</a>
-                    <a href="#" class="hover:text-indigo-300">Terms</a>
+                <div>
+                    <h3 class="text-xl font-bold mb-4">Quick Links</h3>
+                    <ul class="space-y-2">
+                        <li><a href="/" class="text-gray-400 hover:text-white transition-colors">Dashboard</a></li>
+                        <li><a href="/test-viewer" class="text-gray-400 hover:text-white transition-colors">Test Viewer</a></li>
+                        <li><a href="/planner" class="text-gray-400 hover:text-white transition-colors">Planner</a></li>
+                        <li><a href="/daily-report" class="text-gray-400 hover:text-white transition-colors">Daily Report</a></li>
+                    </ul>
                 </div>
+                <div>
+                    <h3 class="text-xl font-bold mb-4">Support</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">About</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Help</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Privacy</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Terms</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="border-t border-gray-700 mt-8 pt-8 text-center text-gray-400">
+                <p>&copy; 2025 e-Gurukool. All rights reserved.</p>
             </div>
         </div>
     </footer>
 
     <!-- Common JavaScript -->
     <script>
+        // Dark mode toggle
+        const darkModeToggle = document.getElementById('dark-mode-toggle');
+        const html = document.documentElement;
+
+        // Check for saved dark mode preference
+        if (localStorage.getItem('darkMode') === 'true' || 
+            (!localStorage.getItem('darkMode') && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            html.classList.add('dark');
+        }
+
+        darkModeToggle.addEventListener('click', () => {
+            html.classList.toggle('dark');
+            localStorage.setItem('darkMode', html.classList.contains('dark'));
+        });
+
         // Language selector functionality
         document.getElementById('language-selector').addEventListener('change', function() {
             const language = this.value;
             // Store language preference
-            localStorage.setItem('preferred_language', language);
-            // Reload page to apply language
+            localStorage.setItem('language', language);
+            // Reload the page to apply the language
             window.location.reload();
         });
 
-        // Load saved language preference
-        document.addEventListener('DOMContentLoaded', function() {
-            const savedLanguage = localStorage.getItem('preferred_language');
-            if (savedLanguage) {
-                document.getElementById('language-selector').value = savedLanguage;
-            }
-        });
-
-        // Common utility functions
-        function showLoading(elementId) {
-            const element = document.getElementById(elementId);
-            if (element) {
-                element.innerHTML = '<div class="loading"></div> Processing...';
-            }
-        }
-
-        function hideLoading(elementId, text) {
-            const element = document.getElementById(elementId);
-            if (element) {
-                element.innerHTML = text || '';
-            }
-        }
+        // Set initial language
+        const savedLanguage = localStorage.getItem('language') || 'en';
+        document.getElementById('language-selector').value = savedLanguage;
     </script>
-
     {% block scripts %}{% endblock %}
 </body>
 </html>

@@ -1,32 +1,108 @@
 {% extends "base.html" %}
 
-{% block title %}Test Viewer - Educational Content Analysis System{% endblock %}
+{% block title %}Test Viewer - e-Gurukool{% endblock %}
+
+{% block head %}
+<style>
+    .test-card {
+        background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+        border: 1px solid rgba(99, 102, 241, 0.1);
+        transition: all 0.3s ease;
+    }
+
+    .test-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    .stat-card {
+        transition: all 0.3s ease;
+    }
+
+    .stat-card:hover {
+        transform: translateY(-2px);
+    }
+
+    .question-card {
+        transition: all 0.3s ease;
+        border: 1px solid rgba(99, 102, 241, 0.1);
+    }
+
+    .question-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+    }
+
+    .filter-select {
+        background: #f3f4f6;
+        border: 2px solid #e5e7eb;
+        transition: all 0.3s ease;
+    }
+
+    .filter-select:hover {
+        background: #e5e7eb;
+        border-color: #9ca3af;
+    }
+
+    .filter-select:focus {
+        border-color: #6366f1;
+        box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2);
+    }
+
+    .dark .test-card {
+        background: linear-gradient(135deg, #1f2937 0%, #111827 100%);
+        border-color: rgba(99, 102, 241, 0.2);
+    }
+
+    .dark .filter-select {
+        background: #374151;
+        border-color: #4b5563;
+        color: #f3f4f6;
+    }
+
+    .dark .filter-select:hover {
+        background: #4b5563;
+        border-color: #6b7280;
+    }
+
+    .dark .filter-select:focus {
+        border-color: #6366f1;
+        box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.3);
+    }
+
+    .loading-spinner {
+        border: 3px solid #f3f4f6;
+        border-top: 3px solid #6366f1;
+        border-radius: 50%;
+        width: 20px;
+        height: 20px;
+        animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+</style>
+{% endblock %}
 
 {% block content %}
-<div class="bg-white rounded-lg shadow-md p-6">
-    <h2 class="text-2xl font-bold mb-4">Test Viewer</h2>
-    
-    <div class="mb-6">
-        <div class="flex flex-col md:flex-row md:items-center md:space-x-4">
-            <div class="mb-4 md:mb-0 flex-grow">
-                <label class="block text-gray-700 mb-2">Select Processed File</label>
-                <select id="file-selector" class="w-full p-2 border border-gray-300 rounded">
-                    <option value="">-- Select a file --</option>
-                    <!-- Files will be populated dynamically -->
-                </select>
-            </div>
-            <div class="mb-4 md:mb-0">
-                <label class="block text-gray-700 mb-2">Language</label>
-                <select id="language-filter" class="w-full p-2 border border-gray-300 rounded">
+<div class="test-card rounded-xl shadow-lg p-6">
+    <div class="flex justify-between items-center mb-6">
+        <h2 class="text-2xl font-bold text-gray-800 dark:text-white">Test Viewer</h2>
+        <div class="flex space-x-4">
+            <div class="relative">
+                <label class="block text-sm text-gray-700 dark:text-gray-300 mb-1">Language</label>
+                <select id="language-filter" class="filter-select w-full p-2 rounded-lg">
                     <option value="all">All Languages</option>
                     <option value="en">English</option>
                     <option value="hi">Hindi</option>
                     <option value="te">Telugu</option>
                 </select>
             </div>
-            <div>
-                <label class="block text-gray-700 mb-2">Question Type</label>
-                <select id="question-type-filter" class="w-full p-2 border border-gray-300 rounded">
+            <div class="relative">
+                <label class="block text-sm text-gray-700 dark:text-gray-300 mb-1">Question Type</label>
+                <select id="question-type-filter" class="filter-select w-full p-2 rounded-lg">
                     <option value="all">All Types</option>
                     <option value="objective">Objective</option>
                     <option value="subjective">Subjective</option>
@@ -36,49 +112,78 @@
         </div>
     </div>
     
+    <div class="mb-6">
+        <label class="block text-gray-700 dark:text-gray-300 mb-2">Select Processed File</label>
+        <select id="file-selector" class="filter-select w-full p-2 rounded-lg">
+            <option value="">-- Select a file --</option>
+            <!-- Files will be populated dynamically -->
+        </select>
+    </div>
+    
     <div id="test-content" class="hidden">
         <div class="mb-6">
-            <h3 class="text-xl font-bold mb-2">Test Overview</h3>
+            <h3 class="text-xl font-bold mb-4 text-gray-800 dark:text-white">Test Overview</h3>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div class="bg-blue-50 p-4 rounded-lg">
-                    <div class="text-sm text-blue-700">Total Questions</div>
-                    <div class="text-2xl font-bold text-blue-700" id="total-questions">0</div>
+                <div class="stat-card bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <div id="total-questions" class="text-3xl font-bold text-blue-700 dark:text-blue-400">0</div>
+                            <div class="text-sm text-blue-700 dark:text-blue-400">Total Questions</div>
+                        </div>
+                        <svg class="w-8 h-8 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+                        </svg>
+                    </div>
                 </div>
-                <div class="bg-green-50 p-4 rounded-lg">
-                    <div class="text-sm text-green-700">Total Marks</div>
-                    <div class="text-2xl font-bold text-green-700" id="total-marks">0</div>
+                <div class="stat-card bg-green-50 dark:bg-green-900/20 p-4 rounded-lg">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <div id="total-marks" class="text-3xl font-bold text-green-700 dark:text-green-400">0</div>
+                            <div class="text-sm text-green-700 dark:text-green-400">Total Marks</div>
+                        </div>
+                        <svg class="w-8 h-8 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                    </div>
                 </div>
-                <div class="bg-purple-50 p-4 rounded-lg">
-                    <div class="text-sm text-purple-700">Topics Covered</div>
-                    <div class="text-2xl font-bold text-purple-700" id="topics-count">0</div>
+                <div class="stat-card bg-purple-50 dark:bg-purple-900/20 p-4 rounded-lg">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <div id="topics-count" class="text-3xl font-bold text-purple-700 dark:text-purple-400">0</div>
+                            <div class="text-sm text-purple-700 dark:text-purple-400">Topics Covered</div>
+                        </div>
+                        <svg class="w-8 h-8 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
+                        </svg>
+                    </div>
                 </div>
             </div>
         </div>
         
         <div class="mb-6">
-            <h3 class="text-xl font-bold mb-2">Question Distribution</h3>
-            <div class="h-64">
-                <canvas id="question-distribution-chart"></canvas>
+            <h3 class="text-xl font-bold mb-4 text-gray-800 dark:text-white">Question Distribution</h3>
+            <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-4">
+                <canvas id="question-distribution-chart" width="400" height="300"></canvas>
             </div>
         </div>
         
         <div>
-            <h3 class="text-xl font-bold mb-2">Questions</h3>
+            <h3 class="text-xl font-bold mb-4 text-gray-800 dark:text-white">Questions</h3>
             <div id="questions-container" class="space-y-4">
                 <!-- Questions will be populated dynamically -->
-                <div class="text-gray-500">No questions to display</div>
+                <div class="text-gray-500 dark:text-gray-400">No questions to display</div>
             </div>
         </div>
     </div>
     
     <div id="no-file-selected" class="text-center py-12">
-        <div class="text-gray-400 text-6xl mb-4">
+        <div class="text-gray-400 dark:text-gray-500 text-6xl mb-4">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-24 w-24 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
             </svg>
         </div>
-        <h3 class="text-xl font-semibold text-gray-500">No File Selected</h3>
-        <p class="text-gray-400 mt-2">Please select a processed file to view its content</p>
+        <h3 class="text-xl font-semibold text-gray-500 dark:text-gray-400">No File Selected</h3>
+        <p class="text-gray-400 dark:text-gray-500 mt-2">Please select a processed file to view its content</p>
     </div>
 </div>
 {% endblock %}
@@ -215,7 +320,7 @@
         
         // Display questions
         if (filteredQuestions.length === 0) {
-            questionsContainer.innerHTML = '<div class="text-gray-500">No questions to display</div>';
+            questionsContainer.innerHTML = '<div class="text-gray-500 dark:text-gray-400">No questions to display</div>';
             return;
         }
         
@@ -227,29 +332,29 @@
             
             switch (question.type) {
                 case 'objective':
-                    typeClass = 'bg-blue-100 text-blue-800';
+                    typeClass = 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300';
                     typeLabel = 'Objective';
                     break;
                 case 'subjective':
-                    typeClass = 'bg-pink-100 text-pink-800';
+                    typeClass = 'bg-pink-100 text-pink-800 dark:bg-pink-900/30 dark:text-pink-300';
                     typeLabel = 'Subjective';
                     break;
                 case 'practical':
-                    typeClass = 'bg-teal-100 text-teal-800';
+                    typeClass = 'bg-teal-100 text-teal-800 dark:bg-teal-900/30 dark:text-teal-300';
                     typeLabel = 'Practical';
                     break;
             }
             
             html += `
-                <div class="border border-gray-200 rounded-lg p-4">
+                <div class="question-card bg-white dark:bg-gray-800 rounded-lg p-4">
                     <div class="flex justify-between items-start">
-                        <div>
-                            <span class="font-semibold">Q${question.number}.</span>
-                            <span>${question.text}</span>
-                        </div>
-                        <div class="flex items-center space-x-2">
-                            <span class="${typeClass} text-xs px-2 py-1 rounded">${typeLabel}</span>
-                            <span class="bg-gray-100 text-gray-800 text-xs px-2 py-1 rounded">${question.marks} mark${question.marks > 1 ? 's' : ''}</span>
+                        <div class="flex-1">
+                            <div class="flex items-center space-x-2 mb-2">
+                                <span class="font-semibold text-gray-800 dark:text-white">Q${question.number}.</span>
+                                <span class="${typeClass} text-xs px-2 py-1 rounded">${typeLabel}</span>
+                                <span class="bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300 text-xs px-2 py-1 rounded">${question.marks} mark${question.marks > 1 ? 's' : ''}</span>
+                            </div>
+                            <p class="text-gray-700 dark:text-gray-300">${question.text}</p>
                         </div>
                     </div>
                 </div>
@@ -270,55 +375,43 @@
         
         // Create new chart
         questionDistributionChart = new Chart(ctx, {
-            type: 'bar',
+            type: 'doughnut',
             data: {
                 labels: ['Objective', 'Subjective', 'Practical'],
                 datasets: [{
-                    label: 'Marks',
                     data: [
                         distribution.objective.marks,
                         distribution.subjective.marks,
                         distribution.practical.marks
                     ],
                     backgroundColor: [
-                        'rgba(54, 162, 235, 0.6)',
-                        'rgba(255, 99, 132, 0.6)',
-                        'rgba(75, 192, 192, 0.6)'
+                        'rgba(79, 70, 229, 0.8)',
+                        'rgba(236, 72, 153, 0.8)',
+                        'rgba(20, 184, 166, 0.8)'
                     ],
                     borderColor: [
-                        'rgba(54, 162, 235, 1)',
-                        'rgba(255, 99, 132, 1)',
-                        'rgba(75, 192, 192, 1)'
+                        'rgba(79, 70, 229, 1)',
+                        'rgba(236, 72, 153, 1)',
+                        'rgba(20, 184, 166, 1)'
                     ],
                     borderWidth: 1
                 }]
             },
             options: {
                 responsive: true,
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        title: {
-                            display: true,
-                            text: 'Marks'
-                        }
-                    },
-                    x: {
-                        title: {
-                            display: true,
-                            text: 'Question Type'
-                        }
-                    }
-                },
+                maintainAspectRatio: false,
                 plugins: {
                     legend: {
-                        display: false
+                        position: 'bottom',
+                        labels: {
+                            color: window.matchMedia('(prefers-color-scheme: dark)').matches ? '#fff' : '#000'
+                        }
                     },
                     tooltip: {
                         callbacks: {
                             label: function(context) {
-                                const label = context.dataset.label || '';
-                                const value = context.parsed.y;
+                                const label = context.label || '';
+                                const value = context.parsed;
                                 const percentage = distribution[context.label.toLowerCase()].percentage;
                                 return `${label}: ${value} (${percentage}%)`;
                             }
@@ -351,6 +444,14 @@
             const fileId = document.getElementById('file-selector').value;
             if (fileId) {
                 displayTestContent(fileId);
+            }
+        });
+
+        // Dark mode chart update
+        document.addEventListener('darkModeChanged', (e) => {
+            if (questionDistributionChart) {
+                questionDistributionChart.options.plugins.legend.labels.color = e.detail.darkMode ? '#fff' : '#000';
+                questionDistributionChart.update();
             }
         });
     });

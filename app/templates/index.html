@@ -1,103 +1,241 @@
 {% extends "base.html" %}
 
-{% block title %}Dashboard - Educational Content Analysis System{% endblock %}
+{% block title %}Dashboard - e-Gurukool{% endblock %}
+
+{% block head %}
+<style>
+    .upload-card {
+        background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+        border: 1px solid rgba(99, 102, 241, 0.1);
+        transition: all 0.3s ease;
+    }
+
+    .upload-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    .stat-card {
+        transition: all 0.3s ease;
+    }
+
+    .stat-card:hover {
+        transform: translateY(-2px);
+    }
+
+    .file-input-wrapper {
+        position: relative;
+        overflow: hidden;
+        display: inline-block;
+    }
+
+    .file-input-wrapper input[type=file] {
+        position: absolute;
+        left: 0;
+        top: 0;
+        opacity: 0;
+        cursor: pointer;
+    }
+
+    .custom-file-input {
+        display: inline-block;
+        padding: 8px 16px;
+        background: #f3f4f6;
+        border: 2px dashed #d1d5db;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .custom-file-input:hover {
+        background: #e5e7eb;
+        border-color: #9ca3af;
+    }
+
+    .progress-bar {
+        height: 4px;
+        background: #e5e7eb;
+        border-radius: 2px;
+        overflow: hidden;
+    }
+
+    .progress-bar-fill {
+        height: 100%;
+        background: linear-gradient(90deg, #4f46e5, #7c3aed);
+        transition: width 0.3s ease;
+    }
+
+    .dark .upload-card {
+        background: linear-gradient(135deg, #1f2937 0%, #111827 100%);
+        border-color: rgba(99, 102, 241, 0.2);
+    }
+
+    .dark .custom-file-input {
+        background: #374151;
+        border-color: #4b5563;
+    }
+
+    .dark .custom-file-input:hover {
+        background: #4b5563;
+        border-color: #6b7280;
+    }
+</style>
+{% endblock %}
 
 {% block content %}
 <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
     <!-- Upload Section -->
-    <div class="md:col-span-2 bg-white rounded-lg shadow-md p-6">
-        <h2 class="text-2xl font-bold mb-4">Upload Educational Content</h2>
+    <div class="md:col-span-2 upload-card rounded-xl shadow-lg p-6">
+        <h2 class="text-2xl font-bold mb-4 text-gray-800 dark:text-white">Upload Educational Content</h2>
         <div class="mb-6">
-            <form id="upload-form" enctype="multipart/form-data">
+            <form id="upload-form" enctype="multipart/form-data" class="space-y-4">
                 <div class="mb-4">
-                    <label class="block text-gray-700 mb-2">Select Multiple Files (PDF or Images)</label>
-                    <input type="file" id="file-input" name="files" multiple accept=".pdf,.jpg,.jpeg,.png,.webp"
-                           class="w-full p-2 border border-gray-300 rounded">
+                    <label class="block text-gray-700 dark:text-gray-300 mb-2 font-medium">Select Multiple Files</label>
+                    <div class="file-input-wrapper w-full">
+                        <input type="file" id="file-input" name="files" multiple accept=".pdf,.jpg,.jpeg,.png,.webp"
+                               class="w-full">
+                        <div class="custom-file-input w-full text-center py-8">
+                            <svg class="w-12 h-12 mx-auto mb-2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/>
+                            </svg>
+                            <p class="text-gray-600 dark:text-gray-400">Drag and drop files here or click to browse</p>
+                            <p class="text-sm text-gray-500 dark:text-gray-500 mt-1">Supported formats: PDF, JPG, PNG, WEBP</p>
+                        </div>
+                    </div>
+                    <div id="selected-files" class="mt-2 space-y-2"></div>
                 </div>
 
-                <div class="mb-4">
-                    <label class="block text-gray-700 mb-2">Exam Type</label>
-                    <select id="exam-type" name="exam_type" class="w-full p-2 border border-gray-300 rounded">
-                        <option value="">-- Select Exam Type --</option>
-                        <!-- Exam types will be populated dynamically -->
-                    </select>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-gray-700 dark:text-gray-300 mb-2 font-medium">Exam Type</label>
+                        <select id="exam-type" name="exam_type" 
+                                class="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+                            <option value="">-- Select Exam Type --</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-gray-700 dark:text-gray-300 mb-2 font-medium">Exam Date</label>
+                        <input type="date" id="exam-date" name="exam_date" 
+                               class="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+                    </div>
                 </div>
 
-                <div class="mb-4">
-                    <label class="block text-gray-700 mb-2">Exam Date</label>
-                    <input type="date" id="exam-date" name="exam_date" class="w-full p-2 border border-gray-300 rounded">
-                </div>
-
-                <div class="flex justify-between items-center">
-                    <button type="submit" id="upload-button" class="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700">
+                <div class="flex justify-between items-center mt-6">
+                    <button type="submit" id="upload-button" 
+                            class="bg-indigo-600 text-white px-6 py-2 rounded-lg hover:bg-indigo-700 focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition-colors flex items-center">
+                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/>
+                        </svg>
                         Upload and Process
                     </button>
-                    <div id="upload-status" class="text-gray-600"></div>
+                    <div id="upload-status" class="text-gray-600 dark:text-gray-400"></div>
+                </div>
+
+                <div id="upload-progress" class="hidden">
+                    <div class="progress-bar">
+                        <div id="progress-bar-fill" class="progress-bar-fill" style="width: 0%"></div>
+                    </div>
                 </div>
             </form>
         </div>
 
         <div id="results-container" class="hidden">
-            <h3 class="text-xl font-bold mb-2">Processing Results</h3>
-            <div id="results-content" class="border border-gray-200 rounded p-4 bg-gray-50 max-h-96 overflow-y-auto"></div>
+            <h3 class="text-xl font-bold mb-4 text-gray-800 dark:text-white">Processing Results</h3>
+            <div id="results-content" class="border border-gray-200 dark:border-gray-700 rounded-lg p-4 bg-gray-50 dark:bg-gray-800 max-h-96 overflow-y-auto"></div>
         </div>
     </div>
 
     <!-- Dashboard Summary -->
-    <div class="bg-white rounded-lg shadow-md p-6">
-        <h2 class="text-2xl font-bold mb-4">Dashboard</h2>
+    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6">
+        <h2 class="text-2xl font-bold mb-4 text-gray-800 dark:text-white">Dashboard</h2>
 
         <div id="exam-info" class="mb-6 hidden">
-            <h3 class="text-lg font-semibold mb-2" id="exam-name">Exam Name</h3>
-            <p class="text-gray-600 mb-3" id="exam-description">Exam description will appear here.</p>
+            <div class="bg-indigo-50 dark:bg-indigo-900/20 rounded-lg p-4">
+                <h3 class="text-lg font-semibold mb-2 text-indigo-800 dark:text-indigo-200" id="exam-name">Exam Name</h3>
+                <p class="text-gray-600 dark:text-gray-300 mb-3" id="exam-description">Exam description will appear here.</p>
 
-            <div class="grid grid-cols-2 gap-2 text-sm mb-4">
-                <div>
-                    <span class="text-gray-600">Preparation Time:</span>
-                    <span class="font-semibold" id="exam-duration">6 months</span>
-                </div>
-                <div>
-                    <span class="text-gray-600">Exam Date:</span>
-                    <span class="font-semibold" id="selected-date">Not selected</span>
-                </div>
-                <div>
-                    <span class="text-gray-600">Days Remaining:</span>
-                    <span class="font-semibold" id="days-remaining">-</span>
+                <div class="grid grid-cols-2 gap-3 text-sm">
+                    <div class="bg-white dark:bg-gray-700 p-2 rounded-lg">
+                        <span class="text-gray-600 dark:text-gray-400">Preparation Time:</span>
+                        <span class="font-semibold text-gray-800 dark:text-white" id="exam-duration">6 months</span>
+                    </div>
+                    <div class="bg-white dark:bg-gray-700 p-2 rounded-lg">
+                        <span class="text-gray-600 dark:text-gray-400">Exam Date:</span>
+                        <span class="font-semibold text-gray-800 dark:text-white" id="selected-date">Not selected</span>
+                    </div>
+                    <div class="bg-white dark:bg-gray-700 p-2 rounded-lg">
+                        <span class="text-gray-600 dark:text-gray-400">Days Remaining:</span>
+                        <span class="font-semibold text-gray-800 dark:text-white" id="days-remaining">-</span>
+                    </div>
                 </div>
             </div>
         </div>
 
         <div id="no-exam-selected" class="mb-6">
-            <div class="text-center py-2">
-                <p class="text-gray-500">Select an exam type to see information</p>
+            <div class="text-center py-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                <svg class="w-12 h-12 mx-auto text-gray-400 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                </svg>
+                <p class="text-gray-500 dark:text-gray-400">Select an exam type to see information</p>
             </div>
         </div>
 
         <div class="mb-6">
-            <h3 class="text-lg font-semibold mb-2">Quick Stats</h3>
+            <h3 class="text-lg font-semibold mb-4 text-gray-800 dark:text-white">Quick Stats</h3>
             <div class="grid grid-cols-2 gap-4">
-                <div class="bg-blue-100 p-4 rounded-lg">
-                    <div id="files-processed" class="text-3xl font-bold text-blue-700">0</div>
-                    <div class="text-sm text-blue-700">Files Processed</div>
+                <div class="stat-card bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <div id="files-processed" class="text-3xl font-bold text-blue-700 dark:text-blue-400">0</div>
+                            <div class="text-sm text-blue-700 dark:text-blue-400">Files Processed</div>
+                        </div>
+                        <svg class="w-8 h-8 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                        </svg>
+                    </div>
                 </div>
-                <div class="bg-green-100 p-4 rounded-lg">
-                    <div id="tests-generated" class="text-3xl font-bold text-green-700">0</div>
-                    <div class="text-sm text-green-700">Tests Generated</div>
+                <div class="stat-card bg-green-50 dark:bg-green-900/20 p-4 rounded-lg">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <div id="tests-generated" class="text-3xl font-bold text-green-700 dark:text-green-400">0</div>
+                            <div class="text-sm text-green-700 dark:text-green-400">Tests Generated</div>
+                        </div>
+                        <svg class="w-8 h-8 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+                        </svg>
+                    </div>
                 </div>
-                <div class="bg-purple-100 p-4 rounded-lg">
-                    <div id="questions-analyzed" class="text-3xl font-bold text-purple-700">0</div>
-                    <div class="text-sm text-purple-700">Questions Analyzed</div>
+                <div class="stat-card bg-purple-50 dark:bg-purple-900/20 p-4 rounded-lg">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <div id="questions-analyzed" class="text-3xl font-bold text-purple-700 dark:text-purple-400">0</div>
+                            <div class="text-sm text-purple-700 dark:text-purple-400">Questions Analyzed</div>
+                        </div>
+                        <svg class="w-8 h-8 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                    </div>
                 </div>
-                <div class="bg-yellow-100 p-4 rounded-lg">
-                    <div id="topics-identified" class="text-3xl font-bold text-yellow-700">0</div>
-                    <div class="text-sm text-yellow-700">Topics Identified</div>
+                <div class="stat-card bg-yellow-50 dark:bg-yellow-900/20 p-4 rounded-lg">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <div id="topics-identified" class="text-3xl font-bold text-yellow-700 dark:text-yellow-400">0</div>
+                            <div class="text-sm text-yellow-700 dark:text-yellow-400">Topics Identified</div>
+                        </div>
+                        <svg class="w-8 h-8 text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
+                        </svg>
+                    </div>
                 </div>
             </div>
         </div>
 
         <div>
-            <h3 class="text-lg font-semibold mb-2">Question Distribution</h3>
-            <canvas id="question-chart" width="400" height="300"></canvas>
+            <h3 class="text-lg font-semibold mb-4 text-gray-800 dark:text-white">Question Distribution</h3>
+            <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-4">
+                <canvas id="question-chart" width="400" height="300"></canvas>
+            </div>
         </div>
     </div>
 </div>
@@ -162,36 +300,110 @@
 
 {% block scripts %}
 <script>
-    // Initialize question distribution chart
+    // File input handling
+    const fileInput = document.getElementById('file-input');
+    const selectedFilesContainer = document.getElementById('selected-files');
+
+    fileInput.addEventListener('change', function() {
+        selectedFilesContainer.innerHTML = '';
+        Array.from(this.files).forEach(file => {
+            const fileElement = document.createElement('div');
+            fileElement.className = 'flex items-center justify-between p-2 bg-gray-50 dark:bg-gray-700 rounded-lg';
+            fileElement.innerHTML = `
+                <div class="flex items-center">
+                    <svg class="w-5 h-5 text-gray-400 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                    </svg>
+                    <span class="text-sm text-gray-600 dark:text-gray-300">${file.name}</span>
+                </div>
+                <span class="text-xs text-gray-500">${(file.size / 1024 / 1024).toFixed(2)} MB</span>
+            `;
+            selectedFilesContainer.appendChild(fileElement);
+        });
+    });
+
+    // Drag and drop handling
+    const dropZone = document.querySelector('.custom-file-input');
+
+    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+        dropZone.addEventListener(eventName, preventDefaults, false);
+    });
+
+    function preventDefaults(e) {
+        e.preventDefault();
+        e.stopPropagation();
+    }
+
+    ['dragenter', 'dragover'].forEach(eventName => {
+        dropZone.addEventListener(eventName, highlight, false);
+    });
+
+    ['dragleave', 'drop'].forEach(eventName => {
+        dropZone.addEventListener(eventName, unhighlight, false);
+    });
+
+    function highlight(e) {
+        dropZone.classList.add('border-indigo-500', 'bg-indigo-50');
+    }
+
+    function unhighlight(e) {
+        dropZone.classList.remove('border-indigo-500', 'bg-indigo-50');
+    }
+
+    dropZone.addEventListener('drop', handleDrop, false);
+
+    function handleDrop(e) {
+        const dt = e.dataTransfer;
+        const files = dt.files;
+        fileInput.files = files;
+        fileInput.dispatchEvent(new Event('change'));
+    }
+
+    // Progress bar handling
+    function updateProgress(percent) {
+        const progressBar = document.getElementById('progress-bar-fill');
+        progressBar.style.width = `${percent}%`;
+    }
+
+    // Chart initialization
     const ctx = document.getElementById('question-chart').getContext('2d');
-    const questionChart = new Chart(ctx, {
-        type: 'pie',
+    const chart = new Chart(ctx, {
+        type: 'doughnut',
         data: {
             labels: ['Objective', 'Subjective', 'Practical'],
             datasets: [{
-                label: 'Question Distribution',
                 data: [0, 0, 0],
                 backgroundColor: [
-                    'rgba(54, 162, 235, 0.6)',
-                    'rgba(255, 99, 132, 0.6)',
-                    'rgba(75, 192, 192, 0.6)'
+                    'rgba(79, 70, 229, 0.8)',
+                    'rgba(124, 58, 237, 0.8)',
+                    'rgba(37, 99, 235, 0.8)'
                 ],
                 borderColor: [
-                    'rgba(54, 162, 235, 1)',
-                    'rgba(255, 99, 132, 1)',
-                    'rgba(75, 192, 192, 1)'
+                    'rgba(79, 70, 229, 1)',
+                    'rgba(124, 58, 237, 1)',
+                    'rgba(37, 99, 235, 1)'
                 ],
                 borderWidth: 1
             }]
         },
         options: {
             responsive: true,
+            maintainAspectRatio: false,
             plugins: {
                 legend: {
                     position: 'bottom',
+                    labels: {
+                        color: window.matchMedia('(prefers-color-scheme: dark)').matches ? '#fff' : '#000'
+                    }
                 }
             }
         }
+    });
+
+    // Dark mode chart update
+    document.addEventListener('darkModeChanged', (e) => {
+        chart.options.plugins.legend.labels.color = e.detail.darkMode ? '#fff' : '#000';
+        chart.update();
     });
 
     // Fetch exam types on page load
@@ -534,8 +746,8 @@
 
     // Update chart
     function updateChart(data) {
-        questionChart.data.datasets[0].data = data;
-        questionChart.update();
+        chart.data.datasets[0].data = data;
+        chart.update();
     }
 
     // Update motivational quote
