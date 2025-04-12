@@ -48,10 +48,16 @@
 
     .calendar-day {
         transition: all 0.3s ease;
+        cursor: pointer;
     }
 
     .calendar-day:hover {
         background-color: rgba(99, 102, 241, 0.1);
+    }
+
+    .calendar-day.selected {
+        background-color: rgba(99, 102, 241, 0.2);
+        border: 2px solid #6366f1;
     }
 
     .calendar-day.has-content {
@@ -227,21 +233,44 @@
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     }
 
+    .generate-button:active {
+        transform: translateY(0);
+    }
+
     .dark .generate-button {
         background: linear-gradient(135deg, #818cf8 0%, #6366f1 100%);
     }
 
-    .generated-content {
-        max-height: 300px;
-        overflow-y: auto;
-        padding: 1rem;
-        background: rgba(99, 102, 241, 0.05);
-        border-radius: 0.5rem;
-        margin-top: 1rem;
+    .dark .calendar-day.selected {
+        background-color: rgba(99, 102, 241, 0.3);
+        border-color: #818cf8;
     }
 
-    .dark .generated-content {
-        background: rgba(99, 102, 241, 0.1);
+    .summary-card {
+        background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+        border: 1px solid rgba(99, 102, 241, 0.1);
+        transition: all 0.3s ease;
+        margin-top: 2rem;
+    }
+
+    .dark .summary-card {
+        background: linear-gradient(135deg, #1f2937 0%, #111827 100%);
+        border-color: rgba(99, 102, 241, 0.2);
+    }
+
+    .summary-point {
+        transition: all 0.3s ease;
+        padding: 0.5rem;
+        border-radius: 0.375rem;
+    }
+
+    .summary-point:hover {
+        background-color: rgba(99, 102, 241, 0.1);
+        transform: translateX(5px);
+    }
+
+    .dark .summary-point:hover {
+        background-color: rgba(99, 102, 241, 0.2);
     }
 </style>
 {% endblock %}
@@ -265,7 +294,7 @@
                     </svg>
                 </button>
             </div>
-        </div>
+            </div>
 
         <div class="mb-6">
             <div class="grid grid-cols-7 gap-1 text-center font-semibold text-gray-600 dark:text-gray-400 mb-2">
@@ -279,11 +308,11 @@
             </div>
 
             <div class="calendar-card rounded-lg overflow-hidden">
-                <table class="w-full border-collapse">
+            <table class="w-full border-collapse">
                     <tbody id="calendar-body" class="divide-y divide-gray-200 dark:divide-gray-700">
-                        <!-- Calendar will be populated here -->
-                    </tbody>
-                </table>
+                    <!-- Calendar will be populated here -->
+                </tbody>
+            </table>
             </div>
         </div>
 
@@ -294,57 +323,116 @@
         </div>
     </div>
 
-    <!-- Latest Content Summary -->
-    <div class="planner-card rounded-xl shadow-lg p-6" style="height: 100px;">
-        <div class="flex justify-between items-center mb-6">
-            <h2 class="text-2xl font-bold text-gray-800 dark:text-white">Read Content</h2>
-            <button id="speech-button" class="speech-button">
-                <svg class="speech-icon play-icon h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
-                </svg>
-                <svg class="speech-icon stop-icon h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 10a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 01-1-1v-4z" />
-                </svg>
-                <span class="button-text">Read Content</span>
-            </button>
-        </div>
-        <div id="latest-content-container" class="space-y-4" style="height: 300px;">
+    <!-- Right Side Container -->
+    <div class="flex flex-col space-y-6">
+        <!-- Read Content Section -->
+        <div class="planner-card rounded-xl shadow-lg p-6" style="height: 100px;">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-bold text-gray-800 dark:text-white">Read Content</h2>
+                <button id="speech-button" class="speech-button">
+                    <svg class="speech-icon play-icon h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
+                    </svg>
+                    <svg class="speech-icon stop-icon h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 10a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 01-1-1v-4z" />
+                    </svg>
+                    <span class="button-text">Read Content</span>
+                </button>
+            </div>
+            <div id="latest-content-container" class="space-y-4" style="height: 300px;">
             <!-- Latest content will be populated here -->
+            </div>
+        </div>
+
+        <!-- Day 1 Summary Section -->
+        <div class="summary-card rounded-xl shadow-lg p-6">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-bold text-gray-800 dark:text-white">Day 1 Summary</h2>
+                <span class="text-sm text-gray-600 dark:text-gray-400">GATE CSE Preparation</span>
+            </div>
+            
+            <div class="space-y-6">
+                <!-- Topics -->
+                <div>
+                    <h3 class="text-lg font-semibold text-gray-700 dark:text-gray-300 mb-3">Topics</h3>
+                    <div class="grid gap-2">
+                        <div class="summary-point text-gray-600 dark:text-gray-400">
+                            1. Introduction to Hadoop
+                        </div>
+                        <div class="summary-point text-gray-600 dark:text-gray-400">
+                            2. Big Data Store Model
+                        </div>
+                        <div class="summary-point text-gray-600 dark:text-gray-400">
+                            3. Big Data Programming Model
+                        </div>
+                        <div class="summary-point text-gray-600 dark:text-gray-400">
+                            4. Hadoop and its Ecosystem
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Time Allocation -->
+                <div>
+                    <h3 class="text-lg font-semibold text-gray-700 dark:text-gray-300 mb-3">Time Allocation</h3>
+                    <div class="grid gap-2">
+                        <div class="summary-point text-gray-600 dark:text-gray-400">
+                            • Introduction to Hadoop: 2 hours
+                        </div>
+                        <div class="summary-point text-gray-600 dark:text-gray-400">
+                            • Big Data Store Model: 1 hour
+                        </div>
+                        <div class="summary-point text-gray-600 dark:text-gray-400">
+                            • Big Data Programming Model: 1 hour
+                        </div>
+                        <div class="summary-point text-gray-600 dark:text-gray-400">
+                            • Hadoop and its Ecosystem: 2 hours
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Key Concepts -->
+                <div>
+                    <h3 class="text-lg font-semibold text-gray-700 dark:text-gray-300 mb-3">Key Concepts</h3>
+                    <div class="grid gap-2">
+                        <div class="summary-point text-gray-600 dark:text-gray-400">
+                            • Distributed computing
+                        </div>
+                        <div class="summary-point text-gray-600 dark:text-gray-400">
+                            • Data locality
+                        </div>
+                        <div class="summary-point text-gray-600 dark:text-gray-400">
+                            • Scalability
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- All Content Summary Section -->
+        <div class="summary-card rounded-xl shadow-lg p-6">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-bold text-gray-800 dark:text-white">All Content Summary</h2>
+                <button id="toggle-all-content" class="px-3 py-1 bg-indigo-100 dark:bg-indigo-900 text-indigo-600 dark:text-indigo-400 rounded-full text-sm hover:bg-indigo-200 dark:hover:bg-indigo-800 transition-colors">
+                    Show All
+                </button>
+            </div>
+            
+            <div id="all-content-container" class="space-y-6 hidden">
+                <!-- Content will be populated here -->
+            </div>
         </div>
     </div>
 </div>
 
-<!-- Content Generation Section -->
-<div class="content-generation-card rounded-xl shadow-lg p-6 mt-6">
-    <div class="flex justify-between items-center mb-6">
-        <h2 class="text-2xl font-bold text-gray-800 dark:text-white" data-i18n="planner.content_generation">Content Generation</h2>
-        <button id="generate-content-button" class="generate-button">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-            </svg>
-            <span data-i18n="planner.generate_content">Generate Content</span>
-        </button>
-    </div>
-    <div class="mb-4">
-        <label class="block text-gray-700 dark:text-gray-300 mb-2" data-i18n="planner.select_topic">Select Topic</label>
-        <select id="topic-selector" class="w-full p-2 border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-800">
-            <option value="" data-i18n="planner.select_topic_placeholder">Select a topic</option>
-        </select>
-    </div>
-    <div id="generated-content" class="generated-content hidden">
-        <div class="flex items-center justify-center">
-            <div class="loading-spinner"></div>
-            <span class="ml-2 text-gray-600 dark:text-gray-400" data-i18n="planner.generating">Generating content...</span>
-        </div>
-    </div>
-</div>
+
 {% endblock %}
 
 {% block scripts %}
 <script>
     let dailyContent = null;
     let currentMonth = new Date();
+    let selectedDate = null;
 
     async function fetchDailyContent() {
         try {
@@ -356,88 +444,20 @@
             if (result.status === 'success') {
                 dailyContent = result.data;
                 updateCalendar();
-                showLatestContent();
+                populateAllContent();
+                // Show today's content by default if available
+                const today = new Date().toISOString().split('T')[0];
+                if (dailyContent?.daily_plans?.[today]) {
+                    showDayContent(new Date());
+                }
             } else {
                 throw new Error(result.message);
             }
         } catch (error) {
             console.error('Error fetching daily content:', error);
-            document.getElementById('error-message').textContent = 'Error loading daily content. Please try again later.';
+            document.getElementById('day-content-container').innerHTML = 
+                '<div class="text-red-500">Error loading daily content. Please try again later.</div>';
         }
-    }
-
-    function showLatestContent() {
-        if (!dailyContent || !dailyContent.daily_plans) return;
-        
-        const container = document.getElementById('day-content-container');
-        let contentHtml = `
-            <div class="bg-indigo-50 dark:bg-indigo-900/20 p-4 rounded-lg mb-4">
-                <h3 class="text-lg font-semibold mb-2 text-indigo-800 dark:text-indigo-300">Exam Information</h3>
-                <div class="grid grid-cols-2 gap-2 text-sm">
-                    <div class="text-indigo-700 dark:text-indigo-400"><span class="font-medium">Exam Type:</span> ${dailyContent.exam_type}</div>
-                    <div class="text-indigo-700 dark:text-indigo-400"><span class="font-medium">Exam Date:</span> ${dailyContent.exam_date}</div>
-                    <div class="text-indigo-700 dark:text-indigo-400"><span class="font-medium">Days Until Exam:</span> ${dailyContent.days_until_exam}</div>
-                </div>
-            </div>
-        `;
-
-        // Get the first day's content
-        const firstDay = Object.entries(dailyContent.daily_plans)[0];
-        if (firstDay) {
-            const [day, plan] = firstDay;
-            try {
-                const planContent = JSON.parse(plan.content.split('```json\n')[1].split('\n```')[0]);
-                contentHtml += `<div class="space-y-4">`;
-                
-                Object.entries(planContent).forEach(([planDay, dayData]) => {
-                    contentHtml += `
-                        <div class="bg-white dark:bg-gray-800 p-4 rounded-lg shadow">
-                            <h4 class="font-semibold text-lg mb-3 text-gray-800 dark:text-white">${planDay}</h4>
-                            
-                            <div class="mb-4">
-                                <div class="font-medium text-sm text-gray-700 dark:text-gray-300 mb-2">Topics:</div>
-                                <div class="flex flex-wrap gap-2">
-                                    ${dayData.topics.map(topic => 
-                                        `<span class="topic-tag text-xs px-2 py-1 rounded-full">${topic}</span>`
-                                    ).join('')}
-                                </div>
-                            </div>
-
-                            <div class="mb-4">
-                                <div class="font-medium text-sm text-gray-700 dark:text-gray-300 mb-2">Time Allocation:</div>
-                                <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
-                                    ${Object.entries(dayData.time_allocation).map(([topic, hours]) => 
-                                        `<div class="time-allocation-item flex items-center text-sm text-gray-600 dark:text-gray-400">
-                                            <div class="w-2 h-2 bg-indigo-400 rounded-full mr-2"></div>
-                                            <span>${topic}: ${hours} hours</span>
-                                        </div>`
-                                    ).join('')}
-                                </div>
-                            </div>
-
-                            <div>
-                                <div class="font-medium text-sm text-gray-700 dark:text-gray-300 mb-2">Key Concepts:</div>
-                                <ul class="list-disc list-inside text-sm text-gray-600 dark:text-gray-400 space-y-1">
-                                    ${dayData.key_concepts.map(concept => 
-                                        `<li>${concept}</li>`
-                                    ).join('')}
-                                </ul>
-                            </div>
-                        </div>
-                    `;
-                });
-                contentHtml += `</div>`;
-            } catch (e) {
-                console.error('Error parsing plan content:', e);
-                contentHtml += `
-                    <div class="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-400 p-4 rounded">
-                        Error parsing content for ${day}
-                    </div>
-                `;
-            }
-        }
-
-        container.innerHTML = contentHtml;
     }
 
     function updateCalendar() {
@@ -472,8 +492,6 @@
             }
 
             const cell = document.createElement('td');
-            cell.className = 'calendar-day border p-2 text-center align-top relative';
-            
             const date = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), day);
             const dateString = date.toISOString().split('T')[0];
             
@@ -482,15 +500,32 @@
                              dailyContent.daily_plans && 
                              Object.values(dailyContent.daily_plans).some(plan => plan.date === dateString);
 
+            cell.className = `calendar-day border p-2 text-center align-top relative ${hasContent ? 'has-content' : ''}`;
+            
+            // Add selected class if this is the selected date
+            if (selectedDate && date.toDateString() === selectedDate.toDateString()) {
+                cell.classList.add('selected');
+            }
+
             if (hasContent) {
-                cell.classList.add('has-content', 'cursor-pointer');
                 cell.innerHTML = `
                     <div class="flex flex-col h-full">
                         <div class="text-lg font-medium text-gray-800 dark:text-white">${day}</div>
                         <div class="text-xs text-indigo-600 dark:text-indigo-400 mt-1">Daily Content</div>
                     </div>
                 `;
-                cell.onclick = () => showDayContent(date);
+                cell.setAttribute('data-date', dateString);
+                cell.onclick = () => {
+                    // Remove selected class from previously selected date
+                    const previouslySelected = document.querySelector('.calendar-day.selected');
+                    if (previouslySelected) {
+                        previouslySelected.classList.remove('selected');
+                    }
+                    // Add selected class to clicked date
+                    cell.classList.add('selected');
+                    selectedDate = date;
+                    showDayContent(date);
+                };
             } else {
                 cell.innerHTML = `<div class="text-lg text-gray-800 dark:text-white">${day}</div>`;
             }
@@ -512,10 +547,14 @@
     }
 
     function showDayContent(date) {
-        if (!dailyContent || !dailyContent.daily_plans) return;
+        if (!dailyContent || !dailyContent.daily_plans) {
+            document.getElementById('day-content-container').innerHTML = 
+                '<div class="text-gray-500 dark:text-gray-400">No content available</div>';
+            return;
+        }
 
         const dateStr = date.toISOString().split('T')[0];
-        const plan = dailyContent.daily_plans[dateStr];
+        const plan = Object.values(dailyContent.daily_plans).find(p => p.date === dateStr);
         
         if (!plan) {
             document.getElementById('day-content-container').innerHTML = 
@@ -527,71 +566,186 @@
             const jsonStr = plan.content.split('```json\n')[1].split('\n```')[0];
             const planContent = JSON.parse(jsonStr);
             
+            // Update the main content container with date-specific information
             let contentHtml = `
                 <div class="bg-indigo-50 dark:bg-indigo-900/20 p-4 rounded-lg mb-4">
-                    <h3 class="text-lg font-semibold mb-2 text-indigo-800 dark:text-indigo-300">Exam Information</h3>
+                    <h3 class="text-lg font-semibold mb-2 text-indigo-800 dark:text-indigo-300">
+                        ${date.toLocaleDateString('default', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
+                    </h3>
                     <div class="grid grid-cols-2 gap-2 text-sm">
-                        <div class="text-indigo-700 dark:text-indigo-400"><span class="font-medium">Exam Type:</span> ${dailyContent.exam_type}</div>
-                        <div class="text-indigo-700 dark:text-indigo-400"><span class="font-medium">Exam Date:</span> ${dailyContent.exam_date}</div>
-                        <div class="text-indigo-700 dark:text-indigo-400"><span class="font-medium">Days Until Exam:</span> ${dailyContent.days_until_exam}</div>
+                        <div class="text-indigo-700 dark:text-indigo-400">
+                            <span class="font-medium">Exam Type:</span> ${dailyContent.exam_type}
+                        </div>
+                        <div class="text-indigo-700 dark:text-indigo-400">
+                            <span class="font-medium">Days Until Exam:</span> ${dailyContent.days_until_exam}
+                        </div>
                     </div>
                 </div>
-                <div class="space-y-4">
             `;
-            
+
+            // Update the summary card with the selected date's content
+            const summaryCard = document.querySelector('.summary-card');
+            if (summaryCard) {
+                let summaryHtml = `
+                    <div class="flex justify-between items-center mb-6">
+                        <h2 class="text-2xl font-bold text-gray-800 dark:text-white">
+                            Day ${plan.day_number || ''} Summary
+                        </h2>
+                        <span class="text-sm text-gray-600 dark:text-gray-400">
+                            ${date.toLocaleDateString('default', { month: 'short', day: 'numeric', year: 'numeric' })}
+                        </span>
+                    </div>
+                    
+                    <div class="space-y-6">`;
+
+                // Add date-specific content
+                Object.entries(planContent).forEach(([day, dayData]) => {
+                    // Add Topics section with animation
+                    summaryHtml += `
+                        <div class="transform transition-all duration-300 hover:scale-102">
+                            <h3 class="text-lg font-semibold text-gray-700 dark:text-gray-300 mb-3">Topics</h3>
+                            <div class="grid gap-2">
+                                ${dayData.topics.map((topic, index) => `
+                                    <div class="summary-point text-gray-600 dark:text-gray-400 transform transition-all duration-300">
+                                        ${index + 1}. ${topic}
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>`;
+
+                        // Add Time Allocation section with progress bars
+                        summaryHtml += `
+                            <div class="transform transition-all duration-300 hover:scale-102">
+                                <h3 class="text-lg font-semibold text-gray-700 dark:text-gray-300 mb-3">Time Allocation</h3>
+                                <div class="grid gap-3">
+                                    ${Object.entries(dayData.time_allocation).map(([topic, hours]) => {
+                                        const totalHours = Object.values(dayData.time_allocation).reduce((a, b) => a + parseFloat(b), 0);
+                                        const percentage = (hours / totalHours) * 100;
+                                        return `
+                                            <div class="summary-point text-gray-600 dark:text-gray-400">
+                                                <div class="flex justify-between mb-1">
+                                                    <span>${topic}</span>
+                                                    <span>${hours} hours</span>
+                                                </div>
+                                                <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+                                                    <div class="bg-indigo-500 h-2 rounded-full transition-all duration-500" 
+                                                        style="width: ${percentage}%">
+                                                    </div>
+                                                </div>
+                                            </div>`;
+                                    }).join('')}
+                                </div>
+                            </div>`;
+
+                            // Add Key Concepts section with interactive elements
+                            summaryHtml += `
+                                <div class="transform transition-all duration-300 hover:scale-102">
+                                    <h3 class="text-lg font-semibold text-gray-700 dark:text-gray-300 mb-3">Key Concepts</h3>
+                                    <div class="grid gap-2">
+                                        ${dayData.key_concepts.map((concept, index) => `
+                                            <div class="summary-point text-gray-600 dark:text-gray-400 flex items-center group">
+                                                <span class="w-6 h-6 flex items-center justify-center bg-indigo-100 dark:bg-indigo-900 rounded-full mr-2 text-xs text-indigo-600 dark:text-indigo-400 group-hover:bg-indigo-200 dark:group-hover:bg-indigo-800 transition-colors">
+                                                    ${index + 1}
+                                                </span>
+                                                ${concept}
+                                            </div>
+                                        `).join('')}
+                                    </div>
+                                </div>`;
+
+                                // Add Practice Items section if available
+                                if (dayData.practice_items && dayData.practice_items.length > 0) {
+                                    summaryHtml += `
+                                        <div class="transform transition-all duration-300 hover:scale-102">
+                                            <h3 class="text-lg font-semibold text-gray-700 dark:text-gray-300 mb-3">Practice Items</h3>
+                                            <div class="grid gap-2">
+                                                ${dayData.practice_items.map((item, index) => `
+                                                    <div class="summary-point text-gray-600 dark:text-gray-400 flex items-center">
+                                                        <span class="w-6 h-6 flex items-center justify-center bg-green-100 dark:bg-green-900 rounded-full mr-2 text-xs text-green-600 dark:text-green-400">
+                                                            P${index + 1}
+                                                        </span>
+                                                        ${item}
+                                                    </div>
+                                                `).join('')}
+                                            </div>
+                                        </div>`;
+                                }
+                            });
+
+                            summaryHtml += `</div>`;
+                            summaryCard.innerHTML = summaryHtml;
+                        }
+
+                        // Update the main content area with detailed information
             Object.entries(planContent).forEach(([day, dayData]) => {
                 contentHtml += `
-                    <div class="bg-white dark:bg-gray-800 p-4 rounded-lg shadow">
-                        <h4 class="font-semibold text-lg mb-3 text-gray-800 dark:text-white">${day}</h4>
+                                <div class="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-lg transform transition-all duration-300 hover:scale-102">
+                                    <h4 class="font-semibold text-lg mb-3 text-gray-800 dark:text-white flex items-center">
+                                        <span class="w-8 h-8 flex items-center justify-center bg-indigo-100 dark:bg-indigo-900 rounded-full mr-2 text-indigo-600 dark:text-indigo-400">
+                                            ${plan.day_number || ''}
+                                        </span>
+                                        ${day}
+                                    </h4>
                         
                         <div class="mb-4">
-                            <div class="font-medium text-sm text-gray-700 dark:text-gray-300 mb-2">Topics:</div>
+                                        <div class="font-medium text-sm text-gray-700 dark:text-gray-300 mb-2">Topics:</div>
                             <div class="flex flex-wrap gap-2">
                                 ${dayData.topics.map(topic => 
-                                    `<span class="topic-tag text-xs px-2 py-1 rounded-full">${topic}</span>`
+                                                `<span class="topic-tag text-xs px-3 py-1 rounded-full bg-indigo-100 dark:bg-indigo-900 text-indigo-600 dark:text-indigo-400 hover:bg-indigo-200 dark:hover:bg-indigo-800 transition-colors cursor-pointer">
+                                                    ${topic}
+                                                </span>`
                                 ).join('')}
                             </div>
                         </div>
 
                         <div class="mb-4">
-                            <div class="font-medium text-sm text-gray-700 dark:text-gray-300 mb-2">Time Allocation:</div>
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+                                        <div class="font-medium text-sm text-gray-700 dark:text-gray-300 mb-2">Time Allocation:</div>
+                                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
                                 ${Object.entries(dayData.time_allocation).map(([topic, hours]) => 
-                                    `<div class="time-allocation-item flex items-center text-sm text-gray-600 dark:text-gray-400">
+                                                `<div class="time-allocation-item flex items-center text-sm text-gray-600 dark:text-gray-400 bg-gray-50 dark:bg-gray-900 p-2 rounded-lg">
                                         <div class="w-2 h-2 bg-indigo-400 rounded-full mr-2"></div>
-                                        <span>${topic}: ${hours} hours</span>
+                                                    <span class="flex-1">${topic}</span>
+                                                    <span class="font-medium">${hours} hours</span>
                                     </div>`
                                 ).join('')}
                             </div>
                         </div>
 
                         <div>
-                            <div class="font-medium text-sm text-gray-700 dark:text-gray-300 mb-2">Key Concepts:</div>
-                            <ul class="list-disc list-inside text-sm text-gray-600 dark:text-gray-400 space-y-1">
-                                ${dayData.key_concepts.map(concept => 
-                                    `<li>${concept}</li>`
+                                        <div class="font-medium text-sm text-gray-700 dark:text-gray-300 mb-2">Key Concepts:</div>
+                                        <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+                                            ${dayData.key_concepts.map((concept, index) => 
+                                                `<div class="flex items-center text-sm text-gray-600 dark:text-gray-400 bg-gray-50 dark:bg-gray-900 p-2 rounded-lg">
+                                                    <span class="w-5 h-5 flex items-center justify-center bg-indigo-100 dark:bg-indigo-900 rounded-full mr-2 text-xs text-indigo-600 dark:text-indigo-400">
+                                                        ${index + 1}
+                                                    </span>
+                                                    ${concept}
+                                                </div>`
                                 ).join('')}
-                            </ul>
+                                        </div>
                         </div>
                     </div>
                 `;
             });
             
-            contentHtml += '</div>';
             document.getElementById('day-content-container').innerHTML = contentHtml;
             
-            // Update selected date display
-            document.getElementById('selected-date').textContent = date.toLocaleDateString('default', { 
-                weekday: 'long', 
-                year: 'numeric', 
-                month: 'long', 
-                day: 'numeric' 
-            });
+                        // Add animation to the new content
+                        const elements = document.querySelectorAll('.transform');
+                        elements.forEach((element, index) => {
+                            element.style.opacity = '0';
+                            element.style.transform = 'translateY(20px)';
+                            setTimeout(() => {
+                                element.style.opacity = '1';
+                                element.style.transform = 'translateY(0)';
+                            }, index * 100);
+                        });
+
         } catch (e) {
             console.error('Error parsing plan content:', e);
             document.getElementById('day-content-container').innerHTML = `
-                <div class="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-400 p-4 rounded">
-                    Error parsing content for this date
+                            <div class="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-400 p-4 rounded">
+                                Error displaying content for this date
                 </div>
             `;
         }
@@ -674,141 +828,9 @@
     // Add event listener for speech button
     document.getElementById('speech-button').addEventListener('click', speakContent);
 
-    // Content Generation
-    const generateButton = document.getElementById('generate-content-button');
-    const topicSelector = document.getElementById('topic-selector');
-    const generatedContent = document.getElementById('generated-content');
-
-    // Function to populate topics from planner
-    function populateTopics() {
-        const dayContent = document.getElementById('day-content-container');
-        if (!dayContent) return;
-
-        const topics = dayContent.querySelectorAll('.topic-tag');
-        topicSelector.innerHTML = '<option value="" data-i18n="planner.select_topic_placeholder">Select a topic</option>';
-        
-        topics.forEach(topic => {
-            const option = document.createElement('option');
-            option.value = topic.textContent;
-            option.textContent = topic.textContent;
-            topicSelector.appendChild(option);
-        });
-    }
-
-    // Function to generate content using Google API
-    async function generateContent(topic) {
-        try {
-            generatedContent.classList.remove('hidden');
-            generatedContent.innerHTML = `
-                <div class="flex items-center justify-center">
-                    <div class="loading-spinner"></div>
-                    <span class="ml-2 text-gray-600 dark:text-gray-400" data-i18n="planner.generating">Generating content...</span>
-                </div>
-            `;
-
-            const response = await fetch('/api/generate-content', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${localStorage.getItem('auth_token')}`
-                },
-                body: JSON.stringify({
-                    topic: topic,
-                    language: localStorage.getItem('language') || 'en'
-                })
-            });
-
-            if (!response.ok) {
-                throw new Error('Failed to generate content');
-            }
-
-            const data = await response.json();
-            
-            generatedContent.innerHTML = `
-                <div class="prose dark:prose-invert max-w-none">
-                    <h3 class="text-lg font-semibold mb-2">${data.title}</h3>
-                    <div class="space-y-4">
-                        ${data.content.split('\n').map(paragraph => `<p>${paragraph}</p>`).join('')}
-                    </div>
-                    ${data.keyPoints ? `
-                        <div class="mt-4">
-                            <h4 class="font-semibold mb-2" data-i18n="planner.key_points">Key Points:</h4>
-                            <ul class="list-disc pl-4">
-                                ${data.keyPoints.map(point => `<li>${point}</li>`).join('')}
-                            </ul>
-                        </div>
-                    ` : ''}
-                </div>
-            `;
-        } catch (error) {
-            console.error('Error generating content:', error);
-            generatedContent.innerHTML = `
-                <div class="text-red-600 dark:text-red-400 text-center">
-                    <p data-i18n="planner.generation_error">Failed to generate content. Please try again.</p>
-                </div>
-            `;
-        }
-    }
-
-    // Event Listeners
-    generateButton.addEventListener('click', () => {
-        const selectedTopic = topicSelector.value;
-        if (!selectedTopic) {
-            alert('Please select a topic first');
-            return;
-        }
-        generateContent(selectedTopic);
-    });
-
-    // Update topics when day content changes
-    document.addEventListener('dayContentUpdated', populateTopics);
-
-    // Add translations for content generation
-    const contentGenerationTranslations = {
-        en: {
-            planner: {
-                content_generation: "Content Generation",
-                generate_content: "Generate Content",
-                select_topic: "Select Topic",
-                select_topic_placeholder: "Select a topic",
-                generating: "Generating content...",
-                key_points: "Key Points",
-                generation_error: "Failed to generate content. Please try again."
-            }
-        },
-        hi: {
-            planner: {
-                content_generation: "सामग्री निर्माण",
-                generate_content: "सामग्री बनाएं",
-                select_topic: "विषय चुनें",
-                select_topic_placeholder: "एक विषय चुनें",
-                generating: "सामग्री बनाई जा रही है...",
-                key_points: "मुख्य बिंदु",
-                generation_error: "सामग्री बनाने में विफल। कृपया पुनः प्रयास करें।"
-            }
-        },
-        kn: {
-            planner: {
-                content_generation: "ವಿಷಯ ಉತ್ಪಾದನೆ",
-                generate_content: "ವಿಷಯವನ್ನು ರಚಿಸಿ",
-                select_topic: "ವಿಷಯವನ್ನು ಆಯ್ಕೆಮಾಡಿ",
-                select_topic_placeholder: "ವಿಷಯವನ್ನು ಆಯ್ಕೆಮಾಡಿ",
-                generating: "ವಿಷಯವನ್ನು ರಚಿಸಲಾಗುತ್ತಿದೆ...",
-                key_points: "ಪ್ರಮುಖ ಅಂಶಗಳು",
-                generation_error: "ವಿಷಯವನ್ನು ರಚಿಸಲು ವಿಫಲವಾಗಿದೆ. ದಯವಿಟ್ಟು ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ."
-            }
-        }
-    };
-
-    // Merge translations
-    Object.assign(translations.en, contentGenerationTranslations.en);
-    Object.assign(translations.hi, contentGenerationTranslations.hi);
-    Object.assign(translations.kn, contentGenerationTranslations.kn);
-
     // Initialize
     document.addEventListener('DOMContentLoaded', () => {
         fetchDailyContent();
-        populateTopics();
     });
 
     // Navigation handlers
@@ -821,5 +843,241 @@
         currentMonth = new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1);
         updateCalendar();
     };
+
+    // Content Generation Functionality
+    const generateButton = document.getElementById('generate-content-button');
+    const generatedContent = document.getElementById('generated-content');
+    const generationLoading = document.getElementById('generation-loading');
+    const selectedTopic = document.getElementById('selected-topic');
+    const contentText = document.getElementById('content-text');
+
+    async function generateContent() {
+        const selectedDate = document.querySelector('.calendar-day.selected');
+        if (!selectedDate) {
+            alert('Please select a date first');
+            return;
+        }
+
+        const topics = selectedDate.querySelectorAll('.topic-tag');
+        if (topics.length === 0) {
+            alert('No topics available for the selected date');
+            return;
+        }
+
+        // Randomly select a topic
+        const randomTopic = topics[Math.floor(Math.random() * topics.length)].textContent;
+        selectedTopic.textContent = randomTopic;
+
+        // Show loading state
+        generatedContent.classList.add('hidden');
+        generationLoading.classList.remove('hidden');
+
+        try {
+            // Call your backend API to generate content using Google's API
+            const response = await fetch('/api/generate-content', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    topic: randomTopic,
+                    language: localStorage.getItem('language') || 'en'
+                })
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to generate content');
+            }
+
+            const data = await response.json();
+            
+            // Display generated content
+            contentText.innerHTML = data.content;
+            generatedContent.classList.remove('hidden');
+        } catch (error) {
+            console.error('Error generating content:', error);
+            alert('Failed to generate content. Please try again.');
+        } finally {
+            generationLoading.classList.add('hidden');
+        }
+    }
+
+    generateButton.addEventListener('click', generateContent);
+
+    // Add translations for content generation
+    const contentTranslations = {
+        en: {
+            planner: {
+                content_generation: "Content Generation",
+                generate_content: "Generate Content",
+                selected_topic: "Selected Topic",
+                generated_content: "Generated Content",
+                generating: "Generating content..."
+            }
+        },
+        hi: {
+            planner: {
+                content_generation: "सामग्री निर्माण",
+                generate_content: "सामग्री बनाएं",
+                selected_topic: "चयनित विषय",
+                generated_content: "उत्पन्न सामग्री",
+                generating: "सामग्री बनाई जा रही है..."
+            }
+        },
+        kn: {
+            planner: {
+                content_generation: "ವಿಷಯ ಉತ್ಪಾದನೆ",
+                generate_content: "ವಿಷಯವನ್ನು ರಚಿಸಿ",
+                selected_topic: "ಆಯ್ಕೆಮಾಡಿದ ವಿಷಯ",
+                generated_content: "ರಚಿಸಿದ ವಿಷಯ",
+                generating: "ವಿಷಯವನ್ನು ರಚಿಸಲಾಗುತ್ತಿದೆ..."
+            }
+        }
+    };
+
+    // Merge content translations with existing translations
+    Object.assign(translations.en, contentTranslations.en);
+    Object.assign(translations.hi, contentTranslations.hi);
+    Object.assign(translations.kn, contentTranslations.kn);
+
+    // Add new function to populate all content
+    function populateAllContent() {
+        if (!dailyContent || !dailyContent.daily_plans) {
+            return;
+        }
+
+        const container = document.getElementById('all-content-container');
+        const toggleButton = document.getElementById('toggle-all-content');
+        
+        let allContentHtml = '';
+        
+        // Sort plans by date
+        const sortedPlans = Object.values(dailyContent.daily_plans).sort((a, b) => {
+            return new Date(a.date) - new Date(b.date);
+        });
+
+        sortedPlans.forEach(plan => {
+            try {
+                const jsonStr = plan.content.split('```json\n')[1].split('\n```')[0];
+                const planContent = JSON.parse(jsonStr);
+                const date = new Date(plan.date);
+
+                Object.entries(planContent).forEach(([day, dayData]) => {
+                    allContentHtml += `
+                        <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg transform transition-all duration-300 hover:scale-102 mb-6">
+                            <div class="flex justify-between items-center mb-4">
+                                <h3 class="text-xl font-bold text-gray-800 dark:text-white flex items-center">
+                                    <span class="w-8 h-8 flex items-center justify-center bg-indigo-100 dark:bg-indigo-900 rounded-full mr-2 text-indigo-600 dark:text-indigo-400">
+                                        ${plan.day_number || ''}
+                                    </span>
+                                    ${date.toLocaleDateString('default', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
+                                </h3>
+                                <span class="text-sm text-gray-600 dark:text-gray-400">${dailyContent.exam_type}</span>
+                            </div>
+
+                            <!-- Topics Section -->
+                            <div class="mb-6">
+                                <h4 class="text-lg font-semibold text-gray-700 dark:text-gray-300 mb-3">Topics</h4>
+                                <div class="grid gap-2">
+                                    ${dayData.topics.map((topic, index) => `
+                                        <div class="flex items-center p-2 bg-gray-50 dark:bg-gray-900 rounded-lg transform transition-all duration-300 hover:translate-x-2">
+                                            <span class="w-6 h-6 flex items-center justify-center bg-indigo-100 dark:bg-indigo-900 rounded-full mr-3 text-xs text-indigo-600 dark:text-indigo-400">
+                                                ${index + 1}
+                                            </span>
+                                            <span class="text-gray-700 dark:text-gray-300">${topic}</span>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            </div>
+
+                            <!-- Time Allocation Section -->
+                            <div class="mb-6">
+                                <h4 class="text-lg font-semibold text-gray-700 dark:text-gray-300 mb-3">Time Allocation</h4>
+                                <div class="grid gap-3">
+                                    ${Object.entries(dayData.time_allocation).map(([topic, hours]) => {
+                                        const totalHours = Object.values(dayData.time_allocation).reduce((a, b) => a + parseFloat(b), 0);
+                                        const percentage = (hours / totalHours) * 100;
+                                        return `
+                                            <div class="p-3 bg-gray-50 dark:bg-gray-900 rounded-lg">
+                                                <div class="flex justify-between mb-2">
+                                                    <span class="text-gray-700 dark:text-gray-300">${topic}</span>
+                                                    <span class="text-indigo-600 dark:text-indigo-400 font-medium">${hours} hours</span>
+                                                </div>
+                                                <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+                                                    <div class="bg-indigo-500 h-2 rounded-full transition-all duration-500" 
+                                                        style="width: ${percentage}%">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        `;
+                                    }).join('')}
+                                </div>
+                            </div>
+
+                            <!-- Key Concepts Section -->
+                            <div class="mb-6">
+                                <h4 class="text-lg font-semibold text-gray-700 dark:text-gray-300 mb-3">Key Concepts</h4>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                                    ${dayData.key_concepts.map((concept, index) => `
+                                        <div class="flex items-center p-2 bg-gray-50 dark:bg-gray-900 rounded-lg transform transition-all duration-300 hover:translate-x-2">
+                                            <span class="w-6 h-6 flex items-center justify-center bg-indigo-100 dark:bg-indigo-900 rounded-full mr-3 text-xs text-indigo-600 dark:text-indigo-400">
+                                                ${index + 1}
+                                            </span>
+                                            <span class="text-gray-700 dark:text-gray-300">${concept}</span>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            </div>
+
+                            ${dayData.practice_items && dayData.practice_items.length > 0 ? `
+                                <!-- Practice Items Section -->
+                                <div>
+                                    <h4 class="text-lg font-semibold text-gray-700 dark:text-gray-300 mb-3">Practice Items</h4>
+                                    <div class="grid gap-2">
+                                        ${dayData.practice_items.map((item, index) => `
+                                            <div class="flex items-center p-2 bg-gray-50 dark:bg-gray-900 rounded-lg transform transition-all duration-300 hover:translate-x-2">
+                                                <span class="w-6 h-6 flex items-center justify-center bg-green-100 dark:bg-green-900 rounded-full mr-3 text-xs text-green-600 dark:text-green-400">
+                                                    P${index + 1}
+                                                </span>
+                                                <span class="text-gray-700 dark:text-gray-300">${item}</span>
+                                            </div>
+                                        `).join('')}
+                                    </div>
+                                </div>
+                            ` : ''}
+                        </div>
+                    `;
+                });
+            } catch (e) {
+                console.error('Error parsing plan content:', e);
+            }
+        });
+
+        container.innerHTML = allContentHtml;
+
+        // Add toggle functionality
+        toggleButton.addEventListener('click', () => {
+            const isHidden = container.classList.contains('hidden');
+            container.classList.toggle('hidden');
+            toggleButton.textContent = isHidden ? 'Hide All' : 'Show All';
+            
+            if (!isHidden) {
+                container.scrollIntoView({ behavior: 'smooth' });
+            }
+
+            // Animate elements when showing
+            if (isHidden) {
+                const elements = container.querySelectorAll('.transform');
+                elements.forEach((element, index) => {
+                    element.style.opacity = '0';
+                    element.style.transform = 'translateY(20px)';
+                    setTimeout(() => {
+                        element.style.opacity = '1';
+                        element.style.transform = 'translateY(0)';
+                    }, index * 100);
+                });
+            }
+        });
+    }
 </script>
 {% endblock %}
