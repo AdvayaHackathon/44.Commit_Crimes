@@ -125,6 +125,124 @@
         0% { transform: rotate(0deg); }
         100% { transform: rotate(360deg); }
     }
+
+    .speech-button {
+        background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+        color: white;
+        padding: 0.5rem 1rem;
+        border-radius: 0.5rem;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        cursor: pointer;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .speech-button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .speech-button:active {
+        transform: translateY(0);
+    }
+
+    .speech-button.playing {
+        background: linear-gradient(135deg, #4f46e5 0%, #4338ca 100%);
+    }
+
+    .dark .speech-button {
+        background: linear-gradient(135deg, #818cf8 0%, #6366f1 100%);
+    }
+
+    .dark .speech-button.playing {
+        background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+    }
+
+    .speech-icon {
+        transition: all 0.3s ease;
+        position: absolute;
+        left: 0.5rem;
+    }
+
+    .speech-button.playing .play-icon {
+        display: none;
+    }
+
+    .speech-button:not(.playing) .stop-icon {
+        display: none;
+    }
+
+    .button-text {
+        margin-left: 1.5rem;
+        transition: all 0.3s ease;
+    }
+
+    .speech-button.playing .button-text {
+        color: #fff;
+    }
+
+    .pulse-animation {
+        animation: pulse 1.5s infinite;
+    }
+
+    @keyframes pulse {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.1); }
+        100% { transform: scale(1); }
+    }
+
+    .content-generation-card {
+        background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+        border: 1px solid rgba(99, 102, 241, 0.1);
+        transition: all 0.3s ease;
+        min-height: 200px;
+    }
+
+    .content-generation-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    .dark .content-generation-card {
+        background: linear-gradient(135deg, #1f2937 0%, #111827 100%);
+        border-color: rgba(99, 102, 241, 0.2);
+    }
+
+    .generate-button {
+        background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+        color: white;
+        padding: 0.5rem 1rem;
+        border-radius: 0.5rem;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .generate-button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .dark .generate-button {
+        background: linear-gradient(135deg, #818cf8 0%, #6366f1 100%);
+    }
+
+    .generated-content {
+        max-height: 300px;
+        overflow-y: auto;
+        padding: 1rem;
+        background: rgba(99, 102, 241, 0.05);
+        border-radius: 0.5rem;
+        margin-top: 1rem;
+    }
+
+    .dark .generated-content {
+        background: rgba(99, 102, 241, 0.1);
+    }
 </style>
 {% endblock %}
 
@@ -170,7 +288,6 @@
         </div>
 
         <div id="day-details" class="day-card rounded-lg p-6 bg-white dark:bg-gray-800">
-            <h3 class="text-xl font-bold mb-4 text-gray-800 dark:text-white">Content for <span id="selected-date" class="text-indigo-600 dark:text-indigo-400">Loading...</span></h3>
             <div id="day-content-container" class="space-y-4">
                 <!-- Content will be populated when a date is selected -->
             </div>
@@ -178,10 +295,47 @@
     </div>
 
     <!-- Latest Content Summary -->
-    <div class="planner-card rounded-xl shadow-lg p-6">
-        <h2 class="text-2xl font-bold mb-6 text-gray-800 dark:text-white">Latest Content</h2>
-        <div id="latest-content-container" class="space-y-4">
+    <div class="planner-card rounded-xl shadow-lg p-6" style="height: 100px;">
+        <div class="flex justify-between items-center mb-6">
+            <h2 class="text-2xl font-bold text-gray-800 dark:text-white">Read Content</h2>
+            <button id="speech-button" class="speech-button">
+                <svg class="speech-icon play-icon h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
+                </svg>
+                <svg class="speech-icon stop-icon h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 10a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 01-1-1v-4z" />
+                </svg>
+                <span class="button-text">Read Content</span>
+            </button>
+        </div>
+        <div id="latest-content-container" class="space-y-4" style="height: 300px;">
             <!-- Latest content will be populated here -->
+        </div>
+    </div>
+</div>
+
+<!-- Content Generation Section -->
+<div class="content-generation-card rounded-xl shadow-lg p-6 mt-6">
+    <div class="flex justify-between items-center mb-6">
+        <h2 class="text-2xl font-bold text-gray-800 dark:text-white" data-i18n="planner.content_generation">Content Generation</h2>
+        <button id="generate-content-button" class="generate-button">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+            </svg>
+            <span data-i18n="planner.generate_content">Generate Content</span>
+        </button>
+    </div>
+    <div class="mb-4">
+        <label class="block text-gray-700 dark:text-gray-300 mb-2" data-i18n="planner.select_topic">Select Topic</label>
+        <select id="topic-selector" class="w-full p-2 border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-800">
+            <option value="" data-i18n="planner.select_topic_placeholder">Select a topic</option>
+        </select>
+    </div>
+    <div id="generated-content" class="generated-content hidden">
+        <div class="flex items-center justify-center">
+            <div class="loading-spinner"></div>
+            <span class="ml-2 text-gray-600 dark:text-gray-400" data-i18n="planner.generating">Generating content...</span>
         </div>
     </div>
 </div>
@@ -443,9 +597,218 @@
         }
     }
 
+    // Text-to-speech functionality
+    let speechSynthesis = window.speechSynthesis;
+    let isSpeaking = false;
+    let currentUtterance = null;
+
+    function getContentText() {
+        const container = document.getElementById('day-content-container');
+        if (!container) return '';
+
+        // Get all text content from the container
+        let text = '';
+        const elements = container.querySelectorAll('h3, h4, div, span, li');
+        
+        elements.forEach(element => {
+            if (element.tagName === 'H3' || element.tagName === 'H4') {
+                text += element.textContent + '. ';
+            } else if (element.tagName === 'LI') {
+                text += element.textContent + '. ';
+            } else if (element.tagName === 'DIV' && element.classList.contains('time-allocation-item')) {
+                text += element.textContent + '. ';
+            } else if (element.tagName === 'SPAN' && element.classList.contains('topic-tag')) {
+                text += element.textContent + '. ';
+            }
+        });
+
+        return text.trim();
+    }
+
+    function speakContent() {
+        const text = getContentText();
+        if (!text) {
+            alert('No content available to read');
+            return;
+        }
+
+        const speechButton = document.getElementById('speech-button');
+        const buttonText = speechButton.querySelector('.button-text');
+
+        if (isSpeaking) {
+            speechSynthesis.cancel();
+            isSpeaking = false;
+            speechButton.classList.remove('playing', 'pulse-animation');
+            buttonText.textContent = 'Read Content';
+            return;
+        }
+
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.rate = 1.0;
+        utterance.pitch = 1.0;
+        utterance.volume = 1.0;
+
+        utterance.onstart = () => {
+            isSpeaking = true;
+            speechButton.classList.add('playing', 'pulse-animation');
+            buttonText.textContent = 'Stop Reading';
+        };
+
+        utterance.onend = () => {
+            isSpeaking = false;
+            speechButton.classList.remove('playing', 'pulse-animation');
+            buttonText.textContent = 'Read Content';
+        };
+
+        utterance.onerror = (event) => {
+            console.error('Speech synthesis error:', event);
+            isSpeaking = false;
+            speechButton.classList.remove('playing', 'pulse-animation');
+            buttonText.textContent = 'Read Content';
+        };
+
+        currentUtterance = utterance;
+        speechSynthesis.speak(utterance);
+    }
+
+    // Add event listener for speech button
+    document.getElementById('speech-button').addEventListener('click', speakContent);
+
+    // Content Generation
+    const generateButton = document.getElementById('generate-content-button');
+    const topicSelector = document.getElementById('topic-selector');
+    const generatedContent = document.getElementById('generated-content');
+
+    // Function to populate topics from planner
+    function populateTopics() {
+        const dayContent = document.getElementById('day-content-container');
+        if (!dayContent) return;
+
+        const topics = dayContent.querySelectorAll('.topic-tag');
+        topicSelector.innerHTML = '<option value="" data-i18n="planner.select_topic_placeholder">Select a topic</option>';
+        
+        topics.forEach(topic => {
+            const option = document.createElement('option');
+            option.value = topic.textContent;
+            option.textContent = topic.textContent;
+            topicSelector.appendChild(option);
+        });
+    }
+
+    // Function to generate content using Google API
+    async function generateContent(topic) {
+        try {
+            generatedContent.classList.remove('hidden');
+            generatedContent.innerHTML = `
+                <div class="flex items-center justify-center">
+                    <div class="loading-spinner"></div>
+                    <span class="ml-2 text-gray-600 dark:text-gray-400" data-i18n="planner.generating">Generating content...</span>
+                </div>
+            `;
+
+            const response = await fetch('/api/generate-content', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${localStorage.getItem('auth_token')}`
+                },
+                body: JSON.stringify({
+                    topic: topic,
+                    language: localStorage.getItem('language') || 'en'
+                })
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to generate content');
+            }
+
+            const data = await response.json();
+            
+            generatedContent.innerHTML = `
+                <div class="prose dark:prose-invert max-w-none">
+                    <h3 class="text-lg font-semibold mb-2">${data.title}</h3>
+                    <div class="space-y-4">
+                        ${data.content.split('\n').map(paragraph => `<p>${paragraph}</p>`).join('')}
+                    </div>
+                    ${data.keyPoints ? `
+                        <div class="mt-4">
+                            <h4 class="font-semibold mb-2" data-i18n="planner.key_points">Key Points:</h4>
+                            <ul class="list-disc pl-4">
+                                ${data.keyPoints.map(point => `<li>${point}</li>`).join('')}
+                            </ul>
+                        </div>
+                    ` : ''}
+                </div>
+            `;
+        } catch (error) {
+            console.error('Error generating content:', error);
+            generatedContent.innerHTML = `
+                <div class="text-red-600 dark:text-red-400 text-center">
+                    <p data-i18n="planner.generation_error">Failed to generate content. Please try again.</p>
+                </div>
+            `;
+        }
+    }
+
+    // Event Listeners
+    generateButton.addEventListener('click', () => {
+        const selectedTopic = topicSelector.value;
+        if (!selectedTopic) {
+            alert('Please select a topic first');
+            return;
+        }
+        generateContent(selectedTopic);
+    });
+
+    // Update topics when day content changes
+    document.addEventListener('dayContentUpdated', populateTopics);
+
+    // Add translations for content generation
+    const contentGenerationTranslations = {
+        en: {
+            planner: {
+                content_generation: "Content Generation",
+                generate_content: "Generate Content",
+                select_topic: "Select Topic",
+                select_topic_placeholder: "Select a topic",
+                generating: "Generating content...",
+                key_points: "Key Points",
+                generation_error: "Failed to generate content. Please try again."
+            }
+        },
+        hi: {
+            planner: {
+                content_generation: "सामग्री निर्माण",
+                generate_content: "सामग्री बनाएं",
+                select_topic: "विषय चुनें",
+                select_topic_placeholder: "एक विषय चुनें",
+                generating: "सामग्री बनाई जा रही है...",
+                key_points: "मुख्य बिंदु",
+                generation_error: "सामग्री बनाने में विफल। कृपया पुनः प्रयास करें।"
+            }
+        },
+        kn: {
+            planner: {
+                content_generation: "ವಿಷಯ ಉತ್ಪಾದನೆ",
+                generate_content: "ವಿಷಯವನ್ನು ರಚಿಸಿ",
+                select_topic: "ವಿಷಯವನ್ನು ಆಯ್ಕೆಮಾಡಿ",
+                select_topic_placeholder: "ವಿಷಯವನ್ನು ಆಯ್ಕೆಮಾಡಿ",
+                generating: "ವಿಷಯವನ್ನು ರಚಿಸಲಾಗುತ್ತಿದೆ...",
+                key_points: "ಪ್ರಮುಖ ಅಂಶಗಳು",
+                generation_error: "ವಿಷಯವನ್ನು ರಚಿಸಲು ವಿಫಲವಾಗಿದೆ. ದಯವಿಟ್ಟು ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ."
+            }
+        }
+    };
+
+    // Merge translations
+    Object.assign(translations.en, contentGenerationTranslations.en);
+    Object.assign(translations.hi, contentGenerationTranslations.hi);
+    Object.assign(translations.kn, contentGenerationTranslations.kn);
+
     // Initialize
     document.addEventListener('DOMContentLoaded', () => {
         fetchDailyContent();
+        populateTopics();
     });
 
     // Navigation handlers

@@ -81,6 +81,34 @@
         .dark .gradient-bg {
             background: linear-gradient(-45deg, #1e1b4b, #312e81, #1e40af, #1e3a8a);
         }
+
+        .language-selector {
+            background: rgba(99, 102, 241, 0.1);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            border: 1px solid rgba(99, 102, 241, 0.2);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .language-selector:hover {
+            background: rgba(99, 102, 241, 0.2);
+        }
+
+        .language-selector:focus {
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.3);
+        }
+
+        .dark .language-selector {
+            background: rgba(99, 102, 241, 0.2);
+            border-color: rgba(99, 102, 241, 0.3);
+        }
+
+        .dark .language-selector:hover {
+            background: rgba(99, 102, 241, 0.3);
+        }
     </style>
 
     {% block head %}{% endblock %}
@@ -95,11 +123,9 @@
                         <span class="text-indigo-200">e-</span>Gurukool
                     </a>
                     <div class="hidden md:flex space-x-6">
-                        <a href="/" class="nav-link">Dashboard</a>
-                        <a href="/test-viewer" class="nav-link">Test Viewer</a>
-                        <a href="/planner" class="nav-link">Planner</a>
-                        <a href="/daily-report" class="nav-link">Daily Report</a>
-                        <a href="/mock-test" class="nav-link">Mock Test</a>
+                        <a href="/" class="nav-link" data-i18n="nav.dashboard">Dashboard</a>
+                        <a href="/planner" class="nav-link" data-i18n="nav.planner">Planner</a>
+                        <a href="/daily-report" class="nav-link" data-i18n="nav.daily_report">Daily Report</a>
                     </div>
                 </div>
                 <div class="flex items-center space-x-4">
@@ -112,10 +138,10 @@
                         </svg>
                     </button>
                     <div class="relative">
-                        <select id="language-selector" class="bg-indigo-700/50 text-white rounded-lg px-3 py-1.5 border border-indigo-400/30 focus:outline-none focus:ring-2 focus:ring-indigo-400 transition-all">
+                        <select id="language-selector" class="language-selector">
                             <option value="en">English</option>
                             <option value="hi">हिंदी</option>
-                            <option value="te">తెలుగు</option>
+                            <option value="kn">ಕನ್ನಡ</option>
                         </select>
                     </div>
                 </div>
@@ -127,11 +153,10 @@
     <div class="md:hidden bg-indigo-500/90 backdrop-blur-sm text-white sticky top-0 z-40">
         <div class="container mx-auto px-4 py-2">
             <div class="flex justify-between space-x-2 overflow-x-auto">
-                <a href="/" class="text-center flex-1 py-2 hover:bg-indigo-600/50 rounded-lg transition-colors whitespace-nowrap">Dashboard</a>
-                <a href="/test-viewer" class="text-center flex-1 py-2 hover:bg-indigo-600/50 rounded-lg transition-colors whitespace-nowrap">Test Viewer</a>
-                <a href="/planner" class="text-center flex-1 py-2 hover:bg-indigo-600/50 rounded-lg transition-colors whitespace-nowrap">Planner</a>
-                <a href="/daily-report" class="text-center flex-1 py-2 hover:bg-indigo-600/50 rounded-lg transition-colors whitespace-nowrap">Report</a>
-                <a href="/mock-test" class="text-center flex-1 py-2 hover:bg-indigo-600/50 rounded-lg transition-colors whitespace-nowrap">Mock Test</a>
+                <a href="/" class="text-center flex-1 py-2 hover:bg-indigo-600/50 rounded-lg transition-colors whitespace-nowrap" data-i18n="nav.dashboard">Dashboard</a>
+                <a href="/test-viewer" class="text-center flex-1 py-2 hover:bg-indigo-600/50 rounded-lg transition-colors whitespace-nowrap" data-i18n="nav.test_viewer">Test Viewer</a>
+                <a href="/planner" class="text-center flex-1 py-2 hover:bg-indigo-600/50 rounded-lg transition-colors whitespace-nowrap" data-i18n="nav.planner">Planner</a>
+                <a href="/daily-report" class="text-center flex-1 py-2 hover:bg-indigo-600/50 rounded-lg transition-colors whitespace-nowrap" data-i18n="nav.daily_report">Report</a>
             </div>
         </div>
     </div>
@@ -147,35 +172,113 @@
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
                 <div>
                     <h3 class="text-xl font-bold mb-4">e-Gurukool</h3>
-                    <p class="text-gray-400">Empowering education through AI-driven content analysis and planning.</p>
+                    <p class="text-gray-400" data-i18n="footer.description">Empowering education through AI-driven content analysis and planning.</p>
                 </div>
                 <div>
-                    <h3 class="text-xl font-bold mb-4">Quick Links</h3>
+                    <h3 class="text-xl font-bold mb-4" data-i18n="footer.quick_links">Quick Links</h3>
                     <ul class="space-y-2">
-                        <li><a href="/" class="text-gray-400 hover:text-white transition-colors">Dashboard</a></li>
-                        <li><a href="/test-viewer" class="text-gray-400 hover:text-white transition-colors">Test Viewer</a></li>
-                        <li><a href="/planner" class="text-gray-400 hover:text-white transition-colors">Planner</a></li>
-                        <li><a href="/daily-report" class="text-gray-400 hover:text-white transition-colors">Daily Report</a></li>
+                        <li><a href="/" class="text-gray-400 hover:text-white transition-colors" data-i18n="nav.dashboard">Dashboard</a></li>
+                        <li><a href="/test-viewer" class="text-gray-400 hover:text-white transition-colors" data-i18n="nav.test_viewer">Test Viewer</a></li>
+                        <li><a href="/planner" class="text-gray-400 hover:text-white transition-colors" data-i18n="nav.planner">Planner</a></li>
+                        <li><a href="/daily-report" class="text-gray-400 hover:text-white transition-colors" data-i18n="nav.daily_report">Daily Report</a></li>
                     </ul>
                 </div>
                 <div>
-                    <h3 class="text-xl font-bold mb-4">Support</h3>
+                    <h3 class="text-xl font-bold mb-4" data-i18n="footer.support">Support</h3>
                     <ul class="space-y-2">
-                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">About</a></li>
-                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Help</a></li>
-                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Privacy</a></li>
-                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Terms</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors" data-i18n="footer.about">About</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors" data-i18n="footer.help">Help</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors" data-i18n="footer.privacy">Privacy</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors" data-i18n="footer.terms">Terms</a></li>
                     </ul>
                 </div>
             </div>
             <div class="border-t border-gray-700 mt-8 pt-8 text-center text-gray-400">
-                <p>&copy; 2025 e-Gurukool. All rights reserved.</p>
+                <p data-i18n="footer.copyright">&copy; 2025 e-Gurukool. All rights reserved.</p>
             </div>
         </div>
     </footer>
 
     <!-- Common JavaScript -->
     <script>
+        // Translation dictionary
+        const translations = {
+            en: {
+                nav: {
+                    dashboard: "Dashboard",
+                    planner: "Planner",
+                    daily_report: "Daily Report",
+                    test_viewer: "Test Viewer"
+                },
+                footer: {
+                    description: "Empowering education through AI-driven content analysis and planning.",
+                    quick_links: "Quick Links",
+                    support: "Support",
+                    about: "About",
+                    help: "Help",
+                    privacy: "Privacy",
+                    terms: "Terms",
+                    copyright: "© 2025 e-Gurukool. All rights reserved."
+                }
+            },
+            hi: {
+                nav: {
+                    dashboard: "डैशबोर्ड",
+                    planner: "योजनाकार",
+                    daily_report: "दैनिक रिपोर्ट",
+                    test_viewer: "टेस्ट व्यूअर"
+                },
+                footer: {
+                    description: "एआई-संचालित सामग्री विश्लेषण और योजना के माध्यम से शिक्षा को सशक्त बनाना।",
+                    quick_links: "त्वरित लिंक",
+                    support: "समर्थन",
+                    about: "के बारे में",
+                    help: "मदद",
+                    privacy: "गोपनीयता",
+                    terms: "नियम और शर्तें",
+                    copyright: "© 2025 ई-गुरुकूल। सर्वाधिकार सुरक्षित।"
+                }
+            },
+            kn: {
+                nav: {
+                    dashboard: "ಡ್ಯಾಶ್ಬೋರ್ಡ್",
+                    planner: "ಯೋಜನಾಕಾರ",
+                    daily_report: "ದೈನಂದಿನ ವರದಿ",
+                    test_viewer: "ಪರೀಕ್ಷೆ ವೀಕ್ಷಕ"
+                },
+                footer: {
+                    description: "AI-ಚಾಲಿತ ವಿಷಯ ವಿಶ್ಲೇಷಣೆ ಮತ್ತು ಯೋಜನೆ ಮೂಲಕ ಶಿಕ್ಷಣವನ್ನು ಶಕ್ತಿಶಾಲಿ ಮಾಡುವುದು.",
+                    quick_links: "ತ್ವರಿತ ಲಿಂಕ್ಗಳು",
+                    support: "ಬೆಂಬಲ",
+                    about: "ಬಗ್ಗೆ",
+                    help: "ಸಹಾಯ",
+                    privacy: "ಗೌಪ್ಯತೆ",
+                    terms: "ನಿಯಮಗಳು ಮತ್ತು ಷರತ್ತುಗಳು",
+                    copyright: "© 2025 ಇ-ಗುರುಕೂಲ. ಎಲ್ಲ ಹಕ್ಕುಗಳನ್ನು ಕಾಯ್ದಿರಿಸಲಾಗಿದೆ."
+                }
+            }
+        };
+
+        // Function to translate text
+        function translateText() {
+            const language = localStorage.getItem('language') || 'en';
+            const elements = document.querySelectorAll('[data-i18n]');
+            
+            elements.forEach(element => {
+                const key = element.getAttribute('data-i18n');
+                const keys = key.split('.');
+                let translation = translations[language];
+                
+                for (const k of keys) {
+                    translation = translation[k];
+                }
+                
+                if (translation) {
+                    element.textContent = translation;
+                }
+            });
+        }
+
         // Dark mode toggle
         const darkModeToggle = document.getElementById('dark-mode-toggle');
         const html = document.documentElement;
@@ -194,15 +297,14 @@
         // Language selector functionality
         document.getElementById('language-selector').addEventListener('change', function() {
             const language = this.value;
-            // Store language preference
             localStorage.setItem('language', language);
-            // Reload the page to apply the language
-            window.location.reload();
+            translateText();
         });
 
-        // Set initial language
+        // Set initial language and translate
         const savedLanguage = localStorage.getItem('language') || 'en';
         document.getElementById('language-selector').value = savedLanguage;
+        translateText();
     </script>
     {% block scripts %}{% endblock %}
 </body>

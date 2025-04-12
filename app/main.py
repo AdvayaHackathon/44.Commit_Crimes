@@ -6,8 +6,6 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from fastapi.middleware.cors import CORSMiddleware
 from dotenv import load_dotenv
-from app.api import planner, mock_test
-from pathlib import Path
 
 # Set up logging
 logging.basicConfig(level=logging.INFO)
@@ -54,16 +52,16 @@ templates = Jinja2Templates(directory="app/templates")
 # Import routers
 from app.api.upload import router as upload_router
 from app.api.analysis import router as analysis_router
+from app.api.planner import router as planner_router
 from app.api.folder_upload import router as folder_router
 from app.api.maintenance import router as maintenance_router
 
 # Include routers
 app.include_router(upload_router)
 app.include_router(analysis_router)
-app.include_router(planner.router)
+app.include_router(planner_router)
 app.include_router(folder_router)
 app.include_router(maintenance_router)
-app.include_router(mock_test.router)
 
 # Page routes
 @app.get("/")
@@ -75,7 +73,7 @@ async def test_viewer(request: Request):
     return templates.TemplateResponse("test_viewer.html", {"request": request})
 
 @app.get("/planner")
-async def planner_page(request: Request):
+async def planner(request: Request):
     return templates.TemplateResponse("planner.html", {"request": request})
 
 @app.get("/daily-report")
@@ -85,10 +83,6 @@ async def daily_report(request: Request):
 @app.get("/folder-upload")
 async def folder_upload(request: Request):
     return templates.TemplateResponse("folder_upload.html", {"request": request})
-
-@app.get("/mock-test")
-async def mock_test_page(request: Request):
-    return templates.TemplateResponse("mock_test.html", {"request": request})
 
 # Health check endpoint
 @app.get("/health")
