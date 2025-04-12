@@ -9,7 +9,6 @@ import logging
 
 from app.core.ocr.folder_processor import process_folder
 from app.models.folder import FolderProcessRequest, FolderProcessResponse
-from app.core.ollama.processor import generate_test_plan_with_ollama, generate_daily_content_with_ollama
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -37,34 +36,13 @@ async def process_folder_path(
         if not os.path.isdir(folder_path):
             raise HTTPException(status_code=400, detail=f"Folder not found: {folder_path}")
         
-        # Process folder with OCR
-        ocr_result = await process_folder(
+        # Process folder
+        result = await process_folder(
             folder_path=folder_path,
             recursive=folder_request.recursive,
             exam_type=folder_request.exam_type,
             exam_date=folder_request.exam_date
         )
-        
-        # Generate test plan using Ollama
-        test_plan = generate_test_plan_with_ollama(
-            file_paths=[os.path.join(folder_path, f) for f in os.listdir(folder_path) if os.path.isfile(os.path.join(folder_path, f))],
-            exam_type=folder_request.exam_type,
-            model="deepseek-r1:1.5b"
-        )
-        
-        # Generate daily content using Ollama
-        daily_content = generate_daily_content_with_ollama(
-            file_paths=[os.path.join(folder_path, f) for f in os.listdir(folder_path) if os.path.isfile(os.path.join(folder_path, f))],
-            exam_type=folder_request.exam_type,
-            model="deepseek-r1:1.5b"
-        )
-        
-        # Combine results
-        result = {
-            "ocr_result": ocr_result,
-            "test_plan": test_plan,
-            "daily_content": daily_content
-        }
         
         return FolderProcessResponse(
             status="success",
@@ -96,34 +74,13 @@ async def upload_folder(
             with open(file_path, "wb") as buffer:
                 shutil.copyfileobj(file.file, buffer)
         
-        # Process folder with OCR
-        ocr_result = await process_folder(
+        # Process the folder
+        result = await process_folder(
             folder_path=temp_folder,
             recursive=False,
             exam_type=exam_type,
             exam_date=exam_date
         )
-        
-        # Generate test plan using Ollama
-        test_plan = generate_test_plan_with_ollama(
-            file_paths=[os.path.join(temp_folder, f) for f in os.listdir(temp_folder) if os.path.isfile(os.path.join(temp_folder, f))],
-            exam_type=exam_type,
-            model="deepseek-r1:1.5b"
-        )
-        
-        # Generate daily content using Ollama
-        daily_content = generate_daily_content_with_ollama(
-            file_paths=[os.path.join(temp_folder, f) for f in os.listdir(temp_folder) if os.path.isfile(os.path.join(temp_folder, f))],
-            exam_type=exam_type,
-            model="deepseek-r1:1.5b"
-        )
-        
-        # Combine results
-        result = {
-            "ocr_result": ocr_result,
-            "test_plan": test_plan,
-            "daily_content": daily_content
-        }
         
         return FolderProcessResponse(
             status="success",

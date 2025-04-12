@@ -5,13 +5,13 @@ from typing import List, Dict, Any, Optional
 from pathlib import Path
 
 from app.core.ollama.client import ollama_client
-from app.core.ocr.processor import process_file
+from app.core.ocr.document_processor import extract_text_from_file
 
 # Set up logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-async def process_files_with_ollama(
+def process_files_with_ollama(
     file_paths: List[str],
     task_description: str,
     model: str = "deepseek-r1:1.5b",
@@ -39,16 +39,16 @@ async def process_files_with_ollama(
                 file_name = os.path.basename(file_path)
                 
                 # Extract text based on file type
-                result = await process_file(file_path)
+                extracted_text = extract_text_from_file(file_path)
                 
-                if "error" in result:
-                    logger.warning(f"Error extracting text from {file_name}: {result['error']}")
+                if "Error:" in extracted_text:
+                    logger.warning(f"Error extracting text from {file_name}: {extracted_text}")
                     continue
                 
                 # Add to file contents list
                 file_contents.append({
                     "file_name": file_name,
-                    "content": result['text'] if 'text' in result else ''
+                    "content": extracted_text
                 })
                 
                 logger.info(f"Successfully extracted text from {file_name}")

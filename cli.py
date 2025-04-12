@@ -11,6 +11,7 @@ import json
 from pathlib import Path
 from typing import List, Dict, Any
 import logging
+from datetime import datetime, timezone
 
 # Configure logging
 logging.basicConfig(
@@ -26,6 +27,7 @@ sys.path.insert(0, os.path.abspath(os.path.dirname(__file__)))
 from app.core.ocr.processor import process_file
 from app.core.analysis.text_analyzer import analyze_text
 from app.core.planner.test_planner import generate_test_plan, generate_learning_outcome_sheet
+from app.core.sync.document_sync import sync_processed_documents
 
 async def process_folder(input_folder: str, recursive: bool = False) -> List[Dict[str, Any]]:
     """
@@ -162,6 +164,9 @@ def main():
                         default=['mixed', 'objective', 'subjective', 'practical'],
                         help='Test types to generate (mixed, objective, subjective, practical)')
     
+    parser.add_argument('--sync-only', '-s', action='store_true',
+                        help='Only synchronize processed documents with database')
+    
     args = parser.parse_args()
     
     # Set environment variables
@@ -171,6 +176,15 @@ def main():
     
     # Run async functions
     async def run():
+        if args.sync_only:
+            # Only sync processed documents with database
+            sync_result = sync_processed_documents()
+            if sync_result["status"] == "success":
+                logger.info(sync_result["message"])
+            else:
+                logger.error(f"Sync failed: {sync_result['message']}")
+            return
+            
         # Process folder
         results = await process_folder(args.input, args.recursive)
         
@@ -178,6 +192,13 @@ def main():
             # Generate test plans
             await generate_plans(results, args.test_types)
             
+            # Sync processed documents with database
+            sync_result = sync_processed_documents()
+            if sync_result["status"] == "success":
+                logger.info(sync_result["message"])
+            else:
+                logger.warning(f"Sync warning: {sync_result['message']}")
+                
             logger.info("Processing completed successfully")
         else:
             logger.warning("No files were processed")
