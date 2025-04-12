@@ -83,6 +83,20 @@
 {% endblock %}
 
 {% block content %}
+<!-- Motivational Quote -->
+<div class="mt-6 bg-gradient-to-r from-purple-600 to-indigo-600 rounded-lg shadow-md p-6 text-white" style="margin-bottom: :20px;">
+    <div class="flex items-start">
+        <div class="text-3xl mr-4">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z" />
+            </svg>
+        </div>
+        <div>
+            <h3 class="text-xl font-bold mb-2">Today's Motivation</h3>
+            <p id="motivational-quote" class="text-lg italic">"The harder you work for something, the greater you'll feel when you achieve it."</p>
+        </div>
+    </div>
+</div>
 <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
     <!-- Upload Section -->
     <div class="md:col-span-2 upload-card rounded-xl shadow-lg p-6">
@@ -240,20 +254,7 @@
     </div>
 </div>
 
-<!-- Motivational Quote -->
-<div class="mt-6 bg-gradient-to-r from-purple-600 to-indigo-600 rounded-lg shadow-md p-6 text-white">
-    <div class="flex items-start">
-        <div class="text-3xl mr-4">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z" />
-            </svg>
-        </div>
-        <div>
-            <h3 class="text-xl font-bold mb-2">Today's Motivation</h3>
-            <p id="motivational-quote" class="text-lg italic">"The harder you work for something, the greater you'll feel when you achieve it."</p>
-        </div>
-    </div>
-</div>
+
 
 <!-- Test Plans Section (will be shown after processing) -->
 <div id="test-plans-section" class="mt-6 hidden">

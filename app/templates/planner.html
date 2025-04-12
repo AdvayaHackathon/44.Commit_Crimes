@@ -281,7 +281,16 @@
     <div class="md:col-span-2 planner-card rounded-xl shadow-lg p-6">
         <div class="flex justify-between items-center mb-6">
             <h2 class="text-2xl font-bold text-gray-800 dark:text-white">Daily Content Calendar</h2>
-            <div class="flex items-center space-x-2">
+            <!-- Daily Report Summary -->
+            <div class="flex items-center space-x-4">
+                <div class="bg-gradient-to-r from-purple-600 to-indigo-600 rounded-lg shadow-md p-3 text-white">
+                    <div class="text-sm font-medium">Total Days</div>
+                    <div class="text-2xl font-bold" id="total-days">0</div>
+                </div>
+                <div class="bg-gradient-to-r from-indigo-600 to-blue-600 rounded-lg shadow-md p-3 text-white">
+                    <div class="text-sm font-medium">Total Topics</div>
+                    <div class="text-2xl font-bold" id="total-topics">0</div>
+                </div>
                 <button id="prev-month" class="nav-button">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
@@ -294,7 +303,7 @@
                     </svg>
                 </button>
             </div>
-            </div>
+        </div>
 
         <div class="mb-6">
             <div class="grid grid-cols-7 gap-1 text-center font-semibold text-gray-600 dark:text-gray-400 mb-2">
@@ -346,63 +355,75 @@
         </div>
 
         <!-- Day 1 Summary Section -->
-        <div class="summary-card rounded-xl shadow-lg p-6">
+        <div class="summary-card rounded-xl shadow-lg p-6 bg-white dark:bg-gray-800">
             <div class="flex justify-between items-center mb-6">
                 <h2 class="text-2xl font-bold text-gray-800 dark:text-white">Day 1 Summary</h2>
                 <span class="text-sm text-gray-600 dark:text-gray-400">GATE CSE Preparation</span>
             </div>
             
             <div class="space-y-6">
-                <!-- Topics -->
-                <div>
-                    <h3 class="text-lg font-semibold text-gray-700 dark:text-gray-300 mb-3">Topics</h3>
-                    <div class="grid gap-2">
+                <!-- Topics Section -->
+                <div class="mb-4">
+                    <h3 class="text-lg font-semibold text-indigo-600 dark:text-indigo-400 mb-2">Topics</h3>
+                    <div class="space-y-2">
                         <div class="summary-point text-gray-600 dark:text-gray-400">
-                            1. Introduction to Hadoop
+                            • Introduction to Hadoop (2 hours)
                         </div>
                         <div class="summary-point text-gray-600 dark:text-gray-400">
-                            2. Big Data Store Model
+                            • Big Data Store Model (1.5 hours)
                         </div>
                         <div class="summary-point text-gray-600 dark:text-gray-400">
-                            3. Big Data Programming Model
+                            • Big Data Programming Model (2 hours)
                         </div>
                         <div class="summary-point text-gray-600 dark:text-gray-400">
-                            4. Hadoop and its Ecosystem
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Time Allocation -->
-                <div>
-                    <h3 class="text-lg font-semibold text-gray-700 dark:text-gray-300 mb-3">Time Allocation</h3>
-                    <div class="grid gap-2">
-                        <div class="summary-point text-gray-600 dark:text-gray-400">
-                            • Introduction to Hadoop: 2 hours
-                        </div>
-                        <div class="summary-point text-gray-600 dark:text-gray-400">
-                            • Big Data Store Model: 1 hour
-                        </div>
-                        <div class="summary-point text-gray-600 dark:text-gray-400">
-                            • Big Data Programming Model: 1 hour
-                        </div>
-                        <div class="summary-point text-gray-600 dark:text-gray-400">
-                            • Hadoop and its Ecosystem: 2 hours
+                            • Hadoop and its Ecosystem (2.5 hours)
                         </div>
                     </div>
                 </div>
 
-                <!-- Key Concepts -->
-                <div>
-                    <h3 class="text-lg font-semibold text-gray-700 dark:text-gray-300 mb-3">Key Concepts</h3>
-                    <div class="grid gap-2">
+                <!-- Key Concepts Section -->
+                <div class="mb-4">
+                    <h3 class="text-lg font-semibold text-indigo-600 dark:text-indigo-400 mb-2">Key Concepts</h3>
+                    <div class="space-y-2">
                         <div class="summary-point text-gray-600 dark:text-gray-400">
-                            • Distributed computing
+                            • Understanding Big Data challenges and solutions
                         </div>
                         <div class="summary-point text-gray-600 dark:text-gray-400">
-                            • Data locality
+                            • Hadoop Distributed File System (HDFS)
                         </div>
                         <div class="summary-point text-gray-600 dark:text-gray-400">
-                            • Scalability
+                            • MapReduce programming paradigm
+                        </div>
+                        <div class="summary-point text-gray-600 dark:text-gray-400">
+                            • YARN architecture and resource management
+                        </div>
+                        <div class="summary-point text-gray-600 dark:text-gray-400">
+                            • Core components of Hadoop ecosystem
+                        </div>
+                        <div class="summary-point text-gray-600 dark:text-gray-400">
+                            • Data processing and storage patterns
+                        </div>
+                        <div class="summary-point text-gray-600 dark:text-gray-400">
+                            • Distributed computing principles
+                        </div>
+                        <div class="summary-point text-gray-600 dark:text-gray-400">
+                            • Fault tolerance mechanisms
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Study Tips Section -->
+                <div class="mb-4">
+                    <h3 class="text-lg font-semibold text-indigo-600 dark:text-indigo-400 mb-2">Study Tips</h3>
+                    <div class="space-y-2">
+                        <div class="summary-point text-gray-600 dark:text-gray-400">
+                            • Focus on understanding the fundamental concepts of distributed computing
+                        </div>
+                        <div class="summary-point text-gray-600 dark:text-gray-400">
+                            • Create diagrams to visualize HDFS architecture
+                        </div>
+                        <div class="summary-point text-gray-600 dark:text-gray-400">
+                            • Practice writing simple MapReduce examples
                         </div>
                     </div>
                 </div>
@@ -445,6 +466,7 @@
                 dailyContent = result.data;
                 updateCalendar();
                 populateAllContent();
+                updateTotalStats();
                 // Show today's content by default if available
                 const today = new Date().toISOString().split('T')[0];
                 if (dailyContent?.daily_plans?.[today]) {
@@ -1078,6 +1100,29 @@
                 });
             }
         });
+    }
+
+    function updateTotalStats() {
+        if (!dailyContent || !dailyContent.daily_plans) return;
+
+        const totalDays = Object.keys(dailyContent.daily_plans).length;
+        let uniqueTopics = new Set();
+
+        Object.values(dailyContent.daily_plans).forEach(plan => {
+            try {
+                const jsonStr = plan.content.split('```json\n')[1].split('\n```')[0];
+                const planContent = JSON.parse(jsonStr);
+                
+                Object.values(planContent).forEach(dayData => {
+                    dayData.topics.forEach(topic => uniqueTopics.add(topic));
+                });
+            } catch (e) {
+                console.error('Error parsing plan content:', e);
+            }
+        });
+
+        document.getElementById('total-days').textContent = totalDays;
+        document.getElementById('total-topics').textContent = uniqueTopics.size;
     }
 </script>
 {% endblock %}

@@ -139,95 +139,115 @@ def get_daily_report():
         latest_file = max(json_files)
         file_path = os.path.join(output_dir, latest_file)
 
-        with open(file_path, 'r') as f:
+        with open(file_path, 'r', encoding='utf-8') as f:
             content = json.load(f)
 
-        # Generate daily report data
-        report_data = {
-            'exam_info': {
-                'exam_type': content.get('exam_type', 'GATE CSE'),
-                'exam_date': content.get('exam_date'),
-                'days_until_exam': content.get('days_until_exam', 0)
-            },
-            'daily_reports': []
-        }
+        # Process the JSON content
+        try:
+            daily_plans = {}
+            if 'daily_plans' in content:
+                for day_num, plan_data in content['daily_plans'].items():
+                    # Parse the content string to extract JSON data
+                    try:
+                        content_str = plan_data.get('content', '')
+                        if '```json' in content_str:
+                            json_str = content_str.split('```json\n')[1].split('\n```')[0]
+                            plan_json = json.loads(json_str)
+                        else:
+                            plan_json = {}
+                    except:
+                        plan_json = {}
 
-        if 'daily_plans' in content:
-            for day_num, plan in content['daily_plans'].items():
-                # Calculate the date for this plan
-                if content.get('exam_date'):
-                    exam_date = datetime.strptime(content['exam_date'], '%Y-%m-%d')
-                    plan_date = exam_date - timedelta(days=int(content['days_until_exam']) - int(day_num))
-                else:
-                    plan_date = datetime.now() + timedelta(days=int(day_num))
+                    # Calculate the date for this plan
+                    if content.get('exam_date'):
+                        exam_date = datetime.strptime(content['exam_date'], '%Y-%m-%d')
+                        plan_date = exam_date - timedelta(days=int(content['days_until_exam']) - int(day_num))
+                    else:
+                        plan_date = datetime.now() + timedelta(days=int(day_num))
 
-                # Extract topics and their time allocations
-                topics_data = []
-                total_hours = 0
-                if isinstance(plan.get('time_allocation'), dict):
-                    for topic, hours in plan['time_allocation'].items():
-                        try:
-                            hours_float = float(hours)
-                            total_hours += hours_float
-                            topics_data.append({
-                                'topic': topic,
-                                'hours': hours_float,
-                                'percentage': 0  # Will be calculated after total is known
-                            })
-                        except (ValueError, TypeError):
-                            continue
+                    # Extract data from plan_json
+                    topics = []
+                    time_allocation = {}
+                    key_concepts = []
+                    practice_items = []
 
-                # Calculate percentages
-                for topic_data in topics_data:
-                    if total_hours > 0:
-                        topic_data['percentage'] = (topic_data['hours'] / total_hours) * 100
+                    for day_data in plan_json.values():
+                        if isinstance(day_data, dict):
+                            topics.extend(day_data.get('topics', []))
+                            if 'time_allocation' in day_data:
+                                time_allocation.update(day_data['time_allocation'])
+                            key_concepts.extend(day_data.get('key_concepts', []))
+                            practice_items.extend(day_data.get('practice_items', []))
 
-                # Create the daily report
-                daily_report = {
-                    'day_number': day_num,
-                    'date': plan_date.strftime('%Y-%m-%d'),
-                    'formatted_date': plan_date.strftime('%B %d, %Y'),
-                    'topics': plan.get('topics', []),
-                    'topics_data': topics_data,
-                    'total_hours': total_hours,
-                    'key_concepts': plan.get('key_concepts', []),
-                    'practice_items': plan.get('practice_items', []),
-                    'completion_status': {
-                        'topics_covered': len(plan.get('topics', [])),
-                        'concepts_mastered': len(plan.get('key_concepts', [])),
-                        'practice_completed': len(plan.get('practice_items', [])),
-                        'total_study_hours': total_hours
+                    # Calculate total hours
+                    total_hours = sum(float(hours) for hours in time_allocation.values())
+
+                    # Create topics data with percentages
+                    topics_data = [
+                        {
+                            'topic': topic,
+                            'hours': float(hours),
+                            'percentage': (float(hours) / total_hours * 100) if total_hours > 0 else 0
+                        }
+                        for topic, hours in time_allocation.items()
+                    ]
+
+                    daily_plans[day_num] = {
+                        'day_number': day_num,
+                        'date': plan_date.strftime('%Y-%m-%d'),
+                        'formatted_date': plan_date.strftime('%B %d, %Y'),
+                        'topics': topics,
+                        'topics_data': topics_data,
+                        'total_hours': total_hours,
+                        'key_concepts': key_concepts,
+                        'practice_items': practice_items,
+                        'completion_status': {
+                            'topics_covered': len(topics),
+                            'concepts_mastered': len(key_concepts),
+                            'practice_completed': len(practice_items),
+                            'total_study_hours': total_hours
+                        }
                     }
+
+            # Calculate overall statistics
+            all_plans = list(daily_plans.values())
+            total_topics = sum(len(plan['topics']) for plan in all_plans)
+            total_concepts = sum(len(plan['key_concepts']) for plan in all_plans)
+            total_practice = sum(len(plan['practice_items']) for plan in all_plans)
+            total_study_hours = sum(plan['total_hours'] for plan in all_plans)
+
+            report_data = {
+                'exam_info': {
+                    'exam_type': content.get('exam_type', 'GATE CSE'),
+                    'exam_date': content.get('exam_date'),
+                    'days_until_exam': content.get('days_until_exam', 0)
+                },
+                'daily_reports': sorted(all_plans, key=lambda x: x['date']),
+                'overall_statistics': {
+                    'total_days': len(all_plans),
+                    'total_topics': total_topics,
+                    'total_concepts': total_concepts,
+                    'total_practice_items': total_practice,
+                    'total_study_hours': total_study_hours,
+                    'average_daily_hours': total_study_hours / len(all_plans) if all_plans else 0
                 }
+            }
 
-                report_data['daily_reports'].append(daily_report)
+            return jsonify({
+                'status': 'success',
+                'data': report_data
+            })
 
-        # Sort daily reports by date
-        report_data['daily_reports'].sort(key=lambda x: x['date'])
-
-        # Calculate overall statistics
-        total_topics = sum(len(report['topics']) for report in report_data['daily_reports'])
-        total_concepts = sum(len(report['key_concepts']) for report in report_data['daily_reports'])
-        total_practice = sum(len(report['practice_items']) for report in report_data['daily_reports'])
-        total_study_hours = sum(report['total_hours'] for report in report_data['daily_reports'])
-
-        report_data['overall_statistics'] = {
-            'total_days': len(report_data['daily_reports']),
-            'total_topics': total_topics,
-            'total_concepts': total_concepts,
-            'total_practice_items': total_practice,
-            'total_study_hours': total_study_hours,
-            'average_daily_hours': total_study_hours / len(report_data['daily_reports']) if report_data['daily_reports'] else 0
-        }
-
-        return jsonify({
-            'status': 'success',
-            'data': report_data
-        })
+        except Exception as e:
+            print(f"Error processing JSON content: {str(e)}")
+            return jsonify({
+                'status': 'error',
+                'message': f'Error processing JSON content: {str(e)}'
+            }), 500
 
     except Exception as e:
-        print(f"Error generating daily report: {str(e)}")
+        print(f"Error reading JSON file: {str(e)}")
         return jsonify({
             'status': 'error',
-            'message': f'Error generating daily report: {str(e)}'
+            'message': f'Error reading JSON file: {str(e)}'
         }), 500 

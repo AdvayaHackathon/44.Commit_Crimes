@@ -2,590 +2,199 @@
 
 {% block title %}Daily Report - Educational Content Analysis System{% endblock %}
 
+{% block head %}
+<style>
+    .report-card {
+        background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+        border: 1px solid rgba(99, 102, 241, 0.1);
+        transition: all 0.3s ease;
+    }
+
+    .dark .report-card {
+        background: linear-gradient(135deg, #1f2937 0%, #111827 100%);
+        border-color: rgba(99, 102, 241, 0.2);
+    }
+
+    .progress-bar {
+        transition: width 1s ease-in-out;
+    }
+
+    .stat-card {
+        transition: all 0.3s ease;
+    }
+
+    .stat-card:hover {
+        transform: translateY(-5px);
+    }
+
+    .topic-item {
+        transition: all 0.3s ease;
+    }
+
+    .topic-item:hover {
+        transform: translateX(5px);
+    }
+</style>
+{% endblock %}
+
 {% block content %}
-<div class="bg-white rounded-lg shadow-md p-6">
-    <h2 class="text-2xl font-bold mb-4">Daily Learning Outcome Report</h2>
-    
-    <div class="mb-6">
-        <div class="flex flex-col md:flex-row md:items-end md:space-x-4">
-            <div class="mb-4 md:mb-0">
-                <label class="block text-gray-700 mb-2">Date Range</label>
-                <div class="flex space-x-2">
-                    <input type="date" id="start-date" class="p-2 border border-gray-300 rounded">
-                    <span class="self-center">to</span>
-                    <input type="date" id="end-date" class="p-2 border border-gray-300 rounded">
-                </div>
-            </div>
-            <div class="mb-4 md:mb-0">
-                <label class="block text-gray-700 mb-2">Topic</label>
-                <select id="topic-filter" class="w-full p-2 border border-gray-300 rounded">
-                    <option value="all">All Topics</option>
-                    <!-- Topics will be populated dynamically -->
-                </select>
-            </div>
-            <div>
-                <button id="generate-report-button" class="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700">
-                    Generate Report
-                </button>
-            </div>
+<div class="container mx-auto px-4 py-8">
+    <!-- Header Section -->
+    <div class="flex items-center space-x-4">
+        <div class="bg-gradient-to-r from-purple-600 to-indigo-600 rounded-lg shadow-md p-3 text-white">
+            <div class="text-sm font-medium">Day</div>
+            <div class="text-2xl font-bold" id="total-days">1</div>
         </div>
-    </div>
-    
-    <div id="report-container" class="hidden">
-        <div class="mb-6">
-            <h3 class="text-xl font-bold mb-2">Learning Progress</h3>
-            <div class="h-80">
-                <canvas id="progress-chart"></canvas>
-            </div>
+        <div class="bg-gradient-to-r from-indigo-600 to-blue-600 rounded-lg shadow-md p-3 text-white">
+            <div class="text-sm font-medium">Total Topics</div>
+            <div class="text-2xl font-bold" id="total-topics">67</div>
         </div>
-        
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-                <h3 class="text-xl font-bold mb-2">Topic Mastery</h3>
-                <div class="h-64">
-                    <canvas id="mastery-chart"></canvas>
-                </div>
-            </div>
-            <div>
-                <h3 class="text-xl font-bold mb-2">Question Type Distribution</h3>
-                <div class="h-64">
-                    <canvas id="question-type-chart"></canvas>
-                </div>
-            </div>
-        </div>
-        
-        <div class="mt-6">
-            <h3 class="text-xl font-bold mb-2">Daily Breakdown</h3>
-            <div class="overflow-x-auto">
-                <table class="min-w-full bg-white">
-                    <thead>
-                        <tr>
-                            <th class="py-2 px-4 border-b border-gray-200 bg-gray-50 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
-                                Date
-                            </th>
-                            <th class="py-2 px-4 border-b border-gray-200 bg-gray-50 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
-                                Topics Covered
-                            </th>
-                            <th class="py-2 px-4 border-b border-gray-200 bg-gray-50 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
-                                Questions Analyzed
-                            </th>
-                            <th class="py-2 px-4 border-b border-gray-200 bg-gray-50 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
-                                Average Mastery
-                            </th>
-                            <th class="py-2 px-4 border-b border-gray-200 bg-gray-50 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
-                                Actions
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody id="daily-table-body">
-                        <!-- Daily data will be populated dynamically -->
-                    </tbody>
-                </table>
-            </div>
-        </div>
-        
-        <div class="mt-6 flex justify-end space-x-4">
-            <button id="export-report-button" class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700">
-                Export Report
-            </button>
-            <button id="print-report-button" class="bg-gray-600 text-white px-4 py-2 rounded hover:bg-gray-700">
-                Print Report
-            </button>
-        </div>
-    </div>
-    
-    <div id="no-data-message" class="text-center py-12">
-        <div class="text-gray-400 text-6xl mb-4">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-24 w-24 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-            </svg>
-        </div>
-        <h3 class="text-xl font-semibold text-gray-500">No Report Data</h3>
-        <p class="text-gray-400 mt-2">Select a date range and generate a report to view learning outcomes</p>
-    </div>
+   
 </div>
 {% endblock %}
 
 {% block scripts %}
 <script>
-    // Initialize charts
-    let progressChart, masteryChart, questionTypeChart;
-    
-    // Mock data for development
-    const mockTopics = [
-        'Math: Algebra',
-        'Math: Geometry',
-        'Math: Calculus',
-        'Science: Chemistry',
-        'Science: Biology',
-        'Science: Physics',
-        'History: World War',
-        'History: Revolution',
-        'History: Modern'
-    ];
-    
-    const mockDailyData = [
-        {
-            date: '2023-10-25',
-            topics: ['Math: Algebra', 'Math: Geometry'],
-            questions: 15,
-            mastery: 0.65,
-            distribution: {
-                objective: 40,
-                subjective: 35,
-                practical: 25
-            }
-        },
-        {
-            date: '2023-10-26',
-            topics: ['Math: Algebra', 'Math: Calculus'],
-            questions: 18,
-            mastery: 0.70,
-            distribution: {
-                objective: 45,
-                subjective: 30,
-                practical: 25
-            }
-        },
-        {
-            date: '2023-10-27',
-            topics: ['Science: Chemistry', 'Science: Biology'],
-            questions: 20,
-            mastery: 0.72,
-            distribution: {
-                objective: 50,
-                subjective: 30,
-                practical: 20
-            }
-        },
-        {
-            date: '2023-10-28',
-            topics: ['Science: Physics', 'Math: Calculus'],
-            questions: 22,
-            mastery: 0.75,
-            distribution: {
-                objective: 45,
-                subjective: 35,
-                practical: 20
-            }
-        },
-        {
-            date: '2023-10-29',
-            topics: ['History: World War', 'History: Revolution'],
-            questions: 25,
-            mastery: 0.78,
-            distribution: {
-                objective: 40,
-                subjective: 40,
-                practical: 20
-            }
-        },
-        {
-            date: '2023-10-30',
-            topics: ['History: Modern', 'Science: Biology'],
-            questions: 28,
-            mastery: 0.80,
-            distribution: {
-                objective: 35,
-                subjective: 45,
-                practical: 20
-            }
-        },
-        {
-            date: '2023-10-31',
-            topics: ['Math: Algebra', 'Science: Physics', 'History: Modern'],
-            questions: 30,
-            mastery: 0.85,
-            distribution: {
-                objective: 30,
-                subjective: 40,
-                practical: 30
-            }
+async function fetchDailyReport() {
+    try {
+        const response = await fetch('/api/daily-report');
+        if (!response.ok) {
+            throw new Error('Failed to fetch daily report');
         }
-    ];
-    
-    const mockTopicMastery = {
-        'Math: Algebra': 0.85,
-        'Math: Geometry': 0.75,
-        'Math: Calculus': 0.70,
-        'Science: Chemistry': 0.80,
-        'Science: Biology': 0.82,
-        'Science: Physics': 0.78,
-        'History: World War': 0.88,
-        'History: Revolution': 0.76,
-        'History: Modern': 0.82
-    };
-    
-    // Populate topic filter
-    function populateTopicFilter() {
-        const topicFilter = document.getElementById('topic-filter');
-        
-        // Clear existing options except the first one
-        while (topicFilter.options.length > 1) {
-            topicFilter.remove(1);
-        }
-        
-        // Add topic options
-        mockTopics.forEach(topic => {
-            const option = document.createElement('option');
-            option.value = topic;
-            option.textContent = topic;
-            topicFilter.appendChild(option);
-        });
-    }
-    
-    // Generate report
-    function generateReport() {
-        const startDate = document.getElementById('start-date').value;
-        const endDate = document.getElementById('end-date').value;
-        const topicFilter = document.getElementById('topic-filter').value;
-        
-        if (!startDate || !endDate) {
-            alert('Please select a start and end date.');
-            return;
-        }
-        
-        // Show loading state
-        const generateButton = document.getElementById('generate-report-button');
-        generateButton.disabled = true;
-        generateButton.innerHTML = '<div class="loading"></div> Generating...';
-        
-        // Simulate API call delay
-        setTimeout(() => {
-            // Filter data by date range
-            const filteredData = mockDailyData.filter(item => {
-                return item.date >= startDate && item.date <= endDate;
-            });
-            
-            // Filter by topic if needed
-            let reportData = filteredData;
-            if (topicFilter !== 'all') {
-                reportData = filteredData.filter(item => item.topics.includes(topicFilter));
-            }
-            
-            if (reportData.length === 0) {
-                alert('No data available for the selected criteria.');
-                generateButton.disabled = false;
-                generateButton.textContent = 'Generate Report';
-                return;
-            }
-            
-            // Display the report
-            displayReport(reportData, topicFilter);
-            
-            // Reset button state
-            generateButton.disabled = false;
-            generateButton.textContent = 'Generate Report';
-        }, 1500);
-    }
-    
-    // Display report
-    function displayReport(reportData, topicFilter) {
-        const reportContainer = document.getElementById('report-container');
-        const noDataMessage = document.getElementById('no-data-message');
-        
-        // Show report container
-        reportContainer.classList.remove('hidden');
-        noDataMessage.classList.add('hidden');
-        
-        // Update progress chart
-        updateProgressChart(reportData);
-        
-        // Update mastery chart
-        updateMasteryChart(topicFilter);
-        
-        // Update question type chart
-        updateQuestionTypeChart(reportData);
-        
-        // Update daily table
-        updateDailyTable(reportData);
-    }
-    
-    // Update progress chart
-    function updateProgressChart(reportData) {
-        const ctx = document.getElementById('progress-chart').getContext('2d');
-        
-        // Prepare data
-        const labels = reportData.map(item => item.date);
-        const masteryData = reportData.map(item => item.mastery * 100);
-        const questionsData = reportData.map(item => item.questions);
-        
-        // Destroy existing chart if it exists
-        if (progressChart) {
-            progressChart.destroy();
-        }
-        
-        // Create new chart
-        progressChart = new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: labels,
-                datasets: [
-                    {
-                        label: 'Mastery Level (%)',
-                        data: masteryData,
-                        borderColor: 'rgba(75, 192, 192, 1)',
-                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                        yAxisID: 'y',
-                        tension: 0.3,
-                        fill: true
-                    },
-                    {
-                        label: 'Questions Analyzed',
-                        data: questionsData,
-                        borderColor: 'rgba(54, 162, 235, 1)',
-                        backgroundColor: 'rgba(54, 162, 235, 0.2)',
-                        yAxisID: 'y1',
-                        tension: 0.3,
-                        fill: true
-                    }
-                ]
-            },
-            options: {
-                responsive: true,
-                interaction: {
-                    mode: 'index',
-                    intersect: false,
-                },
-                scales: {
-                    y: {
-                        type: 'linear',
-                        display: true,
-                        position: 'left',
-                        title: {
-                            display: true,
-                            text: 'Mastery Level (%)'
-                        },
-                        min: 0,
-                        max: 100
-                    },
-                    y1: {
-                        type: 'linear',
-                        display: true,
-                        position: 'right',
-                        title: {
-                            display: true,
-                            text: 'Questions Analyzed'
-                        },
-                        min: 0,
-                        grid: {
-                            drawOnChartArea: false,
-                        },
-                    },
-                    x: {
-                        title: {
-                            display: true,
-                            text: 'Date'
-                        }
-                    }
-                }
-            }
-        });
-    }
-    
-    // Update mastery chart
-    function updateMasteryChart(topicFilter) {
-        const ctx = document.getElementById('mastery-chart').getContext('2d');
-        
-        // Prepare data
-        let topics, masteryValues;
-        
-        if (topicFilter === 'all') {
-            topics = Object.keys(mockTopicMastery);
-            masteryValues = topics.map(topic => mockTopicMastery[topic] * 100);
+        const result = await response.json();
+        if (result.status === 'success') {
+            displayReport(result.data);
         } else {
-            // If a specific topic is selected, show related topics
-            const subject = topicFilter.split(':')[0];
-            topics = Object.keys(mockTopicMastery).filter(topic => topic.startsWith(subject));
-            masteryValues = topics.map(topic => mockTopicMastery[topic] * 100);
+            throw new Error(result.message);
         }
-        
-        // Destroy existing chart if it exists
-        if (masteryChart) {
-            masteryChart.destroy();
-        }
-        
-        // Create new chart
-        masteryChart = new Chart(ctx, {
-            type: 'bar',
-            data: {
-                labels: topics,
-                datasets: [{
-                    label: 'Mastery Level (%)',
-                    data: masteryValues,
-                    backgroundColor: 'rgba(153, 102, 255, 0.6)',
-                    borderColor: 'rgba(153, 102, 255, 1)',
-                    borderWidth: 1
-                }]
-            },
-            options: {
-                responsive: true,
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        max: 100,
-                        title: {
-                            display: true,
-                            text: 'Mastery Level (%)'
-                        }
-                    },
-                    x: {
-                        title: {
-                            display: true,
-                            text: 'Topic'
-                        }
-                    }
-                },
-                plugins: {
-                    legend: {
-                        display: false
-                    }
-                }
-            }
-        });
+    } catch (error) {
+        console.error('Error fetching daily report:', error);
+        document.getElementById('daily-reports-container').innerHTML = `
+            <div class="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-400 p-4 rounded">
+                Error loading daily report. Please try again later.
+            </div>
+        `;
     }
-    
-    // Update question type chart
-    function updateQuestionTypeChart(reportData) {
-        const ctx = document.getElementById('question-type-chart').getContext('2d');
-        
-        // Calculate average distribution
-        const avgDistribution = {
-            objective: 0,
-            subjective: 0,
-            practical: 0
-        };
-        
-        reportData.forEach(item => {
-            avgDistribution.objective += item.distribution.objective;
-            avgDistribution.subjective += item.distribution.subjective;
-            avgDistribution.practical += item.distribution.practical;
+}
+
+function displayReport(data) {
+    // Update exam info
+    document.getElementById('exam-type').textContent = data.exam_info.exam_type;
+    document.getElementById('exam-date').textContent = `Exam Date: ${data.exam_info.exam_date}`;
+    document.getElementById('days-until-exam').textContent = 
+        `${data.exam_info.days_until_exam} days until exam`;
+
+    // Update overall statistics
+    document.getElementById('total-days').textContent = data.overall_statistics.total_days;
+    document.getElementById('total-topics').textContent = data.overall_statistics.total_topics;
+    document.getElementById('total-hours').textContent = 
+        data.overall_statistics.total_study_hours.toFixed(1);
+    document.getElementById('avg-hours').textContent = 
+        data.overall_statistics.average_daily_hours.toFixed(1);
+
+    // Generate daily reports
+    const container = document.getElementById('daily-reports-container');
+    container.innerHTML = data.daily_reports.map(report => `
+        <div class="report-card rounded-xl shadow-lg p-6 transform transition-all duration-300 hover:scale-102">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-bold text-gray-800 dark:text-white">Day ${report.day_number}</h2>
+                <span class="text-gray-600 dark:text-gray-400">${report.formatted_date}</span>
+            </div>
+
+            <!-- Topics Section -->
+            <div class="mb-6">
+                <h3 class="text-lg font-semibold text-gray-700 dark:text-gray-300 mb-3">Topics & Time Allocation</h3>
+                <div class="space-y-4">
+                    ${report.topics_data.map(topic => `
+                        <div class="topic-item">
+                            <div class="flex justify-between mb-1">
+                                <span class="text-gray-700 dark:text-gray-300">${topic.topic}</span>
+                                <span class="text-indigo-600 dark:text-indigo-400">${topic.hours} hours</span>
+                            </div>
+                            <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+                                <div class="progress-bar bg-indigo-500 h-2 rounded-full" 
+                                    style="width: ${topic.percentage}%">
+                                </div>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            </div>
+
+            <!-- Key Concepts Section -->
+            <div class="mb-6">
+                <h3 class="text-lg font-semibold text-gray-700 dark:text-gray-300 mb-3">Key Concepts</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    ${report.key_concepts.map((concept, index) => `
+                        <div class="flex items-center p-2 bg-gray-50 dark:bg-gray-900 rounded-lg topic-item">
+                            <span class="w-6 h-6 flex items-center justify-center bg-indigo-100 dark:bg-indigo-900 rounded-full mr-3 text-xs text-indigo-600 dark:text-indigo-400">
+                                ${index + 1}
+                            </span>
+                            <span class="text-gray-700 dark:text-gray-300">${concept}</span>
+                        </div>
+                    `).join('')}
+                </div>
+            </div>
+
+            ${report.practice_items.length > 0 ? `
+                <!-- Practice Items Section -->
+                <div>
+                    <h3 class="text-lg font-semibold text-gray-700 dark:text-gray-300 mb-3">Practice Items</h3>
+                    <div class="grid gap-2">
+                        ${report.practice_items.map((item, index) => `
+                            <div class="flex items-center p-2 bg-gray-50 dark:bg-gray-900 rounded-lg topic-item">
+                                <span class="w-6 h-6 flex items-center justify-center bg-green-100 dark:bg-green-900 rounded-full mr-3 text-xs text-green-600 dark:text-green-400">
+                                    P${index + 1}
+                                </span>
+                                <span class="text-gray-700 dark:text-gray-300">${item}</span>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            ` : ''}
+
+            <!-- Completion Status -->
+            <div class="mt-6 pt-6 border-t border-gray-200 dark:border-gray-700">
+                <h3 class="text-lg font-semibold text-gray-700 dark:text-gray-300 mb-3">Daily Progress</h3>
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <div class="text-center">
+                        <div class="text-2xl font-bold text-indigo-600 dark:text-indigo-400">
+                            ${report.completion_status.topics_covered}
+                        </div>
+                        <div class="text-sm text-gray-600 dark:text-gray-400">Topics</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-2xl font-bold text-indigo-600 dark:text-indigo-400">
+                            ${report.completion_status.concepts_mastered}
+                        </div>
+                        <div class="text-sm text-gray-600 dark:text-gray-400">Concepts</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-2xl font-bold text-indigo-600 dark:text-indigo-400">
+                            ${report.completion_status.practice_completed}
+                        </div>
+                        <div class="text-sm text-gray-600 dark:text-gray-400">Practice</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-2xl font-bold text-indigo-600 dark:text-indigo-400">
+                            ${report.completion_status.total_study_hours}
+                        </div>
+                        <div class="text-sm text-gray-600 dark:text-gray-400">Hours</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `).join('');
+
+    // Animate progress bars
+    setTimeout(() => {
+        document.querySelectorAll('.progress-bar').forEach(bar => {
+            bar.style.width = bar.style.width;
         });
-        
-        const count = reportData.length;
-        avgDistribution.objective /= count;
-        avgDistribution.subjective /= count;
-        avgDistribution.practical /= count;
-        
-        // Destroy existing chart if it exists
-        if (questionTypeChart) {
-            questionTypeChart.destroy();
-        }
-        
-        // Create new chart
-        questionTypeChart = new Chart(ctx, {
-            type: 'doughnut',
-            data: {
-                labels: ['Objective', 'Subjective', 'Practical'],
-                datasets: [{
-                    data: [
-                        avgDistribution.objective,
-                        avgDistribution.subjective,
-                        avgDistribution.practical
-                    ],
-                    backgroundColor: [
-                        'rgba(54, 162, 235, 0.6)',
-                        'rgba(255, 99, 132, 0.6)',
-                        'rgba(75, 192, 192, 0.6)'
-                    ],
-                    borderColor: [
-                        'rgba(54, 162, 235, 1)',
-                        'rgba(255, 99, 132, 1)',
-                        'rgba(75, 192, 192, 1)'
-                    ],
-                    borderWidth: 1
-                }]
-            },
-            options: {
-                responsive: true,
-                plugins: {
-                    legend: {
-                        position: 'bottom',
-                    },
-                    tooltip: {
-                        callbacks: {
-                            label: function(context) {
-                                const label = context.label || '';
-                                const value = context.raw.toFixed(1);
-                                return `${label}: ${value}%`;
-                            }
-                        }
-                    }
-                }
-            }
-        });
-    }
-    
-    // Update daily table
-    function updateDailyTable(reportData) {
-        const dailyTableBody = document.getElementById('daily-table-body');
-        
-        if (reportData.length === 0) {
-            dailyTableBody.innerHTML = '<tr><td colspan="5" class="py-2 px-4 border-b border-gray-200 text-center">No data available</td></tr>';
-            return;
-        }
-        
-        let html = '';
-        
-        reportData.forEach(item => {
-            html += `
-                <tr>
-                    <td class="py-2 px-4 border-b border-gray-200">${item.date}</td>
-                    <td class="py-2 px-4 border-b border-gray-200">${item.topics.join(', ')}</td>
-                    <td class="py-2 px-4 border-b border-gray-200">${item.questions}</td>
-                    <td class="py-2 px-4 border-b border-gray-200">${(item.mastery * 100).toFixed(1)}%</td>
-                    <td class="py-2 px-4 border-b border-gray-200">
-                        <button class="text-indigo-600 hover:text-indigo-900 view-details-btn" data-date="${item.date}">
-                            View Details
-                        </button>
-                    </td>
-                </tr>
-            `;
-        });
-        
-        dailyTableBody.innerHTML = html;
-        
-        // Add event listeners to view details buttons
-        document.querySelectorAll('.view-details-btn').forEach(button => {
-            button.addEventListener('click', function() {
-                const date = this.getAttribute('data-date');
-                alert(`Viewing details for ${date}... (This would show a detailed report in a real app)`);
-            });
-        });
-    }
-    
-    // Set default dates
-    function setDefaultDates() {
-        const today = new Date();
-        const oneWeekAgo = new Date();
-        oneWeekAgo.setDate(today.getDate() - 6);
-        
-        document.getElementById('end-date').value = today.toISOString().split('T')[0];
-        document.getElementById('start-date').value = oneWeekAgo.toISOString().split('T')[0];
-    }
-    
-    // Event listeners
-    document.addEventListener('DOMContentLoaded', function() {
-        // Set default dates
-        setDefaultDates();
-        
-        // Populate topic filter
-        populateTopicFilter();
-        
-        // Generate report button
-        document.getElementById('generate-report-button').addEventListener('click', function() {
-            generateReport();
-        });
-        
-        // Export report button
-        document.getElementById('export-report-button').addEventListener('click', function() {
-            alert('Exporting report... (This would generate a report file in a real app)');
-        });
-        
-        // Print report button
-        document.getElementById('print-report-button').addEventListener('click', function() {
-            alert('Printing report... (This would open a print dialog in a real app)');
-        });
-    });
+    }, 100);
+}
+
+// Fetch report when page loads
+document.addEventListener('DOMContentLoaded', fetchDailyReport);
 </script>
 {% endblock %}
